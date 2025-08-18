@@ -88,6 +88,7 @@ Para la entrega, deberéis fijaros en:
 
 #### Recursos para R
 *  [Herramientas para usar modelos de lenguaje de gran escala (LLM) en R](https://luisdva.github.io/llmsr-book/es/index.es.html)
+*  [How to create your own RAG applications in R](https://www.infoworld.com/article/4020484/generative-ai-rag-comes-to-the-r-tidyverse.html)
 *  [Ingeniería de prompt con ChatGPT](https://www.promptingguide.ai/es/models/chatgpt)
 *  [Biblioteca de prompts educativos](https://eduprompts.tiddlyhost.com)
 *  [Claude - AI](https://claude.ai/new)
