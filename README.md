@@ -137,6 +137,7 @@ Para la entrega, deberéis fijaros en:
 *  [`bslib` R package](https://rstudio.github.io/bslib/)
 *  [Mastering Shiny](https://mastering-shiny.org/)
 *  [shinydashboard](https://rstudio.github.io/shinydashboard/index.html)
+*  [shinyMobile: Mobile Ready 'shiny' Apps with Standalone Capabilities](https://cran.r-project.org/web/packages/shinyMobile/index.html)
 
 ###### Despliegue APPs/Dashboards/Docs.
 *  [Deploy a Shiny Application with R](https://docs.posit.co/connect-cloud/how-to/r/shiny-r.html)
