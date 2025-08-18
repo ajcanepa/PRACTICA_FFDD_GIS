@@ -105,6 +105,7 @@ Para la entrega, deberéis fijaros en:
 * [Chapter 4 Git, in:Reproducible Analytical Pipelines ](https://b-rodrigues.github.io/rap4mads/git.html)
 * [Connect RStudio to Git and GitHub](https://happygitwithr.com/rstudio-git-github)
 * [Happy Git and GitHub for the useR](https://happygitwithr.com/)
+* [Github actions with R](https://orchid00.github.io/actions_sandbox/)
 * [Cómo vincular y usar Git con RStudio](https://anderfernandez.com/blog/como-vincular-y-usar-git-con-rstudio/)
 * [Git y GitHub con R](https://rpubs.com/RonaldoAnticona/818156)
 * [Ciencia reproducible: qué, por qué, cómo](https://www.revistaecosistemas.net/index.php/ecosistemas/article/view/1178/973)
