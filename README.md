@@ -120,6 +120,7 @@ Para la entrega, deberéis fijaros en:
 *  [awesome-r-dataviz](https://krzjoa.github.io/awesome-r-dataviz/)
 *  [R Graphics Cookbook](https://r-graphics.org/)
 *  [FlowChart. Tidy Flowchart Generator](https://bruigtp.github.io/flowchart/index.html)
+*  [ggdiagram](https://wjschne.github.io/ggdiagram/index.html)
 *  [accidental aRt](https://accidental-art.tumblr.com/)
 
 ##### Documentos
