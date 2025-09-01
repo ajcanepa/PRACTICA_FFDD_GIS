@@ -169,6 +169,17 @@ Para la entrega, deberéis fijaros en:
 *  [Little Book of R for Bioinformatics](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/)
 *  [CRAN Task View: Genomics, Proteomics, Metabolomics, Transcriptomics, and Other Omics](https://cran.r-project.org/web/views/Omics.html)
 
+### Ontologías & R
+*  [Gene Ontology overview](https://geneontology.org/docs/ontology-documentation/)
+*  [autoGO: Auto-GO: Reproducible, Robust and High Quality Ontology Enrichment Visualizations](https://cran.r-project.org/web/packages/autoGO/index.html)
+*  [DOPE: Drug Ontology Parsing Engine](https://cran.r-project.org/web/packages/DOPE/index.html)
+*  [FAIRmaterials: Ontology Tools with Data FAIRification in Development](https://cran.r-project.org/web/packages/FAIRmaterials/index.html)
+*  [ontologics: Code-Logics to Handle Ontologies](https://cran.r-project.org/web/packages/ontologics/index.html)
+*  [ontologyIndex: Reading Ontologies into R](https://cran.r-project.org/web/packages/ontologyIndex/index.html)
+*  [ontologyPlot: Visualising Sets of Ontological Terms](https://cran.r-project.org/web/packages/ontologyPlot/index.html)
+*  [ontologySimilarity: Calculating Ontological Similarities](https://cran.r-project.org/web/packages/ontologySimilarity/index.html)
+*  [stoRy: Download, Explore, and Analyze Literary Theme Ontology Data](https://cran.r-project.org/web/packages/stoRy/index.html)  
+
 ### Machine Learning & R
 *  [The caret Package](https://topepo.github.io/caret/index.html)
 *  [Tidy Modeling with R](https://www.tmwr.org/)
