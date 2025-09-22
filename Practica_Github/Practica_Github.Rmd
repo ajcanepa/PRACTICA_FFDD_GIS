@@ -7,7 +7,7 @@ title:    |
 author: | 
  | <br>
  | **Antonio Canepa Oneto, Ph.D.**
- | *[E-mail](mailto:ajcanepa@ubu.es)* // [LinkedIn](https://www.linkedin.com/in/antonio-canepa-oneto-56b7b633/) // [ResearchGate](https://www.researchgate.net/profile/Antonio-Canepa-Oneto) // [X(Twitter)](https://twitter.com/OMDataScience)
+ | *[E-mail](mailto:ajcanepa@ubu.es)* // [LinkedIn](https://www.linkedin.com/in/antonio-canepa-oneto-56b7b633/) // [ResearchGate](https://www.researchgate.net/profile/Antonio-Canepa-Oneto)
 
 date: |
  | <br>
@@ -81,7 +81,8 @@ cd Desktop/Practica_github/
 Para corroborar que estamos en el lugar correcto, una manera de saberlo es nuevamente utilizar `pwd/cd` o bien listar el contenido de la carpeta usando los comandos `ls -l` (para Linux/Mac) o `dir` (Windows), tal que podréis ver algo como:
 
 ```{bash, engine.opts='-l', eval = FALSE}
-ls -l
+ls -l # linux
+dir # windows
 ```
 
 ```{r, echo=FALSE, out.width="90%", fig.align = "center", fig.cap = 'Terminal de comandos mostrando el contenido de una carpeta'}
@@ -211,6 +212,7 @@ Visualizamos nuevamente el contenido de nuestra carpeta usando los comandos `ls`
 
 ```{bash, engine.opts='-l', eval = FALSE}
 ls -l
+dir
 ```
 
 ```{r, echo=FALSE, out.width="90%", fig.align = "center", fig.cap = 'Terminal mostrando el contenido de nuestra carpeta'}
@@ -250,7 +252,7 @@ Esta situación es un poco más complicada, pero quizás es la más habitual de 
 
 ```{bash, engine.opts='-l', eval = FALSE}
 rm Analysis.R
-ls -l
+ls -l  # dir si estás en windows
 git status
 ```
 
@@ -305,7 +307,7 @@ Siempre es muy importante leer los mensajes que aparecen en pantalla.
 knitr::include_graphics("INPUT/IMAGES/git_revert_message_pre.png")
 ```
 
-Lo que deberemos hacer ahora es escribir un mensaje (parte de él ya estaba escrito) y salir de esa pantalla. Para salir (u otras acciones), abajo de la pantalla tenemos el listado de comandos. el símbolo `^` significa `Ctrl` en windows/linux y `Command` en Mac.
+Lo que deberemos hacer ahora es escribir un mensaje (parte de él ya estaba escrito) y salir de esa pantalla. Para salir (u otras acciones), abajo de la pantalla tenemos el listado de comandos. el símbolo `^` significa `Ctrl` en windows/linux y `Command` en Mac. Para Windows ver más abajo.
 
 Dejamos el mensaje de la siguiente manera:
 
@@ -318,6 +320,17 @@ Y al momento de ejecutar `Ctrl + x`, salimos de la pantalla con la siguiente inf
 ```{r, echo=FALSE, out.width="90%", fig.align = "center", fig.cap = 'Terminal mostrando el efecto de revert'}
 knitr::include_graphics("INPUT/IMAGES/git_revert_message_post.png")
 ```
+
+En ***Windows*** esto luce un poco diferente y no verás las opciones `^G` ó `^X` (u otras) que se señalan más arriba. Para poder salir de esta pantalla en Windows, una vez inlcuido el mensaje (si no puedes escribir, presiona la tecla "i") deberás de presionar la tecla `esc` (sí la del escape). Verás que en la terminal abajo ya no está la palabra "*-INSERT-*" característica de cuando estás en el modo edición (presionando la letra "i").
+
+Entonces deberás ejecutar `:wq` y presionar `ENTER`.
+
+```{bash, engine.opts='-l', eval = FALSE}
+# Para regresar a la terminal
+:wq
+```
+
+Con este comando saldrás del editor VIM y regresarás a la terminal.
 
 Para consluir podemos revisar los archivos contenidos en nuestra carpeta y cmprobar que ha tenido efecto.
 
