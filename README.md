@@ -273,10 +273,22 @@ Para la entrega, deberéis fijaros en:
 * [NeuroDataSets](https://github.com/lightbluetitan/neurodatasets)
 * [CardioDataSets](https://github.com/lightbluetitan/cardiodatasets)
 * [DataSetsVerse](https://lightbluetitan.github.io/datasetsverse/)
+* [UCI ML Repository](https://archive.ics.uci.edu/)
+* [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
+* [U.S. Government's Open Data](https://data.gov/)
+* [Earth Observation Data](https://www.earthdata.nasa.gov/)
+* [Google Data Search](https://datasetsearch.research.google.com/)
+* [Open Data on AWS](https://registry.opendata.aws/)
+* [Kaggle](https://www.kaggle.com/datasets)
+* [OpenData CERN](https://opendata.cern.ch/)
 
 ***
 
 ### Concursos
 * [Concurso de Visualización de Datos con R - 2025](https://github.com/grupoRasturias/dataviz-contest-2025)
+* [Data science & AI competitions](https://www.drivendata.org/)
+* [Crowdsourcing AI](https://www.aicrowd.com/)
+* [KOPURU - IA de calidad y con propósito](https://kopuru.com/)
+* [Kaggle - Competitions](https://www.kaggle.com/competitions)
 
 ***
