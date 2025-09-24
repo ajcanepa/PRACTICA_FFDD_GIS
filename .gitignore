@@ -42,7 +42,7 @@ vignettes/*.pdf
 Github_Data_Access.txt
 
 # NCBI-PUBMED APIKEY
-NCBI_PUBMED_APIKEY.txt
+Practica_PubMed_Query/NCBI_PUBMED_APIKEY.txt
 
 # Carpeta profesor
 PROFESOR/
