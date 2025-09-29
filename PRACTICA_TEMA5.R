@@ -42,7 +42,8 @@ mean(x)
 
 mean(x, na.rm = TRUE)
 
-is.na(x)
+is.numeric(x)
+as.character(x)
 
 # ** Coacción (Coercion) --------------------------------------------------
 # Regla para coercion: character → double → integer → logical
@@ -52,8 +53,8 @@ typeof(c(1,2,3))
 c(1,2,"Pablo")
 typeof(c(1,2,'Pablo'))
 
-c(TRUE,FALSE,FALSE, 1L, 2, "Tubby")
-typeof(c(TRUE,FALSE,FALSE, 1L, 2.5, "Tubby"))
+c(TRUE,FALSE,FALSE, 2L, 3.53, "estamos dormidos")
+typeof(c(TRUE,FALSE,FALSE, 2L, 3.55))
 typeof(c(TRUE,FALSE,FALSE, 1L, 2, "Tubby"))
 
 # Regla de coercion --> útil
@@ -66,10 +67,11 @@ typeof(x)
 #Funciones matemáticas también siguen la "coercion"
 sum(x)
 mean(x)
+sum(c("Todos", "estamos", "aburrid@s"))
 
 # Forzar con as. a un cáracter
 c(1, 1.5, "A")
-as.numeric(c(1, 1.5, "A"))
+as.numeric(c(1, 1.5, "Joaquina"))
 
 x <- c(1, 1.5, "A")
 typeof(x)
@@ -109,7 +111,7 @@ dim(x)
 length(x)
 
 # MATRICES
-x <- matrix(1:12, nrow = 3, ncol = 4)
+x <- matrix(c(1:10, "hola", "pablo"), nrow = 3, ncol = 4)
 x
 
 dim(x)
