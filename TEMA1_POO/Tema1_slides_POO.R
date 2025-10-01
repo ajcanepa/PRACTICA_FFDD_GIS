@@ -19,6 +19,10 @@
 # always_allow_html: true
 # ---
 
+
+# POO ---------------------------------------------------------------------
+## S3 --------------------------------------------------------------------
+
 # Definir un objeto S3 para un paciente
 crear_paciente <- function(nombre, edad, presion_sistolica, presion_diastolica) {
   paciente <- list(
@@ -42,6 +46,9 @@ print.paciente <- function(paciente) {
 # Crear y mostrar un paciente
 paciente1 <- crear_paciente("Juan Pérez", 45, 120, 80)
 print(paciente1)
+
+
+## S4 --------------------------------------------------------------------
 
 # Definir una clase S4 para un paciente
 setClass(
@@ -72,6 +79,8 @@ setMethod("show", "Paciente", function(object) {
 paciente2 <- Paciente("Ana Gómez", 30, 110, 70)
 show(paciente2)
 
+
+## R6 --------------------------------------------------------------------
 library(R6)
 # Definir una clase R6 para un dispositivo de monitoreo de presión arterial
 MonitorPresion <- R6Class(
@@ -105,6 +114,8 @@ monitor$tomar_medicion(130, 85)
 monitor$mostrar_info()
 
 
+
+## S7 --------------------------------------------------------------------
 # Instalar y cargar el paquete S7 si aún no lo tienes instalado
 # install.packages("S7")
 library(S7)
@@ -149,13 +160,12 @@ paciente3@presion_sistolica
 
 
 
-
 # Objetos en R ------------------------------------------------------------
 
+
+## Vectores --------------------------------------------------------------
 x <- c(1,2,3)
 x
-
-
 
 y <- x
 y
@@ -170,7 +180,6 @@ lobstr::obj_addr(y)
 `_abc` <- 1
 
 `_abc`
-
 
 
 # Combinar (c) números te permitirá crear vectores numéricos (integer)
@@ -223,6 +232,11 @@ length(y)
 # Obteniendo su clase
 class(y)
 
+
+
+## Matrices / Arrays -----------------------------------------------------
+
+
 # Para crear una matriz podemos usar la siguiente función.
 Matrix <- matrix(c(1,2,3,4,5,6,7,10,20,30,40,50,60,70), nrow = 7, ncol = 2, byrow = FALSE)
 
@@ -251,7 +265,9 @@ Matrix
 Matrix[1:2, ]
 
 
-# ## Listas ---------------------------------------------------------------
+
+## Data Frames -----------------------------------------------------------
+
 # Para crear un dataframe podemos usar la siguiente función.
 DF <- data.frame(Year = c(20,40,60,50), Name = c("Pedro", "María", "Tomás", "Nieves"))
 print(DF)
@@ -273,6 +289,10 @@ DF
 # Seleccionamos de la columna "Year" aquellas filas en las que la columna "Name" corresponden a "Pedro".
 DF$Year[DF$Name == "Pedro"]
 
+
+
+## Listas ----------------------------------------------------------------
+
 # Creamos una lista con la función list, usando todos los objetos anteriormente creados
 List <- list(Var_x = x, Var_y = y, Matrix = Matrix, DF = DF)
 
@@ -293,6 +313,9 @@ List$DF[3:4, 1:2]
 
 
 # Operaciones en R --------------------------------------------------------
+
+## Algebraicas -----------------------------------------------------------
+
 # Creamos dos vectores numéricos x e y
 x <- c(1:10)
 y <- sin(x)
@@ -339,6 +362,9 @@ z
 # Para contar el número de elementos iguales dentro del vector
 table(z)
 
+
+## Condicionales ---------------------------------------------------------
+
 # if (condición) {
 #   # Código a ejecutar si la condición es verdadera
 # }
@@ -369,6 +395,11 @@ clasificacion <- ifelse(colesterol > 200, "Alto", "Normal")
 print(clasificacion)  # Resultado: "Normal" "Alto" "Normal" "Alto"
 
 
+## Iteraciones -----------------------------------------------------------
+
+
+### tapply ---------------------------------------------------------------
+
 # tapply(vector, factor, función)
 
 presion_sistolica <- c(120, 130, 110, 140, 135, 150)
@@ -377,6 +408,9 @@ edad_grupo <- c("Joven", "Adulto", "Joven", "Adulto", "Adulto", "Adulto")
 media_presion <- tapply(presion_sistolica, edad_grupo, mean)
 
 print(media_presion)
+
+
+### while ----------------------------------------------------------------
 
 # while (condición) {
 #   # Código a ejecutar mientras la condición sea verdadera
@@ -393,6 +427,8 @@ while (presion > objetivo) {
 
 print(dias)  # Resultado: 12 (Número de días necesarios para alcanzar el objetivo)
 
+
+### for ------------------------------------------------------------------
 # for (variable in secuencia) {
 #   # Código a ejecutar en cada iteración
 # }
@@ -407,6 +443,8 @@ for (i in 1:length(alturas)) {
 
 print(imc)  # Resultado: 22.49, 24.49, 19.53
 
+## Funciones -------------------------------------------------------------
+
 sumar <- function(x,y){
   x + y
 }
@@ -416,6 +454,8 @@ sumar
 sumar(7,15)
 
 sumar(c(2, 3, 4), 4)
+
+
 
 calcular <- function(x, y, type) {
   if (type == "sumar") {
@@ -458,6 +498,17 @@ calcular(x = 8, y = 4)
 calcular(x = 8, y = 4, type = "multiplicar")
 
 
+## Cargar una función ---------------------------------------------------
+# https://investigacion.ubu.es/investigadores/35040/detalle
+
+source("TEMA1_POO/Referencia_APA.R")
+Referencia_APA("https://doi.org/10.3390/INFO15040223", BIBTEX = FALSE)
+
+
+# Importacion de Datos --------------------------------------------------
+
+
+## Desde paquetes --------------------------------------------------------
 
 # Cargamos el paquete que contiene los datos (ggplot2)
 library(ggplot2)
@@ -467,13 +518,7 @@ data(mpg)
 mpg
 
 
-
-
-
-
-
-
-
+## Desde ficheros propios ------------------------------------------------
 
 
 library(readr)
@@ -484,6 +529,8 @@ Agua_consumo_humano
 
 library(readr)
 
+
+## Desde URL -------------------------------------------------------------
 Agua_consumo_humano <- read_delim(file = "https://datosabiertos.jcyl.es/web/jcyl/risp/es/salud/calidad-aguas-consumo/1284839789043.csv",
                                   delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
