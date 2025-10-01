@@ -250,6 +250,8 @@ Matrix
 # Primera y segunda fila de todas las columnas
 Matrix[1:2, ]
 
+
+# ## Listas ---------------------------------------------------------------
 # Para crear un dataframe podemos usar la siguiente función.
 DF <- data.frame(Year = c(20,40,60,50), Name = c("Pedro", "María", "Tomás", "Nieves"))
 print(DF)
@@ -279,7 +281,11 @@ print(List)
 str(List)
 
 # Seleccionamos el tercer elemento de `x` dentro de la `List`
-List$Var_x[3]
+str(List$DF)
+List$Matrix[c(3, 5, 6, 7), 2]
+
+# Indexamos a María
+List$DF$Name[2]
 
 # Seleccionamos los años y nombres de "Tomás" y "Nieves" desde nuestro dataframe `DF` dentro de la `List`
 List$DF[3:4, 1:2]
@@ -312,6 +318,15 @@ x
 y
 
 x + y
+
+# Reciclado
+x <- c(1:9)
+x
+y
+
+x + y
+
+
 
 # Creamos el vector `z` que será un **character vector**
 z <- c(rep("Pablo", 6), "Juan", "Diego", rep("Joseph", 4))
@@ -367,7 +382,7 @@ print(media_presion)
 #   # Código a ejecutar mientras la condición sea verdadera
 # }
 
-presion <- 180
+presion <- 210
 objetivo <- 120
 dias <- 0
 
