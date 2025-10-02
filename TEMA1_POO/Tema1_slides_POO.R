@@ -475,9 +475,8 @@ calcular(x = 8, y = 4, type = "sumar")
 
 calcular(x = 8, y = 4, type = "dividir")
 
-try({
 calcular(x = 8, y = 4, type = "ecualizar")
-})
+
 
 calcular <- function(x, y, type = "sumar") {
   if (type == "sumar") {
@@ -495,14 +494,14 @@ calcular <- function(x, y, type = "sumar") {
 
 calcular(x = 8, y = 4)
 
-calcular(x = 8, y = 4, type = "multiplicar")
+calcular(x = 8, y = 4, type = "dormir")
 
 
 ## Cargar una función ---------------------------------------------------
 # https://investigacion.ubu.es/investigadores/35040/detalle
-
+source("TEMA1_POO/calcular.R")
 source("TEMA1_POO/Referencia_APA.R")
-Referencia_APA("https://doi.org/10.3390/INFO15040223", BIBTEX = FALSE)
+Referencia_APA("https://doi.org/10.3390/INFO15040223", BIBTEX = TRUE)
 
 
 # Importacion de Datos --------------------------------------------------
