@@ -119,6 +119,7 @@ Para la entrega, deberéis fijaros en:
 *  [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/)
 *  [esquisse](https://dreamrs.github.io/esquisse/)
 *  [esquisse - APP](https://dreamrs.shinyapps.io/esquisse/)
+*  [ggplot2 styling](https://www.tidyverse.org/blog/2025/10/ggplot2-styling/)
 *  [awesome-r-dataviz](https://krzjoa.github.io/awesome-r-dataviz/)
 *  [R Graphics Cookbook](https://r-graphics.org/)
 *  [FlowChart. Tidy Flowchart Generator](https://bruigtp.github.io/flowchart/index.html)
