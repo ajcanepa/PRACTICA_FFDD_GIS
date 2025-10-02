@@ -92,6 +92,7 @@ Para la entrega, deberéis fijaros en:
 *  [Ingeniería de prompt con ChatGPT](https://www.promptingguide.ai/es/models/chatgpt)
 *  [Biblioteca de prompts educativos](https://eduprompts.tiddlyhost.com)
 *  [Claude - AI](https://claude.ai/new)
+*  [Using Claude Code to write R code](https://www.simonpcouch.com/blog/2025-07-17-claude-code-2/)
 
   
 #### Artículos Científicos
