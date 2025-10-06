@@ -308,7 +308,7 @@ df1 <- data.frame(
   Numeros = 1:5, 
   Letras = letters[1:5])
 
-df1
+str(df1)
 typeof(df1)
 attributes(df1)
 
@@ -373,7 +373,7 @@ df1[c(1,3,5), "Letras"]
 # Diff. tibble v/s data.frame
 # df1 = dataframe
 str(df1$Numeros)
-# df2 es un tibble
+# df2 es un vector
 str(df2$Numeros)
 
 str(df1$Nu)
@@ -386,8 +386,8 @@ str(df2$Nu)
 # función `list()`
 
 l1 <- list(
-  Enteros = 1:3, 
-  Letra = "a", 
+  Enteros = c(1:3), 
+  Letra = c("a"), 
   Logico = c(TRUE, FALSE, TRUE), 
   Numeros = c(2.3, 5.9)
 )
@@ -400,7 +400,7 @@ str(l1)
 # Lazy-evaluation en listas
 lobstr::obj_size(mtcars)
 
-l2 <- list(mtcars, mtcars, mtcars, mtcars)
+l2 <- list(mtcars, mtcars, mtcars, mtcars[1:3, 2])
 lobstr::obj_size(l2)
 
 
@@ -410,7 +410,7 @@ l4 <- list(list(1,2), c(3,4))
 l4
 
 l5 <- c(list(1,2), c(3,4))
-l5
+str(l5)
 
 
 # **Coacción / Coercion de Listas -----------------------------------------
@@ -435,7 +435,7 @@ typeof(list(c(seq(1:3), "hola")))
 # ** Indexación de Listas -------------------------------------------------
 # Al igual que las Matrices las listas se pueden indexar por posición (Dimensión) y/o por nombre, o por ambas.
 l1
-l1[[3]][3]
+l1[[3]][2]
 # Por dimensión
 l1[[1]]
 l1[[1]][2]
@@ -679,10 +679,13 @@ seq_dna <- c("ATGTCACCACAAACAGAGACT")
 seq_dna
 
 # Crear una función `contar_nucleotidos()`, que nos permitirá contar el número de cada uno de los nucleótidos que tenemos en nuestra secuencia.
-contar_nucleotidos <- function(secuencia_dna = seq_dna){
+contar_nucleotidos <- function(secuencia_dna = seq_dna) {
   conteo_nucleotidos = unlist(strsplit(x = secuencia_dna, split = "", fixed = TRUE))
   print(table(conteo_nucleotidos))
 }
+
+# Comentar objetos dentro de funciones
+conteo_nucleotidos
 
 # Usamos la función
 contar_nucleotidos(secuencia_dna = seq_dna)
@@ -720,7 +723,7 @@ source("INPUT/FUNCTIONS/Transcripcion.R")
 print(seq_dna)
 Transcripcion(seq_dna)
 
-# Hasta qui Lunes 06 101
+# Hasta aquí Lunes 06/10/25 --> 101 y 102
 
 # Importación de Datos ----------------------------------------------------
 # * Importar *.xls y *.xlsx -----------------------------------------------
