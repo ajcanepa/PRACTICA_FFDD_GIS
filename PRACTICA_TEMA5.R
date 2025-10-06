@@ -720,6 +720,8 @@ source("INPUT/FUNCTIONS/Transcripcion.R")
 print(seq_dna)
 Transcripcion(seq_dna)
 
+# Hasta qui Lunes 06 101
+
 # Importación de Datos ----------------------------------------------------
 # * Importar *.xls y *.xlsx -----------------------------------------------
 library(readxl)
