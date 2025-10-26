@@ -932,10 +932,6 @@ Tibble_xml <-
 Tibble_xml
 
 # Graficamos
-# Tibble_xml %>% 
-#   ggplot(data = ., mapping = aes(x = name, y = price_dollars)) +
-#   geom_bar(stat = "identity", aes(fill = calories))
-
 Tibble_xml %>% 
   ggplot(data = ., mapping = aes(x = reorder(name, -price_dollars), y = price_dollars)) +
   geom_bar(stat = "identity", aes(fill = calories)) +
