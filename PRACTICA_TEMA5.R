@@ -723,12 +723,12 @@ source("INPUT/FUNCTIONS/Transcripcion.R")
 print(seq_dna)
 Transcripcion(seq_dna)
 
-# Hasta aquí Lunes 06/10/25 --> 101 y 102
 
 # Importación de Datos ----------------------------------------------------
+
 # * Importar *.xls y *.xlsx -----------------------------------------------
 library(readxl)
-Galapagos <- read_excel("INPUT/DATA/Galapagos_DB.xlsx", 
+Galapagos <- read_excel(path = "INPUT/DATA/Galapagos_DB.xlsx", 
                         sheet = "DBR")
 Galapagos
 str(Galapagos)
@@ -738,7 +738,7 @@ summary(Galapagos)
 
 # * Importación desde CSV -------------------------------------------------
 library(readr)
-Acc_Car <- read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv", 
+Acc_Car <- read_delim(file = "INPUT/DATA/accidentalidad-por-carreteras.csv", 
                       delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 Acc_Car
@@ -748,7 +748,7 @@ View(Acc_Car)
 table(Acc_Car$T.RED)
 
 # Modificando el tipo (clase) de cada Columna
-Acc_Car <- read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv",
+Acc_Car <- read_delim(file = "INPUT/DATA/accidentalidad-por-carreteras.csv",
                       delim = ";", escape_double = FALSE, trim_ws = TRUE,
                       col_types = cols(
                         T.RED = readr::col_factor(levels = NULL)
@@ -760,7 +760,7 @@ summary(Acc_Car)
 
 # * Importación desde la Web ----------------------------------------------
 # Agua consumo humano desde la red
-Agua_Consumo <- read_delim("https://datosabiertos.jcyl.es/web/jcyl/risp/es/salud/calidad-aguas-consumo/1284839789043.csv",
+Agua_Consumo <- read_delim(file = "https://datosabiertos.jcyl.es/web/jcyl/risp/es/salud/calidad-aguas-consumo/1284839789043.csv",
                            delim = ";")
 
 Agua_Consumo
@@ -778,7 +778,7 @@ Agua_Consumo$`Nº boletines analíticos de calidad de aguas de consumo humano po
 # Detalle en: https://datosabiertos.jcyl.es/web/jcyl/binarios/582/267/%C3%8Dndices_de_accidentalidad.pdf?blobheader=application%2Fpdf%3Bcharset%3DUTF-8&blobnocache=true
 # Índice de Peligrosidad “IP” / Índice de Mortalidad “IM” / Índice de Accidentalidad Total “IAT” / Índice de Lesividad “IL” / Índice de Gravedad “IG”
 library(readr)
-Acc_Car <- read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv", 
+Acc_Car <- read_delim(file = "INPUT/DATA/accidentalidad-por-carreteras.csv", 
                       delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 Acc_Car
@@ -960,8 +960,9 @@ DF_xml %>%
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 
 
-# Exportación de Datos  ---------------------------------------------------
+# Hasta aquí lunes 27/10/2025 --> 101 y 102
 
+# Exportación de Datos  ---------------------------------------------------
 
 # * Exportar environment --------------------------------------------------
 
