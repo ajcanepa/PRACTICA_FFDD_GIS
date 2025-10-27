@@ -144,6 +144,8 @@ Para la entrega, deberéis fijaros en:
 *  [shinydashboard](https://rstudio.github.io/shinydashboard/index.html)
 *  [shinyMobile: Mobile Ready 'shiny' Apps with Standalone Capabilities](https://cran.r-project.org/web/packages/shinyMobile/index.html)
 *  [Shiny app that interacts with a database](https://posit.co/blog/shiny-with-databases/)
+*  [Sistema de Predicción de Calidad del Aire de Madrid](https://michal0091.shinyapps.io/madrid-air-quality/)
+*  [Sistema de Predicción de Calidad del Aire de Madrid - GITHUB](https://github.com/michal0091/madrid-air-quality-system/tree/main)
 
 ###### Despliegue APPs/Dashboards/Docs.
 *  [Deploy a Shiny Application with R](https://docs.posit.co/connect-cloud/how-to/r/shiny-r.html)
@@ -189,6 +191,7 @@ Para la entrega, deberéis fijaros en:
 *  [Tidy Modeling with R](https://www.tmwr.org/)
 *  [Applied Machine Learning Using mlr3 in R](https://mlr3book.mlr-org.com/)
 *  [Models Demystified](https://m-clark.github.io/book-of-models/)
+*  [Sistema de Predicción de Calidad del Aire de Madrid - GITHUB](https://github.com/michal0091/madrid-air-quality-system/tree/main)
 
 ### Formación
 *  [Máster en Data Science & Business Analytics (con R software)](https://blog.uclm.es/tp-mbsba/)
