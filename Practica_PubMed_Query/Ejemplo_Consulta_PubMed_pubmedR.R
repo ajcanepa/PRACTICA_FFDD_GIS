@@ -44,7 +44,7 @@ res$query_translation
 # Podrás descargar la metadata asociada a los artículos, como el abstract, autores, etc.
 # Puedes manipular el argumento limit tal que descargues un conjunto de datos menor al resultado total del query. Recomendado si te regresa más de 500 artículos. Como es solo un ejercicio podéis trabajar con un máximo de 250-300 artículos.
 # Lo almacenaremos en el objeto D
-D <- pmApiRequest(query = query, limit = res$total_count, api_key = NULL)
+D <- pmApiRequest(query = query, limit = res$total_count, api_key = api_key)
 
 class(D)
 attributes(D)
@@ -81,6 +81,8 @@ head(M)
 
 # * Principales datos de la colección -------------------------------------
 M1 <- convert2df(D, dbsource = "pubmed", format = "api")
+
+str(M1)
 
 results <- biblioAnalysis(M1)
 summary(results)
