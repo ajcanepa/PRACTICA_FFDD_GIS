@@ -9,7 +9,18 @@ Más información en la [página del curso](https://ubuvirtual.ubu.es/course/vie
 ## Seminarios
 La idea detrás de los seminarios busca fortalecer el uso de fuentes biomédicas y su acceso, preprocesamiento y visualización usando herramientas analíticas, __como R__, para dilucidar el efecto de estresores ambientales sobre la salud humana (__Biometereología Humana__). Puedes ver más ejemplos en el [MCC Collaborative Research Network](https://mccstudy.lshtm.ac.uk/).
 
+Algunas publicaciones de ***biometereología humana*** recientes y/o interesantes, incluyen:
+
+* [2025. Rui et al. Precipitation and diarrhea morbidity](https://journals.lww.com/environepidem/fulltext/2025/12000/the_association_between_total_precipitation_and.11.aspx).
+* [2025. Wu et al. Urban heat-related mortality burden due to greenness](https://www.sciencedirect.com/science/article/pii/S2542519625000622?via%3Dihub).
+* [2025. Mercat et al. Green cities and the risk for vector-borne disease](https://peercommunityjournal.org/articles/10.24072/pcjournal.641/).
+* [2024. Xu et al. Mortality attributable to air pollution from landscape fires](https://www.sciencedirect.com/science/article/pii/S0140673624022517?via%3Dihub).
+
+---
+
 A modo de ejemplo, os dejo unos enlaces a algunos seminarios previos que han sido bien (o muy bien) evaluados en la siguiente sección [Hall of Fame - Seminarios](#hall-of-fame---seminarios)
+
+---
 
 ### Estructura del Seminario
 La entrega se basa en dos archivos y un repostorio que se solicitarán como mecanismo de evaluación del tercer control parcial (evaluación contínua). Los archivos que tendréis que entregar son: 
@@ -126,6 +137,7 @@ Para la entrega, deberéis fijaros en:
 *  [FlowChart. Tidy Flowchart Generator](https://bruigtp.github.io/flowchart/index.html)
 *  [ggdiagram](https://wjschne.github.io/ggdiagram/index.html)
 *  [accidental aRt](https://accidental-art.tumblr.com/)
+*  [aRtsy: Generative Art with R and ggplot2](https://koenderks.github.io/aRtsy/)
 
 ##### Documentos
 *  [Introducción al uso de RMarkdown](https://bookdown.org/gboccardo/manual-ED-UCH/introduccion-al-uso-de-rmarkdown-para-la-compilacion-de-resultados-de-rstudio-en-diferentes-formatos.html)
