@@ -1569,6 +1569,7 @@ library(tidyverse)
 ?ggplot2
 
 
+
 # * Gráfico básico ---------------------------------------------------------
 
 # Cargamos los datos
@@ -1868,6 +1869,37 @@ ggsave(
   units = "cm",
   dpi = 320
 )
+
+
+# * Arte y ggplot2 --------------------------------------------------------
+
+# Grafico del seno de una variable
+seq(from = -7, to = 7, by = 0.05) %>%
+  expand.grid(x = ., y = .) %>%
+  ggplot(aes(x = (x + pi*sin(y)), y = (y + pi*sin(x)))) +
+  geom_point(alpha = .1, shape = 20, size = 1, color = "black") +
+  theme_void()
+
+
+# Grafico de Roseta
+n = 500
+t1 = 1:n
+t0 = seq(from = 0, by = 102,length.out = n) %% n
+tibble(x = cos((t1 - 1)*2*pi/n),y = sin((t1 - 1)*2*pi/n), 
+       z = cos((t0 - 1)*2*pi/n), w = sin((t0 - 1)*2*pi/n)) %>% 
+  ggplot(aes(x = x, y = y, xend = z, yend = w)) +
+  geom_segment(alpha = .2) + coord_equal() + theme_void()
+
+
+# Grafico de oleaje 
+seq(from = -7, to = 7, by = 0.025) %>%
+  expand.grid(x = ., y = .) %>%
+  ggplot(aes(y = (y + pi*abs(cos(x))^.5), x = (x + pi*abs(sin(y))^.5))) +
+  geom_point(alpha = .01, shape = 20, size = 0, color = "black") +
+  theme_void() + 
+  coord_fixed() +
+  theme(legend.position = "none")
+
 
 # Consultas RDF usando Tidyverse ------------------------------------------
 # Paquete `rdflib`: Tools to Manipulate and Query Semantic Data // En https://cran.r-project.org/web/packages/rdflib/
