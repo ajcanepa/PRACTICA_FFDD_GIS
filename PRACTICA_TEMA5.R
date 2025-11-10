@@ -1396,12 +1396,11 @@ Long_Starwars %>%
 #   pivot_wider(data = ., names_from = Variable, values_from = Valores)
 
 # ** Verbos de dos tablas -------------------------------------------------
-#library(readr)
-
+library(tidyverse)
+library(readr)
 
 # *** Carga de datos ------------------------------------------------------
 # Loading the "Galapagos_summary.csv" file
-library(readr)
 Mean_Galapagos <- read_csv(file = "INPUT/DATA/Galapagos_summary.csv", 
                            col_types = cols(
                              Island = readr::col_factor(levels = NULL),
