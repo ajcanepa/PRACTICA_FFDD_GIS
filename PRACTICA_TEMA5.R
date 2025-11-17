@@ -1658,43 +1658,6 @@ ggplot(data = diamonds, aes(x = cut)) +
 ggplot(data = diamonds, aes(x = cut, y = carat)) +
   geom_bar(stat = "identity")
 
-
-# ** Gráficos de Coordenadas polares (Coxcomb) ----------------------------
-
-# Preparación del gráfico
-ggplot(data = diamonds) + 
-  geom_bar(
-    mapping = aes(x = cut, fill = cut), 
-    show.legend = FALSE,
-    width = 1
-  ) + 
-  theme(aspect.ratio = 1) +
-  labs(x = NULL, y = NULL)
-
-# Agregando las transformaciones
-# coord_flip
-ggplot(data = diamonds) + 
-  geom_bar(
-    mapping = aes(x = cut, fill = cut), 
-    show.legend = FALSE,
-    width = 1
-  ) + 
-  theme(aspect.ratio = 1) +
-  labs(x = NULL, y = NULL) +
-  coord_flip()
-
-
-# coord_polar
-ggplot(data = diamonds) + 
-  geom_bar(
-    mapping = aes(x = cut, fill = cut), 
-    show.legend = FALSE,
-    width = 1
-  ) + 
-  theme(aspect.ratio = 1) +
-  labs(x = NULL, y = NULL) +
-  coord_polar()
-
 # * Facetas  ---------------------------------------------------------
 # Permiten dividir el gráfico según niveles de una variable discreta
 
