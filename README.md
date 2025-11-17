@@ -95,6 +95,23 @@ Para la entrega, deberéis fijaros en:
 *  [Big Book of R](https://www.bigbookofr.com/)
 *  [The tidyverse style guide](https://style.tidyverse.org/index.html)
 
+### Datos Semi-estructurados en R
+#### Trabajando con datos `JSON` en R
+* [jsonlite: A Simple and Robust JSON Parser and Generator for R](https://cran.r-project.org/web/packages/jsonlite/)
+  * [Getting started with JSON and jsonlite](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+* [tidyjson: Tidy Complex 'JSON'](https://cran.r-project.org/web/packages/tidyjson/)
+  * [Introduction to tidyjson](https://cran.r-project.org/web/packages/tidyjson/vignettes/introduction-to-tidyjson.html)
+* [Working with JSON Data](https://shanghai.hosting.nyu.edu/data/r/working-with-json-data.html)
+* [Processing JSON data](https://datacarpentry.github.io/r-socialsci/07-json.html)
+* [Nested data: JSON to tibble](https://hendrikvanb.gitlab.io/2018/07/nested_data-json_to_tibble/)
+* [Pinging an API & Creating JSON in R](https://medium.com/@Periscopic/cozy-collecting-part-1-cbf2c30051c2)
+* [Working with Nested JSON in R](https://medium.com/@Periscopic/cozy-collecting-part-2-5e717588e37b)
+* [Converting Nested JSON to DataFrame in R?](https://forum.posit.co/t/converting-nested-json-to-dataframe-in-r/179022)
+* [Easily parsing JSON in R with jsonlite and purrr](https://themockup.blog/posts/2020-05-22-parsing-json-in-r-with-jsonlite/)
+* [Converting nested JSON to a tidy data frame with R](https://www.r-bloggers.com/2018/10/converting-nested-json-to-a-tidy-data-frame-with-r/)
+
+
+
 ### Large Language Models (LLM - Generative AI)
 
 #### Recursos para R
