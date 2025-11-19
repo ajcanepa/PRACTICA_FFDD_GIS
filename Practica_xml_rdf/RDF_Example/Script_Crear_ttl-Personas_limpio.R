@@ -1,0 +1,20 @@
+txt <- c(
+  "@prefix ex: <http://example.org/> .",
+  "@prefix schema: <http://schema.org/> .",
+  "",
+  "ex:Ana a schema:Person ;",
+  "       schema:name \"Ana\" ;",
+  "       schema:homeLocation ex:Madrid .",
+  "",
+  "ex:Luis a schema:Person ;",
+  "        schema:name \"Luis\" ;",
+  "        schema:homeLocation ex:Barcelona .",
+  "",
+  "ex:Madrid a schema:City ;",
+  "          schema:name \"Madrid\" .",
+  "",
+  "ex:Barcelona a schema:City ;",
+  "             schema:name \"Barcelona\" ."
+)
+
+writeLines(txt, "Practica_xml_rdf/RDF_Example/personas_limpio.ttl")
