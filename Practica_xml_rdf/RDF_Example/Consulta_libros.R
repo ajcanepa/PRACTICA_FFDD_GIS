@@ -30,7 +30,6 @@ WHERE {
   ?libro a schema:Book ;
          schema:name ?titulo ;
          schema:datePublished ?anio .
-  FILTER(xsd:gYear(?anio) > \"2021\"^^xsd:gYear)
 }
 "
 
