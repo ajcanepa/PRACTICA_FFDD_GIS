@@ -318,7 +318,8 @@ Para la entrega, deberéis fijaros en:
 
 ***
 
-### Concursos
+### Congresos y Concursos
+* [IV congreso & XV Jornadas de usuarios de R de Valencia (5-7 noviembre, 2025)](https://github.com/rhisp/IVRqueR)
 * [Concurso de Visualización de Datos con R - 2025](https://github.com/grupoRasturias/dataviz-contest-2025)
 * [Data science & AI competitions](https://www.drivendata.org/)
 * [Crowdsourcing AI](https://www.aicrowd.com/)
