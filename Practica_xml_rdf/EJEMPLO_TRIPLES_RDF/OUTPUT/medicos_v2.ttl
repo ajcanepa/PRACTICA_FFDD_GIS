@@ -1,0 +1,16 @@
+@base <localhost://> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix data: <http://hospital.ejemplo.org/datos/> .
+@prefix voc: <http://hospital.ejemplo.org/vocabulario/> .
+@prefix schema: <http://schema.org/> .
+
+<http://hospital.ejemplo.org/datos/101>
+    voc:tieneProfesion "Médico" ;
+    schema:addressLocality "London" ;
+    schema:name "Dr. Smith" .
+
+<http://hospital.ejemplo.org/datos/102>
+    voc:tieneProfesion "Médico" ;
+    schema:addressLocality "Madrid" ;
+    schema:name "Dra. Jones" .
+

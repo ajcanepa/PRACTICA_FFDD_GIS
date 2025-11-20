@@ -1,0 +1,13 @@
+@base <localhost://> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex: <http://hospital.ejemplo.org/> .
+@prefix schema: <http://schema.org/> .
+
+<http://hospital.ejemplo.org/101>
+    schema:addressLocality "London" ;
+    schema:name "Dr. Smith" .
+
+<http://hospital.ejemplo.org/102>
+    schema:addressLocality "Madrid" ;
+    schema:name "Dra. Jones" .
+
