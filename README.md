@@ -111,6 +111,22 @@ Para la entrega, deberéis fijaros en:
 * [Converting nested JSON to a tidy data frame with R](https://www.r-bloggers.com/2018/10/converting-nested-json-to-a-tidy-data-frame-with-r/)
 
 
+### `OMOP` Common Data Model
+
+#### Trabajando con `OMOP` Data en R
+* [OHDSI - Observational Health Data Sciences and Informatics](https://www.ohdsi.org/data-standardization/)
+  * [Observational Health Data Sciences and Informatics - GitHub](https://github.com/OHDSI)
+* [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/index.html)
+  * [CDM R Package](https://ohdsi.github.io/CommonDataModel/cdmRPackage.html)
+* [Tidy R programming with the OMOP Common Data Model](https://ohdsi.github.io/Tidy-R-programming-with-OMOP/)
+  * [Tidy-R-programming-with-OMOP](https://github.com/OHDSI/Tidy-R-programming-with-OMOP)
+  * [Tidy R programming with the OMOP common data model](https://dpa-pde-oxford.quarto.pub/an-introduction-to-tidy-r-programming-with-the-omop-common-data-model/)
+* [CDMConnector: Connect to an OMOP Common Data Model](https://cran.r-project.org/web/packages/CDMConnector/)
+* [CommonDataModel: OMOP CDM DDL and Documentation Generator](https://cran.r-project.org/web/packages/CommonDataModel/index.html)
+* [OmopSketch - OMOP and Common Data Model](https://ohdsi.github.io/OmopSketch/)
+  * [OmopSketch](https://github.com/OHDSI/OmopSketch)
+* [CohortSurvival - survival data using the OMOP common data model](https://darwin-eu-dev.github.io/CohortSurvival/)
+  
 
 ### Large Language Models (LLM - Generative AI)
 
