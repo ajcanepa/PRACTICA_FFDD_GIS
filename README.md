@@ -194,6 +194,8 @@ Para la entrega, deberéis fijaros en:
 *  [Sistema de Predicción de Calidad del Aire de Madrid - GITHUB](https://github.com/michal0091/madrid-air-quality-system/tree/main)
 
 ###### Despliegue APPs/Dashboards/Docs.
+*  [Despliegue en Posit Cloud](https://connect.posit.cloud/)
+*  [Despliegue de aplicaciones Shiny](https://www.shinyapps.io/)
 *  [Deploy a Shiny Application with R](https://docs.posit.co/connect-cloud/how-to/r/shiny-r.html)
 *  [Publish a Quarto Document with R ](https://docs.posit.co/connect-cloud/how-to/r/quarto-r.html)
 *  [Deploy a LLM-powered Shiny for R](https://docs.posit.co/connect-cloud/how-to/r/llm-shiny-r.html)
