@@ -88,6 +88,7 @@ Para la entrega, deberéis fijaros en:
 *  [R Para Ciencia de Datos](https://es.r4ds.hadley.nz/)
 *  [R4ULPGC: Introducción a R](https://estadistica-dma.ulpgc.es/cursoR4ULPGC/index.html)
 *  [Fundamentos de ciencia de datos con R](https://cdr-book.github.io/index.html)
+*  [Recetas - Posit Recipes](https://posit.cloud/learn/recipes)
 *  [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)
 *  [R Avanzado](https://davidrsch.github.io/adv-res/)
 *  [Advanced R](https://adv-r.hadley.nz/)
@@ -219,6 +220,8 @@ Para la entrega, deberéis fijaros en:
 *  [Sequence Analysis in R and Bioconductor](https://girke.bioinformatics.ucr.edu/GEN242/tutorials/rsequences/rsequences/)
 *  [Little Book of R for Bioinformatics](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/)
 *  [CRAN Task View: Genomics, Proteomics, Metabolomics, Transcriptomics, and Other Omics](https://cran.r-project.org/web/views/Omics.html)
+*  [Introduction to Bioinformatics and Computational Biology](https://liulab-dfci.github.io/bioinfo-combio/)
+
 
 ### Ontologías & R
 *  [Gene Ontology overview](https://geneontology.org/docs/ontology-documentation/)
