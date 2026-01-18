@@ -202,6 +202,8 @@ Para la entrega, deberéis fijaros en:
 *  [Create a manifest.json file for Connect Cloud](https://docs.posit.co/connect-cloud/how-to/r/dependencies.html)
 
 ### Estadística y meta-análisis
+*  [Bioestadaística Avanzada](https://bookdown.org/edsaul_perez/bioestadaistica_avanzada/)
+*  [Bioestadística (Medicina UIB)](https://aprender-uib.github.io/INREMDN/)
 *  [An Introduction to Statistical Learning](https://www.statlearning.com/)
 *  [Doing Meta-Analysis with R](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/)
 *  [Modern Statistics with R](https://www.modernstatisticswithr.com/)
