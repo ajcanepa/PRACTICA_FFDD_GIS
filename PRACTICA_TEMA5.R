@@ -625,6 +625,7 @@ asignacion <- vector("list", length(pacientes))
 for (i in 1:length(pacientes)) {
   # Calcular la habitación asignada utilizando el operador módulo
   habitacion <- ((i - 1) %% num_habitaciones) + 1
+  #habitacion[i] <- habitacion + 1
   
   # Guardar la asignación en el vector
   asignacion[[i]] <- paste(pacientes[i], "se asigna a la habitación", habitacion)
