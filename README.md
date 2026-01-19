@@ -96,6 +96,10 @@ Para la entrega, deberéis fijaros en:
 *  [Big Book of R](https://www.bigbookofr.com/)
 *  [The tidyverse style guide](https://style.tidyverse.org/index.html)
 
+### Ejemplos desarrollo del GIS-UBU (TFG)
+* [ORscraper. An R Package for for extracting data from Oncomine Reporter’s clinical reports](https://style.tidyverse.org/index.html)
+  * [ORscraper - GitHub]()
+
 ### Datos Semi-estructurados en R
 #### Trabajando con datos `JSON` en R
 * [jsonlite: A Simple and Robust JSON Parser and Generator for R](https://cran.r-project.org/web/packages/jsonlite/)
