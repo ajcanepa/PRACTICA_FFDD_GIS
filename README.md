@@ -97,8 +97,8 @@ Para la entrega, deberéis fijaros en:
 *  [The tidyverse style guide](https://style.tidyverse.org/index.html)
 
 ### Ejemplos desarrollo del GIS-UBU (TFG)
-* [ORscraper. An R Package for for extracting data from Oncomine Reporter’s clinical reports](https://style.tidyverse.org/index.html)
-  * [ORscraper - GitHub]()
+* [ORscraper. An R Package for for extracting data from Oncomine Reporter’s clinical reports](https://cran.r-project.org/web/packages/ORscraper/index.html)
+  * [ORscraper - GitHub](https://github.com/SamuelGonzalez0204/ORscraper)
 
 ### Datos Semi-estructurados en R
 #### Trabajando con datos `JSON` en R
