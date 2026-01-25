@@ -89,6 +89,7 @@ Para la entrega, deberéis fijaros en:
 *  [R4ULPGC: Introducción a R](https://estadistica-dma.ulpgc.es/cursoR4ULPGC/index.html)
 *  [Fundamentos de ciencia de datos con R](https://cdr-book.github.io/index.html)
 *  [Recetas - Posit Recipes](https://posit.cloud/learn/recipes)
+*  [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/)
 *  [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)
 *  [R Avanzado](https://davidrsch.github.io/adv-res/)
 *  [Advanced R](https://adv-r.hadley.nz/)
