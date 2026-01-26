@@ -324,6 +324,8 @@ Para la entrega, deberéis fijaros en:
 * [Google Environmental Insights Explorer](https://insights.sustainability.google/?hl=en-US).
 * [European Cancer Information System](https://ecis.jrc.ec.europa.eu/en)
 * [infectiousR](https://lightbluetitan.github.io/infectiousr/index.html)
+* [rspatialdata](https://rspatialdata.github.io/)
+  * [Spatial analysis](https://rspatialdata.github.io/spatio_temporal_analysis.html)
 * [medicaldata: Data Package for Medical Datasets](https://higgi13425.github.io/medicaldata/)
 * [MedDataSets: Comprehensive Medical, Disease, Treatment, and Drug Datasets](https://cran.r-project.org/web/packages/MedDataSets/index.html)
 * [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/)
