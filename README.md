@@ -251,7 +251,9 @@ Para la entrega, deberéis fijaros en:
 *  [Sistema de Predicción de Calidad del Aire de Madrid - GITHUB](https://github.com/michal0091/madrid-air-quality-system/tree/main)
 
 ### Formación
+*  [Cursos para aprender más sobre R](https://datos.gob.es/es/noticias/cursos-para-aprender-mas-sobre-r)
 *  [Máster en Data Science & Business Analytics (con R software)](https://blog.uclm.es/tp-mbsba/)
+*  [Cursos para aprender R](https://r-es.org/formacion_post/2026/formacion_R_2026.html)
 
 ### Comunidades
 *  [R Consortium](https://www.r-consortium.org/)
