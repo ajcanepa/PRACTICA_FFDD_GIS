@@ -210,10 +210,13 @@ Para la entrega, deberéis fijaros en:
 *  [Bioestadaística Avanzada](https://bookdown.org/edsaul_perez/bioestadaistica_avanzada/)
 *  [Bioestadística (Medicina UIB)](https://aprender-uib.github.io/INREMDN/)
 *  [An Introduction to Statistical Learning](https://www.statlearning.com/)
-*  [Doing Meta-Analysis with R](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/)
 *  [Modern Statistics with R](https://www.modernstatisticswithr.com/)
 *  [Little Book of R for Biomedical Statistics!](https://a-little-book-of-r-for-biomedical-statistics.readthedocs.io/en/latest/)
 *  [Modern Statistics for Modern Biology](https://web.stanford.edu/class/bios221/book/)
+*  [Doing Meta-Analysis with R](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/)
+*  [`metafor`. A Meta-Analysis Package for R](https://www.metafor-project.org/doku.php/metafor)
+*  [Meta-Analysis with R](https://link.springer.com/book/10.1007/978-3-319-21416-0)
+*  [How to perform a meta-analysis with R: a practical tutorial](https://mentalhealth.bmj.com/content/22/4/153)
 
 ### Investigación Reproducible `Pipelines`
 *  [Building reproducible analytical pipelines with R](https://raps-with-r.dev/)
