@@ -217,6 +217,7 @@ Para la entrega, deberéis fijaros en:
 *  [`metafor`. A Meta-Analysis Package for R](https://www.metafor-project.org/doku.php/metafor)
 *  [Meta-Analysis with R](https://link.springer.com/book/10.1007/978-3-319-21416-0)
 *  [How to perform a meta-analysis with R: a practical tutorial](https://mentalhealth.bmj.com/content/22/4/153)
+*  [PRISMA2020: An R package and Shiny app](https://pmc.ncbi.nlm.nih.gov/articles/PMC8958186/)
 
 ### Investigación Reproducible `Pipelines`
 *  [Building reproducible analytical pipelines with R](https://raps-with-r.dev/)
