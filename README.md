@@ -281,7 +281,7 @@ Para la entrega, deberéis fijaros en:
 *  2023 [Expansion and evolution of the R programming language](https://royalsocietypublishing.org/doi/10.1098/rsos.221550)
 *  2022 [Ten simple rules for teaching yourself R](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372)
 *  2018 [R generation](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1740-9713.2018.01169.x)
-*  2018 [How is R cited in research outputs?](https://www.sciencedirect.com/science/article/pii/S1751157717300329#sec0010)
+*  2017 [How is R cited in research outputs?](https://www.sciencedirect.com/science/article/pii/S1751157717300329#sec0010)
 *  2017 [Evolution of the R software ecosystem: Metrics, relationships, and their impact on qualities](https://www.sciencedirect.com/science/article/pii/S0164121217301371)
 *  2014 [Programming tools: Adventures with R](https://www.nature.com/articles/517109a)
 *  2013 [The Evolution of the R Software Ecosystem](https://ieeexplore.ieee.org/document/6498472)
