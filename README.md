@@ -289,69 +289,119 @@ Para la entrega, deberéis fijaros en:
 ***
 
 ### Fuentes de Datos Abiertos
+
+#### 1. Datos Sintéticos
 * [DATOS SINTÉTICOS: ¿QUÉ SON Y PARA QUÉ SE USAN?](https://datos.gob.es/sites/default/files/doc/file/informe-datos-sinteticos-es.pdf)
 * [Datos sintéticos y protección de datos](https://www.aepd.es/prensa-y-comunicacion/blog/datos-sinteticos-y-proteccion-de-datos)
+
+#### 2. Portales Generales de Datos Abiertos
+* [UCI ML Repository](https://archive.ics.uci.edu/)
+* [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
+* [U.S. Government's Open Data](https://data.gov/)
+* [Google Data Search](https://datasetsearch.research.google.com/)
+* [Open Data on AWS](https://registry.opendata.aws/)
+* [Kaggle](https://www.kaggle.com/datasets)
+* [Datos Kaggle](https://www.kaggle.com/datasets)
+* [OpenData CERN](https://opendata.cern.ch/)
+
+#### 3. Datos Abiertos España
 * [Datos abiertos Gob. España](https://datos.gob.es/es/catalogo) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
+* [INE (Instituto Nacional de Estadística) package](https://inebaser.wordpress.com/)
+* [INE - Lista completa](https://www.ine.es/dyngs/INEbase/es/listaoperaciones.htm)
+* [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain)
+* [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about) 🔁 *también en §9*
+
+#### 4. Datos Abiertos Castilla y León (JCyL)
 * [Datos abiertos CyL](https://datosabiertos.jcyl.es/web/es/datos-abiertos-castilla-leon.html) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
+
+#### 5. Calidad del Aire — España
 * [Redes de calidad del aire autonómicas y locales](https://www.miteco.gob.es/es/calidad-y-evaluacion-ambiental/temas/atmosfera-y-calidad-del-aire/calidad-del-aire/evaluacion-datos/redes.html)
 * [Calidad del Aire - Spain](https://www.miteco.gob.es/es/calidad-y-evaluacion-ambiental/temas/atmosfera-y-calidad-del-aire/evaluacion-y-datos-de-calidad-del-aire/datos.html)
 * [Calidad de Aire - JCyL](https://servicios.jcyl.es/esco/index.action)
 * [Red Calidad Aire - JCyL](https://medioambiente.jcyl.es/web/es/calidad-ambiental/red-calidad-aire.html)
 * [Estaciones de control de la calidad del aire - JCyL](https://datosabiertos.jcyl.es/web/jcyl/set/es/medio-ambiente/calidad_aire_estaciones/1284212701893)
 * [Calidad del aire (por horas) - JCyL](https://datosabiertos.jcyl.es/web/jcyl/set/es/medio-ambiente/calidad-aire-historico-horario/1284808467480)
-* [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about)
-* [INE (Instituto Nacional de Estadística) package](https://inebaser.wordpress.com/)
-* [INE - Encuesta de morbilidad hospitalaria](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176778&menu=resultados&idp=1254735573175#_tabs-1254736194704)
-* [INE - Lista completa](https://www.ine.es/dyngs/INEbase/es/listaoperaciones.htm)
-* [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain)
-* [Environmental information systems - Europe](https://www.eea.europa.eu/en/information-systems)
+
+#### 6. Calidad del Aire — Europa y Global
 * [Air Quality download service - Europe](https://www.eea.europa.eu/en/datahub/datahubitem-view/778ef9f5-6293-4846-badd-56a29c70880d)
-* [European Environment Information and Observation Network](https://www.eionet.europa.eu/)
 * [European city air quality viewer](https://www.eea.europa.eu/en/topics/in-depth/air-pollution/european-city-air-quality-viewer)
 * [Atmosphere Data Store - Copernicus](https://ads.atmosphere.copernicus.eu/)
-* [**GISCO** is the Geographic Information System of the Commission](https://ec.europa.eu/eurostat/web/gisco/overview)
-* [**giscoR** package to retrieve data from GISCO](https://ropengov.github.io/giscoR/)
-* [Global Health Data Exchange](https://ghdx.healthdata.org/) / [`ihme`: an R package](https://github.com/ShadeWilson/ihme)
-* [MedDataSets](https://lightbluetitan.github.io/meddatasets/index.html)
-* [medicaldata](https://higgi13425.github.io/medicaldata/index.html)
-* [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/)
-* [Eurostat Portal](https://ec.europa.eu/eurostat/).
-* [Eurostat R-Package](https://cloud.r-project.org/web/packages/eurostat/index.html).
-* [European Health Information Initiative (EHII)](https://www.euro.who.int/en/data-and-evidence/european-health-information-initiative-ehii)
-* [World Health Organization (WHO)](https://www.who.int/data)
-* [World Health Organization - Health Observatory](https://www.who.int/data/gho)
-* [rOpenHealth](https://github.com/rOpenHealth)
+* [CAMS European air quality reanalyses](https://ads.atmosphere.copernicus.eu/cdsapp#!/dataset/cams-europe-air-quality-reanalyses?tab=overview)
+* [Environmental information systems - Europe](https://www.eea.europa.eu/en/information-systems)
+* [European Environment Information and Observation Network](https://www.eionet.europa.eu/)
+
+#### 7. Medio Ambiente y Agua
 * [European Environment Agency](https://www.eea.europa.eu/en)
 * [European Environment Agency - Datahub](https://www.eea.europa.eu/en/datahub?size=n_10_n&filters%5B0%5D%5Bfield%5D=issued.date&filters%5B0%5D%5Btype%5D=any&filters%5B0%5D%5Bvalues%5D%5B0%5D=All%20time)
-* [greenR: An R Package for Quantifying Urban Greenness](https://github.com/sachit27/greenR)
-* [CAMS European air quality reanalyses](https://ads.atmosphere.copernicus.eu/cdsapp#!/dataset/cams-europe-air-quality-reanalyses?tab=overview)
 * [Water Quality ICM](https://www.eea.europa.eu/en/datahub/datahubitem-view/fbf3717c-cd7b-4785-933a-d0cf510542e1)
+* [The Global Freshwater Quality Database `GEMStat`](https://gemstat.org/)
+  * [rgeomstats: Interface to 'Geomstats'](https://cran.r-project.org/web/packages/rgeomstats/index.html)
+  * [rgeomstats - GitHub](https://github.com/LMJL-Alea/rgeomstats)
 * [World Bank Water Data](https://wbwaterdata.org/dataset/)
-* [Datos Kaggle](https://www.kaggle.com/datasets).
-* [Google Environmental Insights Explorer](https://insights.sustainability.google/?hl=en-US).
-* [European Cancer Information System](https://ecis.jrc.ec.europa.eu/en)
+* [Google Environmental Insights Explorer](https://insights.sustainability.google/?hl=en-US)
+* [Earth Observation Data](https://www.earthdata.nasa.gov/)
+* [greenR: An R Package for Quantifying Urban Greenness](https://github.com/sachit27/greenR) 🔁 *también en §13*
+
+#### 8. Datos Estadísticos y Geográficos — Europa
+* [Eurostat Portal](https://ec.europa.eu/eurostat/)
+* [Eurostat R-Package](https://cloud.r-project.org/web/packages/eurostat/index.html)
+* [Our World in Data](https://ourworldindata.org/)
+  * [owidR: Import Data from Our World in Data](https://cran.r-project.org/web/packages/owidR/index.html)
+  * [owidR - GitHub](https://github.com/piersyork/owidR)
+* [**GISCO** is the Geographic Information System of the Commission](https://ec.europa.eu/eurostat/web/gisco/overview) 🔁 *también en §13*
+* [**giscoR** package to retrieve data from GISCO](https://ropengov.github.io/giscoR/) 🔁 *también en §13*
+
+#### 9. Salud — España y Europa
+* [INE - Encuesta de morbilidad hospitalaria](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176778&menu=resultados&idp=1254735573175#_tabs-1254736194704)
+* [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about) 🔁 *también en §3*
+* [European Health Information Initiative (EHII)](https://www.euro.who.int/en/data-and-evidence/european-health-information-initiative-ehii)
+* [European Cancer Information System](https://ecis.jrc.ec.europa.eu/en) 🔁 *también en §12*
+
+#### 10. Salud — Global
+* [World Health Organization (WHO)](https://www.who.int/data)
+* [World Health Organization - Health Observatory](https://www.who.int/data/gho)
+* [Global Health Data Exchange](https://ghdx.healthdata.org/) / [`ihme`: an R package](https://github.com/ShadeWilson/ihme)
+* [rOpenHealth](https://github.com/rOpenHealth) 🔁 *también en §14*
+* [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/) 🔁 *también en §14*
+* [gigs - Guidance for International Growth Standards project](https://docs.ropensci.org/gigs/)
+
+#### 11. Datasets Médicos y Clínicos (paquetes R)
+* [medicaldata](https://higgi13425.github.io/medicaldata/index.html)
+* [medicaldata: Data Package for Medical Datasets](https://higgi13425.github.io/medicaldata/)
+* [MedDataSets](https://lightbluetitan.github.io/meddatasets/index.html)
+* [MedDataSets: Comprehensive Medical, Disease, Treatment, and Drug Datasets](https://cran.r-project.org/web/packages/MedDataSets/index.html)
 * [infectiousR](https://lightbluetitan.github.io/infectiousr/index.html)
+* [CardioDataSets](https://lightbluetitan.github.io/cardiodatasets)
+* [NeuroDataSets](https://github.com/lightbluetitan/neurodatasets)
+* [PulmoDataSets](https://github.com/lightbluetitan/pulmodatasets)
+* [DigestiveDataSets](https://github.com/lightbluetitan/digestivedatasets/tree/main)
+* [DataSetsVerse](https://lightbluetitan.github.io/datasetsverse/)
+
+#### 12. Oncología y Genómica
+* [European Cancer Information System](https://ecis.jrc.ec.europa.eu/en) 🔁 *también en §9*
+* [cBioPortal for Cancer Genomics](https://www.cbioportal.org/)
+  * [cbioportalR: Browse and Query Clinical and Genomic Data from cBioPortal](https://cloud.r-project.org/web/packages/cbioportalR/index.html)
+  * [cbioportalR - GitHub](https://github.com/karissawhiting/cbioportalR)
+  * [cBioPortalData - vailable Data from the cBioPortal Web Resources](https://www.bioconductor.org/packages/release/bioc/html/cBioPortalData.html)
+  * [cBioPortalData - Github](https://waldronlab.io/cBioPortalData/index.html)
+* [Dept of Epidemiology and Biostatistics at MSKCC](https://github.com/MSKCC-Epi-Bio)
+  * [genomeverse - create reproducible clinico-genomic analysis pipelines](https://github.com/MSKCC-Epi-Bio/genomeverse)
+* [OncoDataSets](https://lightbluetitan.github.io/oncodatasets/)
+
+#### 13. Datos Espaciales y Análisis Geoespacial
 * [rspatialdata](https://rspatialdata.github.io/)
   * [Spatial analysis](https://rspatialdata.github.io/spatio_temporal_analysis.html)
-* [medicaldata: Data Package for Medical Datasets](https://higgi13425.github.io/medicaldata/)
-* [MedDataSets: Comprehensive Medical, Disease, Treatment, and Drug Datasets](https://cran.r-project.org/web/packages/MedDataSets/index.html)
-* [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/)
-* [gigs - Guidance for International Growth Standards project](https://docs.ropensci.org/gigs/)
-* [OncoDataSets](https://lightbluetitan.github.io/oncodatasets/)
+* [**GISCO** is the Geographic Information System of the Commission](https://ec.europa.eu/eurostat/web/gisco/overview) 🔁 *también en §8*
+* [**giscoR** package to retrieve data from GISCO](https://ropengov.github.io/giscoR/) 🔁 *también en §8*
+* [greenR: An R Package for Quantifying Urban Greenness](https://github.com/sachit27/greenR) 🔁 *también en §7*
+
+#### 14. Comunidades y Ecosistemas R
+* [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain) 🔁 *también en §3*
+* [rOpenHealth](https://github.com/rOpenHealth) 🔁 *también en §10*
+* [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/) 🔁 *también en §10*
+
+#### 15. Otros / Miscelánea
 * [crimedatasets](https://lightbluetitan.github.io/crimedatasets/)
-* [DigestiveDataSets](https://github.com/lightbluetitan/digestivedatasets/tree/main)
-* [PulmoDataSets](https://github.com/lightbluetitan/pulmodatasets)
-* [NeuroDataSets](https://github.com/lightbluetitan/neurodatasets)
-* [CardioDataSets](https://github.com/lightbluetitan/cardiodatasets)
-* [DataSetsVerse](https://lightbluetitan.github.io/datasetsverse/)
-* [UCI ML Repository](https://archive.ics.uci.edu/)
-* [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
-* [U.S. Government's Open Data](https://data.gov/)
-* [Earth Observation Data](https://www.earthdata.nasa.gov/)
-* [Google Data Search](https://datasetsearch.research.google.com/)
-* [Open Data on AWS](https://registry.opendata.aws/)
-* [Kaggle](https://www.kaggle.com/datasets)
-* [OpenData CERN](https://opendata.cern.ch/)
 
 ***
 
