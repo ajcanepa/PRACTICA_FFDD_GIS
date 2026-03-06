@@ -212,6 +212,7 @@ Para la entrega, deberéis fijaros en:
 *  [An Introduction to Statistical Learning](https://www.statlearning.com/)
 *  [Modern Statistics with R](https://www.modernstatisticswithr.com/)
 *  [Little Book of R for Biomedical Statistics!](https://a-little-book-of-r-for-biomedical-statistics.readthedocs.io/en/latest/)
+*  [Discover Statistics using R and RStudio](https://www.discovr.rocks/)
 *  [Modern Statistics for Modern Biology](https://web.stanford.edu/class/bios221/book/)
 *  [Doing Meta-Analysis with R](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/)
 *  [`metafor`. A Meta-Analysis Package for R](https://www.metafor-project.org/doku.php/metafor)
