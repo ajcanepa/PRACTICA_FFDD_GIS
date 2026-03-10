@@ -342,6 +342,11 @@ Para la entrega, deberéis fijaros en:
 * [Google Environmental Insights Explorer](https://insights.sustainability.google/?hl=en-US)
 * [Earth Observation Data](https://www.earthdata.nasa.gov/)
 * [greenR: An R Package for Quantifying Urban Greenness](https://github.com/sachit27/greenR) 🔁 *también en §13*
+* [climate: Interface to Download Meteorological (and Hydrological) Datasets](https://cran.r-project.org/web/packages/climate/index.html)
+* [stationaRy: Detailed Meteorological Data from Stations All Over the World](https://cran.r-project.org/web/packages/stationaRy/index.html)
+* [EnvRtype: Envirotyping Tools in R](https://github.com/allogamous/EnvRtype)
+* [nasapower: NASA POWER API Client](https://cran.r-project.org/web/packages/nasapower/index.html)
+* [geodata: Access Geographic Data](https://cran.r-project.org/web/packages/geodata/index.html)
 
 #### 8. Datos Estadísticos y Geográficos — Europa
 * [Eurostat Portal](https://ec.europa.eu/eurostat/)
