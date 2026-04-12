@@ -161,6 +161,8 @@ Para la entrega, deberéis fijaros en:
 * [Cómo vincular y usar Git con RStudio](https://anderfernandez.com/blog/como-vincular-y-usar-git-con-rstudio/)
 * [Git y GitHub con R](https://rpubs.com/RonaldoAnticona/818156)
 * [Ciencia reproducible: qué, por qué, cómo](https://www.revistaecosistemas.net/index.php/ecosistemas/article/view/1178/973)
+* [Licencias de Repositorios](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)
+* [Choose an open source license](https://choosealicense.com/)
 
 ### Communicación
 ##### Gráficos
