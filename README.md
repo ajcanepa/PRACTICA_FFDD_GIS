@@ -53,6 +53,9 @@ Para la entrega, deberéis fijaros en:
 
 ### Hall of Fame - Seminarios
 
+##### Edición 2025-2026 (updating)
+*  []()
+*  
 ##### Edición 2024-2025
 *  [Contaminación y muerte prenatal](https://github.com/ivanmr200/seminario_fuentes)
 *  [Relación de las tempertatura con la diabetes](https://github.com/Pindulfo/Seminario_A/tree/main)
@@ -283,6 +286,7 @@ Para la entrega, deberéis fijaros en:
 *  2025 [Which programming language should I use? A guide for early-career researchers](https://www.nature.com/articles/d41586-025-01241-6)
 *  2023 [Expansion and evolution of the R programming language](https://royalsocietypublishing.org/doi/10.1098/rsos.221550)
 *  2022 [Ten simple rules for teaching yourself R](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372)
+*  2019 [Evaluating the popularity of R in ecology](https://doi.org/10.1002/ecs2.2567)
 *  2018 [R generation](https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1740-9713.2018.01169.x)
 *  2017 [How is R cited in research outputs?](https://www.sciencedirect.com/science/article/pii/S1751157717300329#sec0010)
 *  2017 [Evolution of the R software ecosystem: Metrics, relationships, and their impact on qualities](https://www.sciencedirect.com/science/article/pii/S0164121217301371)
@@ -372,6 +376,9 @@ Para la entrega, deberéis fijaros en:
 * [rOpenHealth](https://github.com/rOpenHealth) 🔁 *también en §14*
 * [NHS-R Community Datasets](https://nhs-r-community.github.io/NHSRdatasets/) 🔁 *también en §14*
 * [gigs - Guidance for International Growth Standards project](https://docs.ropensci.org/gigs/)
+* [PhysioNet](https://physionet.org/)
+* [Amsterdam Medical Data Science](https://amsterdammedicaldatascience.nl/)
+* [SYNAPSE](https://www.synapse.org/)
 
 #### 11. Datasets Médicos y Clínicos (paquetes R)
 * [medicaldata](https://higgi13425.github.io/medicaldata/index.html)
