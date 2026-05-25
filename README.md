@@ -287,6 +287,7 @@ Para la entrega, deberéis fijaros en:
 *  [III Congreso & XIV Jornadas de Usuarios de R, Sevilla - 2024](https://www.imus.us.es/congresos/IIIRqueR/)
 
 ### Publicaciones científicas sobre este lenguaje
+*  2026 [25 YeaRs - Special Issue](https://onlinelibrary.wiley.com/doi/toc/10.1111/%28ISSN%291467-842X.25-years)
 *  2025 [Which programming language should I use? A guide for early-career researchers](https://www.nature.com/articles/d41586-025-01241-6)
 *  2023 [Expansion and evolution of the R programming language](https://royalsocietypublishing.org/doi/10.1098/rsos.221550)
 *  2022 [Ten simple rules for teaching yourself R](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372)
