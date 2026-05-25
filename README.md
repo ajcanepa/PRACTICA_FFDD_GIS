@@ -53,7 +53,7 @@ Para la entrega, deberéis fijaros en:
 
 ### Hall of Fame - Seminarios
 
-##### Edición 2025-2026 (updating)
+##### Edición 2025-2026
 *  [Biodiversidad y sistema inmune](https://github.com/carmengamarra27/Seminario_fuentes_C/)
 *  [Enfermedades de Transmisión Sexual y temperatura](https://github.com/nma1014/Incidencia_ETS_Y_Temperatura)
 *  [Impacto de las TIC en la Salud Mental](https://github.com/ivanvallejoo/Seminario_Fuentes_Grupo_K)
