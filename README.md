@@ -54,8 +54,12 @@ Para la entrega, deberéis fijaros en:
 ### Hall of Fame - Seminarios
 
 ##### Edición 2025-2026 (updating)
-*  []()
-*  
+*  [Biodiversidad y sistema inmune](https://github.com/carmengamarra27/Seminario_fuentes_C/)
+*  [Enfermedades de Transmisión Sexual y temperatura](https://github.com/nma1014/Incidencia_ETS_Y_Temperatura)
+*  [Impacto de las TIC en la Salud Mental](https://github.com/ivanvallejoo/Seminario_Fuentes_Grupo_K)
+*  [Influencia Climática Extrema en la Tasa de Suicidio](https://github.com/jaimegretar/grupo_E_Lucia_y_Jaime)
+
+
 ##### Edición 2024-2025
 *  [Contaminación y muerte prenatal](https://github.com/ivanmr200/seminario_fuentes)
 *  [Relación de las tempertatura con la diabetes](https://github.com/Pindulfo/Seminario_A/tree/main)
