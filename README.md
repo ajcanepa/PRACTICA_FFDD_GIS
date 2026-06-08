@@ -307,7 +307,7 @@ Para la entrega, deberéis fijaros en:
 * [Datos sintéticos y protección de datos](https://www.aepd.es/prensa-y-comunicacion/blog/datos-sinteticos-y-proteccion-de-datos)
 
 ##### 1.1 Herramientas para trabajar con datos sintéticos en R.
-* []()
+* [FakeDataR: Privacy-Preserving Synthetic Data for 'LLM' Workflows](https://cran.r-project.org/web/packages/FakeDataR/index.html)
 
 #### 2. Portales Generales de Datos Abiertos
 * [UCI ML Repository](https://archive.ics.uci.edu/)
