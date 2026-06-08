@@ -306,6 +306,9 @@ Para la entrega, deberéis fijaros en:
 * [DATOS SINTÉTICOS: ¿QUÉ SON Y PARA QUÉ SE USAN?](https://datos.gob.es/sites/default/files/doc/file/informe-datos-sinteticos-es.pdf)
 * [Datos sintéticos y protección de datos](https://www.aepd.es/prensa-y-comunicacion/blog/datos-sinteticos-y-proteccion-de-datos)
 
+##### 1.1 Herramientas para trabajar con datos sintéticos en R.
+* []()
+
 #### 2. Portales Generales de Datos Abiertos
 * [UCI ML Repository](https://archive.ics.uci.edu/)
 * [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
