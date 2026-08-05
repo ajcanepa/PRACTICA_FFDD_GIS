@@ -306,6 +306,21 @@ Para la entrega, deberéis fijaros en:
 * [DATOS SINTÉTICOS: ¿QUÉ SON Y PARA QUÉ SE USAN?](https://datos.gob.es/sites/default/files/doc/file/informe-datos-sinteticos-es.pdf)
 * [Datos sintéticos y protección de datos](https://www.aepd.es/prensa-y-comunicacion/blog/datos-sinteticos-y-proteccion-de-datos)
 
+##### 1.1 Herramientas para trabajar con datos sintéticos en R.
+ * [FakeDataR: Privacy-Preserving Synthetic Data for 'LLM' Workflows](https://cran.r-project.org/web/packages/FakeDataR/index.html)
+ * [conjurer: A Parametric Method for Generating Synthetic Data](https://cran.r-project.org/web/packages/conjurer/index.html)
+ * [gendata: Generate and Modify Synthetic Datasets](https://cran.r-project.org/web/packages/gendata/index.html)
+ * [humanleague: Synthetic Population Generator](https://cran.r-project.org/web/packages/humanleague/index.html)
+ * [opencesp: Generation and Evaluation of Synthetic Tabular Datasets](https://cran.r-project.org/web/packages/opencesp/index.html)
+ * [PatientGenerator: Generator of Synthetic Patient Data for the OMOP Common Data Model](https://cran.r-project.org/web/packages/PatientGenerator/index.html)
+ * [sansa: Synthetic Data Generation for Imbalanced Learning in 'R'](https://cran.r-project.org/web/packages/sansa/index.html)
+ * [synthesizer: Fast, Robust, and High-Quality Synthetic Data Generation with a Tuneable Privacy-Utility Trade-Off](https://cran.r-project.org/web/packages/synthesizer/index.html)
+ * [synthesis: Generate Synthetic Data from Statistical Models](https://cran.r-project.org/web/packages/synthesis/index.html)
+ * [synMicrodata: Synthetic Microdata Generator](https://cran.r-project.org/web/packages/synMicrodata/index.html)
+ * [synthpop: Generating Synthetic Versions of Sensitive Microdata for Statistical Disclosure Control](https://cran.r-project.org/web/packages/synthpop/index.html)
+ * [Synthetic: creation of synthetic datasets for testing purposes](https://github.com/fstpackage/synthetic)
+ * [syntheticdata: Synthetic Clinical Data Generation and Privacy-Preserving Validation](https://cran.r-project.org/web/packages/syntheticdata/index.html)
+
 #### 2. Portales Generales de Datos Abiertos
 * [UCI ML Repository](https://archive.ics.uci.edu/)
 * [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
