@@ -1,0 +1,280 @@
+# Consultas RDF y SPARQL {#sec-rdf-sparql}
+
+## Objetivos
+
+Los capítulos anteriores trabajaron siempre con datos **tabulares**: filas de observaciones y columnas de variables. La Web Semántica propone un modelo de datos distinto, pensado para enlazar información entre organizaciones sin necesidad de acordar de antemano un esquema tabular común: **RDF** (*Resource Description Framework*), que representa el conocimiento como un grafo de **tripletas** sujeto-predicado-objeto [@w3crdf11]. Este capítulo muestra cómo construir y consultar grafos RDF desde R con `rdflib` [@rpkg-rdflib], y cómo interrogar *endpoints* SPARQL públicos como DBpedia y Wikidata.
+
+## Del modelo tabular al modelo de tripletas
+
+### De un `data.frame` a tripletas
+
+Cualquier tabla puede reinterpretarse como un conjunto de tripletas: cada celda de la tabla es una afirmación de la forma *"la fila X tiene, para la variable Y, el valor Z"*. `tidyr::gather()` (o su sucesor `pivot_longer()`, @sec-procesamiento) hace esta transformación explícita:
+
+```{r}
+library(rdflib)
+library(dplyr)
+library(tidyr)
+library(tibble)
+
+data(mtcars)
+
+car_triples <-
+  mtcars %>%
+  rownames_to_column("Model") %>%
+  gather(attribute, measurement, -Model)
+
+head(car_triples)
+```
+
+El resultado tiene tres columnas que corresponden exactamente a los tres elementos de una tripleta RDF:
+
+- `Model` → **sujeto** (*subject*): la entidad de la que se habla.
+- `attribute` → **predicado** (*predicate*): la propiedad medida.
+- `measurement` → **objeto** (*object*): el valor de esa propiedad.
+
+Aunque parezca una tabla igual que cualquier otra, **no es un conjunto de datos *tidy*** en el sentido de @sec-procesamiento: mezcla en una sola columna (`attribute`) variables de naturaleza completamente distinta (cilindrada, peso, potencia...), precisamente porque su propósito ya no es el análisis estadístico directo, sino la representación como grafo.
+
+### Identificadores URI
+
+El nombre `Model` de la tabla anterior identifica cada fila mediante el nombre del modelo de coche, que no es único a nivel global (dos conjuntos de datos distintos podrían usar el mismo nombre para entidades distintas). Para publicar datos en la Web de forma que puedan enlazarse sin ambigüedad con datos de otras fuentes, cada sujeto —y, habitualmente, cada predicado— se identifica con una **URI** (*Uniform Resource Identifier*) global:
+
+```{r}
+iris_triples <-
+  iris %>%
+  rowid_to_column("subject") %>%
+  mutate(subject = paste0("http://example.com/iris#", subject)) %>%
+  gather(key = predicate, value = object, -subject) %>%
+  mutate(predicate = paste0("http://example.com/iris#", predicate)) %>%
+  mutate(object = as.numeric(object))
+```
+
+::: {.callout-note}
+## URI frente a URL
+
+Toda URL es una URI, pero no toda URI es una URL. Una **URL** (*Uniform Resource Locator*) localiza un recurso indicando cómo acceder a él (un protocolo, un servidor, una ruta). Una **URI** simplemente lo *identifica*, sin garantizar que sea descargable: un DOI, un ISBN o el propio `http://example.com/iris#1` de nuestro ejemplo son URI que, en este caso, no resuelven a ninguna página real. En Linked Data se prefiere que las URI sean también URL "resolubles" ("*dereferenciable*"), de forma que visitarlas con un navegador o un cliente HTTP devuelva información adicional sobre el recurso, pero la especificación RDF no lo exige [@w3crdf11].
+:::
+
+### Tipos de dato (*datatype URIs*)
+
+Al forzar los valores a tripletas de texto, perdemos su tipo original: un `5.1` numérico puede acabar representado como la cadena `"5.1"`. RDF resuelve esta pérdida asociando explícitamente cada literal con una **URI de tipo de dato**, tomada del vocabulario de esquemas XML (*XML Schema*, XSD): `"5.1"^^http://www.w3.org/2001/XMLSchema#double` es, sin ambigüedad, un número de precisión doble, y no una cadena de texto que se parece a un número.
+
+## El paquete `rdflib`
+
+Hasta ahora, nuestras "tripletas" eran simplemente `data.frame` con tres columnas bien elegidas. `rdflib` [@rpkg-rdflib] añade un objeto de clase `rdf`, respaldado por la biblioteca C `redland`, que sí entiende semánticamente el grafo (y permite consultarlo con SPARQL, más adelante).
+
+```{r}
+rdf1 <- rdf()
+
+base <- "http://example.com/iris#"
+
+rdf1 %>%
+  rdf_add(subject   = paste0(base, "obs1"),
+          predicate = paste0(base, "Sepal.Length"),
+          object    = 5.1)
+```
+
+### Prefijos y CURIE
+
+Escribir la URI completa en cada tripleta es tedioso y poco legible. Un **CURIE** (*Compact URI Expression*) abrevia una URI larga mediante un prefijo: si `iris:` se define como equivalente a `http://example.com/iris#`, entonces `iris:Sepal.Length` es una forma compacta de referirse a la misma propiedad, exactamente igual que un espacio de nombres (*namespace*) en XML.
+
+### Serialización: varios formatos, un mismo grafo
+
+Un mismo grafo RDF puede escribirse en varias sintaxis intercambiables (**serializaciones**). `rdflib` permite cambiar el formato de impresión con `options(rdf_print_format = ...)`:
+
+```{r}
+doc <- system.file("extdata/example.rdf", package = "redland")
+rdf1 <- rdf_parse(doc, format = "rdfxml")
+
+options(rdf_print_format = "rdfxml")   # XML con espacios de nombres
+rdf1
+
+options(rdf_print_format = "turtle")   # sintaxis compacta, pensada para lectura humana
+rdf1
+
+options(rdf_print_format = "jsonld")   # RDF representado como JSON
+rdf1
+```
+
+#### JSON-LD: RDF sobre JSON
+
+La última de estas serializaciones, **JSON-LD** [@w3cjsonld11], cierra el círculo con el @sec-importacion: es JSON "normal y corriente" —analizable con `jsonlite::fromJSON()` sin ninguna herramienta especial—, al que se añaden dos claves reservadas que le dan semántica de grafo: `@id` (la URI del sujeto) y `@context` (qué vocabulario usar para interpretar cada clave del objeto, y permitir así que dos documentos JSON-LD que usan nombres de clave distintos se refieran, sin ambigüedad, al mismo predicado global). El paquete `jsonld` [@rpkg-jsonld] implementa las operaciones estándar sobre este formato:
+
+```{r}
+library(jsonld)
+
+# Añadir un @context a un grafo ya serializado en JSON-LD
+rdf_serialize(rdf1, "example.json", "jsonld") %>%
+  jsonld_compact(context = '{"@vocab": "http://purl.org/dc/elements/1.1/"}')
+```
+
+No todo conjunto de datos RDF se presta a una representación tabular directa. Un ejemplo con una estructura más rica:
+
+```{r}
+ex <- system.file("extdata/person.json", package = "rdflib")
+cat(readLines(ex), sep = "\n")
+
+rdf2 <- rdf_parse(ex, "jsonld")
+
+# jsonld_flatten() "desanida" el grafo: cada nodo (incluidos los nodos en
+# blanco, como la dirección postal) queda al mismo nivel, identificado por su
+# propio @id
+jsonld_flatten(ex, context = "http://schema.org")
+
+# jsonld_frame() hace el camino inverso: reconstruye una vista anidada a
+# partir de un "marco" (frame) que especifica qué tipo de nodo debe quedar en
+# la raíz del documento resultante
+jsonld_flatten(ex) %>%
+  jsonld_frame('{"@type": "http://schema.org/Person"}') %>%
+  jsonld_compact(context = "http://schema.org")
+```
+
+Las representaciones anidada y aplanada de un mismo grafo JSON-LD son equivalentes en contenido; la diferencia es puramente de conveniencia según qué operación queramos hacer a continuación (leer un registro completo, o consultar el grafo entero).
+
+### De tablas a grafos, y de vuelta
+
+`rdflib` incluye un atajo, `as_rdf()`, para convertir directamente un `data.frame` en un grafo RDF sin pasar por el paso manual de `gather()` + `rdf_add()`:
+
+```{r}
+x1 <- as_rdf(iris, NULL, "iris:")
+x2 <- as_rdf(cars, NULL, "mtcars:")
+
+rdf3 <- c(x1, x2)   # combina ambos grafos en uno solo
+```
+
+## Consultas SPARQL
+
+**SPARQL** es el lenguaje de consulta estándar para grafos RDF [@w3csparql11], con una sintaxis deliberadamente cercana a SQL, pero que en lugar de filas de una tabla recorre patrones de tripletas sobre el grafo.
+
+### Consultas sobre un grafo en memoria
+
+Cuando el grafo ya reside en memoria (como `rdf3`, construido arriba), `rdflib::rdf_query()` ejecuta la consulta directamente, sin salir de R:
+
+```{r}
+sparql <- '
+SELECT ?Species ?Sepal_Length ?Sepal_Width ?Petal_Length ?Petal_Width
+WHERE {
+ ?s <iris:Species>      ?Species .
+ ?s <iris:Sepal.Width>  ?Sepal_Width .
+ ?s <iris:Sepal.Length> ?Sepal_Length .
+ ?s <iris:Petal.Length> ?Petal_Length .
+ ?s <iris:Petal.Width>  ?Petal_Width
+}'
+
+iris2 <- rdf_query(rdf3, sparql)
+```
+
+### Consultas a *endpoints* SPARQL remotos
+
+Buena parte del interés de la Web Semántica está en consultar grafos que **no** son nuestros: bases de conocimiento públicas como DBpedia (una versión estructurada de Wikipedia) o Wikidata. Estos servicios exponen un ***endpoint* SPARQL**: una URL a la que se envía la consulta por HTTP y que devuelve los resultados, habitualmente en JSON.
+
+::: {.callout-warning}
+## Aviso: paquetes retirados de CRAN
+
+Las prácticas originales de este curso consultaban estos *endpoints* con los paquetes `SPARQL` y `WikidataQueryServiceR`. **Ambos han sido retirados de CRAN** (`SPARQL` en 2022; `WikidataQueryServiceR` en 2026) y ya no se mantienen activamente, aunque siguen siendo instalables manualmente. A continuación mostramos primero el enfoque original (por fidelidad histórica y porque puede seguir apareciendo en código de terceros) y, después, una alternativa moderna con `httr2` que no depende de ningún paquete huérfano.
+:::
+
+#### Enfoque original: los paquetes `SPARQL` y `WikidataQueryServiceR`
+
+```{r}
+# El paquete SPARQL fue retirado de CRAN; puede instalarse desde el Archive:
+# install.packages(
+#   "https://cran.r-project.org/src/contrib/Archive/SPARQL/SPARQL_1.16.tar.gz",
+#   repos = NULL, type = "source"
+# )
+library(SPARQL)
+
+endpoint <- "https://dbpedia.org/sparql"
+
+query_example <- "SELECT * WHERE {
+?athlete rdfs:label 'Alexia Putellas'@en ;
+  dbo:number     ?number ;
+  dbo:birthPlace ?place .
+}"
+
+QD <- SPARQL(url = endpoint, query = query_example)
+DF <- as_tibble(QD$results)
+```
+
+```{r}
+# WikidataQueryServiceR fue retirado de CRAN; puede instalarse desde GitHub:
+# devtools::install_github("wikimedia/wikidataQueryServiceR")
+library(WikidataQueryServiceR)
+
+gatos <- query_wikidata('
+SELECT ?item ?itemLabel WHERE {
+  ?item wdt:P31 wd:Q146.   # instancia de "gato doméstico"
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE], en". }
+}')
+```
+
+#### Enfoque recomendado: `httr2` + `jsonlite`
+
+El **protocolo SPARQL 1.1** [@w3csparql11] no exige ningún cliente especializado: es una petición HTTP `GET` (o `POST`) ordinaria, con la consulta en el parámetro `query` y la cabecera `Accept: application/sparql-results+json` para pedir la respuesta en JSON. Con `httr2` [@rpkg-httr2] para la petición y `jsonlite` (@sec-json) para analizar la respuesta, no dependemos de ningún paquete específico de SPARQL:
+
+```{r}
+library(httr2)
+library(jsonlite)
+
+consultar_sparql <- function(endpoint, query) {
+  resp <-
+    request(endpoint) %>%
+    req_url_query(query = query) %>%
+    req_headers(Accept = "application/sparql-results+json") %>%
+    req_perform()
+
+  resultado <- resp_body_json(resp, simplifyVector = FALSE)
+
+  # La forma JSON de una respuesta SPARQL siempre sigue el mismo esquema:
+  # resultado$head$vars      -> nombres de las variables pedidas en el SELECT
+  # resultado$results$bindings -> una lista por fila, con un {type, value} por variable
+  variables <- unlist(resultado$head$vars)
+
+  filas <- lapply(resultado$results$bindings, function(fila) {
+    valores <- lapply(variables, function(v) {
+      if (!is.null(fila[[v]])) fila[[v]]$value else NA_character_
+    })
+    names(valores) <- variables
+    as_tibble(valores)
+  })
+
+  bind_rows(filas)
+}
+```
+
+Con esta única función, ya reutilizable, repetimos la consulta a DBpedia:
+
+```{r}
+consultar_sparql(
+  endpoint = "https://dbpedia.org/sparql",
+  query = "SELECT * WHERE {
+    ?athlete rdfs:label 'Alexia Putellas'@en ;
+      dbo:number     ?number ;
+      dbo:birthPlace ?place .
+  }"
+)
+```
+
+Y la consulta a Wikidata, sin depender de `WikidataQueryServiceR`:
+
+```{r}
+consultar_sparql(
+  endpoint = "https://query.wikidata.org/sparql",
+  query = 'SELECT ?item ?itemLabel WHERE {
+    ?item wdt:P31 wd:Q146.
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE], en". }
+  }'
+)
+```
+
+Este patrón —petición HTTP con `httr2`, respuesta en JSON analizada con `jsonlite`— reaparecerá en el @sec-pubmed al consultar la API de PubMed, y es, en general, el camino más robusto para integrar en R **cualquier** API web moderna, tenga o no un paquete de R dedicado y mantenido.
+
+## Licencia
+
+Autor: Antonio Canepa Oneto\
+Área: Lenguajes y Sistemas Informáticos\
+Departamento: Ingeniería Informática\
+Escuela Politécnica Superior, Universidad de Burgos
+
+![](images/portada/Creative_Commons.png){width="15%"}
+
+Esta obra está bajo una licencia Creative Commons *Reconocimiento-NoComercial-CompartirIgual 3.0 Unported*. No se permite un uso comercial de esta obra ni de las posibles obras derivadas; la distribución de las mismas debe hacerse con una licencia igual a la que regula esta obra original. Licencia disponible en [creativecommons.org/licenses/by-nc-sa/3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/).

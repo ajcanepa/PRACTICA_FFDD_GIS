@@ -1,0 +1,250 @@
+# Funciones en R {#sec-funciones}
+
+## Objetivos
+
+R es, ante todo, un lenguaje **funcional**: prácticamente todo lo que hace algo en R —incluidos operadores como `+` o `[`— es, por debajo, una función [@wickham2019advanced]. Este capítulo cubre las estructuras de control que gobiernan el flujo de ejecución (condicionales e iteración) y cómo escribir funciones propias, ilustrándolo con ejemplos clínicos y de bioinformática de secuencias.
+
+## Estructuras condicionales
+
+### `if`
+
+La estructura `if` ejecuta un bloque de código únicamente cuando una condición lógica se evalúa como `TRUE`. Consideremos la clasificación de la presión arterial sistólica de un paciente (hipertensión definida, en este ejemplo, como una presión sistólica superior a 140 mmHg):
+
+```{r}
+presion_sistolica <- 145
+
+if (presion_sistolica > 140) {
+  print("El paciente tiene presión arterial alta.")
+}
+```
+
+### `if`-`else`
+
+Cuando existen varias categorías mutuamente excluyentes, encadenamos `if`, `else if` y `else`. R evalúa las condiciones en orden y ejecuta únicamente la rama de la **primera** condición que se cumple:
+
+```{r}
+presion_sistolica <- 135
+
+if (presion_sistolica <= 120) {
+  print("La presión arterial del paciente es normal.")
+} else if (presion_sistolica <= 140) {
+  print("El paciente tiene presión arterial alta.")
+} else {
+  print("El paciente tiene presión arterial muy alta.")
+}
+```
+
+### `ifelse()`: la versión vectorizada
+
+`if`/`else` evalúa una **única** condición lógica (de longitud 1). Cuando necesitamos aplicar la misma regla a un vector completo de valores —por ejemplo, clasificar la presión arterial de varios pacientes a la vez— usamos `ifelse()`, que está vectorizada:
+
+```{r}
+presiones_sistolicas <- c(115, 130, 145, 125, 110)
+
+clasificacion <- ifelse(
+  presiones_sistolicas <= 120, "Normal",
+  ifelse(presiones_sistolicas <= 140, "Alta", "Muy alta")
+)
+
+print(clasificacion)
+```
+
+::: {.callout-note}
+## `if` vs. `ifelse()`
+
+Un error habitual es usar `if` directamente sobre un vector de longitud mayor que 1: en versiones recientes de R esto genera un error (`the condition has length > 1`). La regla práctica es: **`if` para una decisión, `ifelse()` (o, en el estilo `tidyverse`, `dplyr::case_when()`, que veremos en el @sec-procesamiento) para etiquetar cada elemento de un vector**.
+:::
+
+## Iteración
+
+### La familia `apply`
+
+R base ofrece una familia de funciones que aplican una función a subconjuntos o márgenes de una estructura de datos, evitando escribir el bucle explícitamente. Son el precedente directo de funciones como `dplyr::across()` o `purrr::map()` del `tidyverse`.
+
+#### `tapply()`: agregación por grupos
+
+`tapply()` aplica una función a un vector, agrupado según los niveles de otra variable. Es el equivalente en R base de `group_by() |> summarise()` (@sec-procesamiento):
+
+```{r}
+datos <- data.frame(
+  paciente = 1:10,
+  glucosa = c(120, 135, 140, 125, 130, 155, 145, 160, 150, 165),
+  imc_categoria = c("Normal", "Sobrepeso", "Obesidad", "Normal", "Sobrepeso",
+                     "Obesidad", "Obesidad", "Sobrepeso", "Normal", "Obesidad")
+)
+
+media_glucosa <- tapply(datos$glucosa, datos$imc_categoria, mean)
+print(media_glucosa)
+```
+
+#### `apply()`: aplicar por filas o columnas
+
+`apply()` aplica una función a lo largo de una dimensión (`MARGIN = 1` para filas, `MARGIN = 2` para columnas) de una matriz o *array*:
+
+```{r}
+glucosa_matriz <- matrix(
+  c(120, 135, 140, 125, 130, 155, 145, 160, 150, 165, 170, 175),
+  nrow = 4, byrow = TRUE,
+  dimnames = list(paciente = paste("Paciente", 1:4),
+                   momento  = paste("Momento", 1:3))
+)
+
+media_por_paciente <- apply(glucosa_matriz, MARGIN = 1, FUN = mean)
+print(media_por_paciente)
+```
+
+### `while`: iteración condicionada
+
+Un bucle `while` repite un bloque de código **mientras** una condición se mantenga verdadera. Es apropiado cuando no sabemos de antemano cuántas iteraciones harán falta, como en la simulación de un seguimiento clínico hasta alcanzar un valor objetivo:
+
+```{r}
+nivel_objetivo <- 120
+nivel_glucosa <- 150
+contador <- 0
+
+while (nivel_glucosa > nivel_objetivo) {
+  contador <- contador + 1
+  nivel_glucosa <- nivel_glucosa - sample(1:10, 1)
+  cat("Lectura", contador, ": Nivel de glucosa =", nivel_glucosa, "mg/dL\n")
+}
+
+cat("Objetivo alcanzado tras", contador, "lecturas.\n")
+```
+
+### `for`: iteración sobre una secuencia conocida
+
+#### `for` simple
+
+Cuando el número de iteraciones es conocido de antemano —por ejemplo, recorrer una lista fija de pacientes—, `for` es la estructura natural:
+
+```{r}
+num_habitaciones <- 5
+pacientes <- c("Paciente1", "Paciente2", "Paciente3",
+                "Paciente4", "Paciente5", "Paciente6")
+
+asignacion <- vector("list", length(pacientes))
+
+for (i in seq_along(pacientes)) {
+  habitacion <- ((i - 1) %% num_habitaciones) + 1
+  asignacion[[i]] <- paste(pacientes[i], "se asigna a la habitación", habitacion)
+}
+
+for (asignacion_paciente in asignacion) {
+  cat(asignacion_paciente, "\n")
+}
+```
+
+::: {.callout-note}
+## `seq_along(x)` en lugar de `1:length(x)`
+
+La guía de estilo `tidyverse` [@wickham2020styleguide] recomienda `seq_along(x)` frente a `1:length(x)` para generar el índice de un bucle: si `x` tiene longitud 0, `1:length(x)` genera erróneamente la secuencia `c(1, 0)`, mientras que `seq_along(x)` genera correctamente una secuencia vacía, evitando iteraciones fantasma difíciles de depurar.
+:::
+
+#### `for` anidado
+
+Un bucle `for` puede anidarse dentro de otro para recorrer combinaciones de dos (o más) dimensiones, como asignar varias fechas de examen a cada paciente:
+
+```{r}
+pacientes <- c("Paciente1", "Paciente2", "Paciente3")
+fechas_examen <- c("2024-09-01", "2024-09-15", "2024-10-01")
+
+programacion_examenes <- list()
+
+for (paciente in pacientes) {
+  programacion_examenes[[paciente]] <- vector("list", length(fechas_examen))
+  for (fecha in fechas_examen) {
+    programacion_examenes[[paciente]][[fecha]] <-
+      paste("Examen de radiografía programado para", fecha)
+  }
+}
+
+for (paciente in names(programacion_examenes)) {
+  cat("\n", paciente, ":\n")
+  for (examen in programacion_examenes[[paciente]]) {
+    cat(" -", examen, "\n")
+  }
+}
+```
+
+::: {.callout-important}
+## Bucles explícitos frente a vectorización
+
+R está optimizado internamente para operaciones **vectorizadas**: la mayoría de sus funciones matemáticas y lógicas ya operan elemento a elemento sin necesidad de un `for` explícito (`presiones_sistolicas * 2`, por ejemplo, no requiere ningún bucle). Los bucles `for`/`while` son imprescindibles cuando cada iteración depende del resultado de la anterior (como en el ejemplo de `while` anterior) o cuando el efecto que buscamos no es devolver un valor sino producir un efecto secundario (escribir en disco, imprimir en pantalla). Para el resto de casos, preferid siempre las funciones vectorizadas o la familia `apply`/`across()`: son más legibles y, habitualmente, más rápidas.
+:::
+
+## Funciones propias
+
+### Anatomía de una función en R
+
+Una función en R se define con `function()` y se asigna a un nombre como cualquier otro objeto. Tiene tres componentes: sus **argumentos** (`formals()`), su **cuerpo** (`body()`) y el **entorno** en el que fue creada (`environment()`), que determina qué variables puede "ver" además de las que recibe como argumento [@wickham2019advanced]. La guía de estilo `tidyverse` recomienda nombrar las funciones con verbos en minúscula y `snake_case` (por ejemplo, `contar_nucleotidos()` en lugar de `NucleotideCount` o `contarNucleotidos`) [@wickham2020styleguide].
+
+### Ejemplo: análisis de secuencias genéticas
+
+Ilustramos la definición de funciones propias con un caso de bioinformática elemental: el trabajo con una secuencia de ADN representada como una cadena de texto.
+
+```{r}
+seq_dna <- c("ATGTCACCACAAACAGAGACT")
+```
+
+#### Conteo de nucleótidos
+
+```{r}
+contar_nucleotidos <- function(secuencia_dna = seq_dna) {
+  conteo_nucleotidos <- unlist(strsplit(x = secuencia_dna, split = "", fixed = TRUE))
+  print(table(conteo_nucleotidos))
+}
+
+contar_nucleotidos(secuencia_dna = seq_dna)
+```
+
+Nótese el uso de un **valor por defecto** (`secuencia_dna = seq_dna`) en la definición: si la función se llama sin argumentos, opera sobre `seq_dna`, pero admite cualquier otra secuencia sin modificar el código de la función.
+
+#### Cadena complementaria
+
+En una doble hélice de ADN, cada base se empareja con su complementaria: adenina (`A`) con timina (`T`), y citosina (`C`) con guanina (`G`). `chartr()` sustituye caracteres de acuerdo con esa correspondencia:
+
+```{r}
+complementaria <- function(secuencia_dna = seq_dna) {
+  complementaria_adn <- chartr("ATGC", "TACG", secuencia_dna)
+  complementaria_adn <- paste(complementaria_adn, collapse = "")
+  return(complementaria_adn)
+}
+
+complementaria(seq_dna)
+```
+
+#### Transcripción
+
+La transcripción convierte una secuencia de ADN en su ARN mensajero correspondiente, en el que la timina (`T`) es reemplazada por uracilo (`U`):
+
+```{r}
+transcripcion <- function(secuencia_dna = seq_dna) {
+  seq_arn <- chartr("T", "U", secuencia_dna)
+  seq_arn <- paste(seq_arn, collapse = "")
+  return(seq_arn)
+}
+
+transcripcion(seq_dna)
+```
+
+### Modularizar código: `source()`
+
+A medida que un proyecto crece, conviene separar las funciones propias del script principal de análisis, guardándolas en archivos `.R` independientes (por ejemplo, `INPUT/FUNCTIONS/Transcripcion.R`) e importándolas con `source()`:
+
+```{r}
+source("INPUT/FUNCTIONS/Transcripcion.R")
+transcripcion(seq_dna)
+```
+
+Esta separación entre "funciones" (código reutilizable, sin efectos secundarios) y "análisis" (código específico de un proyecto, que sí produce salidas) es una de las prácticas de organización de proyectos más recomendadas para mantener el código de un seminario ordenado y fácil de revisar (@sec-seminario).
+
+## Licencia
+
+Autor: Antonio Canepa Oneto\
+Área: Lenguajes y Sistemas Informáticos\
+Departamento: Ingeniería Informática\
+Escuela Politécnica Superior, Universidad de Burgos
+
+![](images/portada/Creative_Commons.png){width="15%"}
+
+Esta obra está bajo una licencia Creative Commons *Reconocimiento-NoComercial-CompartirIgual 3.0 Unported*. No se permite un uso comercial de esta obra ni de las posibles obras derivadas; la distribución de las mismas debe hacerse con una licencia igual a la que regula esta obra original. Licencia disponible en [creativecommons.org/licenses/by-nc-sa/3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/).

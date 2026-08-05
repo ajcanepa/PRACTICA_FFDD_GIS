@@ -1,0 +1,222 @@
+# Visualización de la información {#sec-visualizacion}
+
+## Objetivos
+
+Un análisis correcto que no se comunica con claridad pierde buena parte de su valor. Este capítulo presenta `ggplot2` [@rpkg-ggplot2; @wickham2016ggplot2book], el paquete de visualización del `tidyverse`, construido sobre la **gramática de gráficos** de Leland Wilkinson: un sistema declarativo en el que un gráfico se especifica describiendo *qué* relación entre variables queremos mostrar, dejando que `ggplot2` resuelva los detalles de renderizado.
+
+```{r}
+library(tidyverse)   # incluye ggplot2
+data("mpg")           # eficiencia de combustible de distintos modelos de coche
+```
+
+## La gramática de gráficos
+
+Todo gráfico de `ggplot2` se construye combinando un pequeño número de componentes independientes, que se suman con el operador `+`:
+
+- **Datos** (`data`): siempre un `data.frame`/`tibble`, nunca vectores sueltos.
+- **Mapeo estético** (`aes()`): qué variable de los datos controla qué propiedad visual (posición `x`/`y`, color, forma, tamaño...).
+- **Geometría** (`geom_*()`): la forma visual que representa cada observación (puntos, barras, líneas...).
+- **Transformación estadística** (`stat_*()`): un resumen calculado a partir de los datos antes de dibujarlos (un conteo, en el caso de `geom_bar()`; un ajuste de suavizado, en `geom_smooth()`).
+- **Escala** (`scale_*()`): cómo se traduce un valor de los datos a una propiedad visual concreta (qué color exacto corresponde a cada categoría).
+- **Sistema de coordenadas** (`coord_*()`): cartesiano por defecto, pero también polar, con ejes invertidos, etc.
+- **Facetas** (`facet_*()`): dividir el gráfico en subgráficos según los niveles de una variable categórica.
+- **Tema** (`theme()`): todo el aspecto visual no vinculado directamente a los datos (tipografía, fondo, cuadrícula).
+
+Definir únicamente los datos y el mapeo estético, sin geometría, produce un lienzo vacío con los ejes ya escalados, pero sin ninguna marca visual todavía:
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy))
+```
+
+## Gráfico de dispersión
+
+Añadiendo `geom_point()` obtenemos un gráfico de dispersión, la geometría más directa para mostrar la relación entre dos variables continuas:
+
+```{r}
+#| label: fig-scatter-basico
+#| fig-cap: "Relación entre cilindrada del motor (`displ`) y consumo en autopista (`hwy`)."
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+  geom_point()
+```
+
+### Mapeo estético del color
+
+El color de los puntos puede fijarse a un valor **constante** (fuera de `aes()`) o **mapearse** a una variable de los datos (dentro de `aes()`); esta distinción es una de las que con más frecuencia confunde a quien empieza con `ggplot2`:
+
+```{r}
+# Color fijo: no depende de los datos
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(colour = "deeppink")
+
+# Color mapeado a una variable categórica
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = factor(cyl)))
+```
+
+### Añadir un ajuste: `geom_smooth()`
+
+Superponer una línea de tendencia ayuda a interpretar la relación subyacente entre las variables, y `ggplot2` permite comparar directamente distintos métodos de ajuste (`"loess"` para un suavizado local no paramétrico, `"lm"` para un modelo lineal):
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(method = "loess", colour = "blue") +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 1), colour = "red")
+```
+
+Podemos incluso ajustar un modelo **independiente por cada nivel** de una variable categórica, simplemente mapeando esa variable también dentro de `geom_smooth()`:
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = factor(cyl))) +
+  geom_smooth(method = "lm", aes(colour = factor(cyl)))
+```
+
+## Gráfico de barras
+
+```{r}
+data("diamonds")
+
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar()
+```
+
+### Proporciones y relleno
+
+`geom_bar()` con `position = "fill"` normaliza cada barra a una altura total de 1, útil para comparar la composición interna entre categorías del eje X sin que el tamaño absoluto de cada grupo distraiga la comparación; `position = "dodge"` coloca las subcategorías una junto a otra en lugar de apiladas:
+
+```{r}
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar(aes(fill = clarity), colour = "black")            # apilado (por defecto)
+
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar(aes(fill = clarity), position = "fill")             # proporciones (comparación intra-clase)
+
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar(aes(fill = clarity), position = "dodge")            # lado a lado (comparación entre niveles del eje X)
+```
+
+### Coordenadas polares
+
+Cambiar el sistema de coordenadas, de cartesiano a polar, transforma un gráfico de barras en un gráfico tipo *coxcomb* (variante circular del clásico de Florence Nightingale para mortalidad hospitalaria):
+
+```{r}
+ggplot(diamonds) +
+  geom_bar(aes(x = cut, fill = cut), show.legend = FALSE, width = 1) +
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL) +
+  coord_polar()
+```
+
+## Facetas: pequeños múltiplos
+
+Las facetas dividen un único gráfico en una rejilla de subgráficos, uno por cada nivel (o combinación de niveles) de una o más variables categóricas, evitando saturar un único panel con demasiadas dimensiones a la vez:
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = factor(cyl))) +
+  facet_wrap(vars(drv), nrow = 1)
+
+# Dos variables de faceta a la vez, con "margins" que añade el total de cada fila/columna
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = factor(cyl))) +
+  facet_grid(class ~ drv, scales = "free", margins = TRUE)
+```
+
+## Etiquetas
+
+`labs()` centraliza el texto de ejes, título, subtítulo y leyendas en una única llamada:
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = class, shape = factor(cyl))) +
+  labs(
+    x = "Cilindrada (litros)",
+    y = "Rendimiento en autopista (millas/galón)",
+    title = "Rendimiento en autopista",
+    colour = "Tipo de \nvehículo",
+    shape  = "Cilindros \n(número)"
+  )
+```
+
+### Etiquetas de texto dentro del gráfico
+
+Cuando queremos identificar observaciones individuales directamente sobre el gráfico (en lugar de mediante una leyenda de color), `geom_text()` superpone una etiqueta de texto por punto. Con muchas observaciones, las etiquetas se solapan; `check_overlap = TRUE` elimina las que colisionarían, y el paquete `ggrepel` [@rpkg-ggrepel] va más allá, desplazando automáticamente las etiquetas para evitar solapamientos sin perder ninguna:
+
+```{r}
+library(ggrepel)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(size = 0.4, colour = "red") +
+  geom_text_repel(aes(label = manufacturer))
+```
+
+## Límites de los ejes: recortar frente a hacer zoom
+
+Un error frecuente es confundir dos formas, aparentemente equivalentes, de "acercar" un gráfico a una región de interés:
+
+```{r}
+# lims()/xlim()/ylim(): ELIMINA los datos fuera del rango antes de calcular
+# cualquier estadístico (como el ajuste de geom_smooth())
+ggplot(mpg, aes(hwy, displ)) +
+  geom_point() +
+  stat_smooth() +
+  lims(x = c(19, 24))
+
+# coord_cartesian(): conserva TODOS los datos para el cálculo, y solo
+# recorta la VENTANA de visualización final
+ggplot(mpg, aes(hwy, displ)) +
+  geom_point() +
+  stat_smooth() +
+  coord_cartesian(xlim = c(19, 24), expand = TRUE)
+```
+
+::: {.callout-important}
+## Por qué esta diferencia importa
+
+`lims()` elimina físicamente las observaciones fuera del rango indicado **antes** de que `stat_smooth()` calcule el ajuste, de modo que la línea de tendencia se recalcula únicamente con los datos visibles, pudiendo cambiar de forma sustancial (incluso de signo de la pendiente). `coord_cartesian()` calcula el ajuste con **todos** los datos y solo decide, al final, qué porción de ese resultado se muestra. Para "hacer zoom" sin alterar ningún cálculo estadístico subyacente, `coord_cartesian()` es casi siempre la opción correcta.
+:::
+
+## Temas
+
+El tema controla el aspecto del gráfico que no depende de los datos: fondo, cuadrícula, tipografía. `ggplot2` incluye varios temas predefinidos:
+
+```{r}
+p <- ggplot(mpg, aes(hwy, displ)) + geom_point() + stat_smooth()
+
+p + theme_classic()   # ejes sin cuadrícula, fondo blanco
+p + theme_minimal()   # cuadrícula suave, sin marco
+p + theme_void()      # elimina ejes y cuadrícula por completo
+```
+
+## Guardar gráficos
+
+Un gráfico de `ggplot2` no queda "fijado" hasta que se asigna a un objeto; imprimirlo (ejecutar su nombre) simplemente lo dibuja en el dispositivo gráfico activo. `ggsave()` guarda el último gráfico dibujado —o uno indicado explícitamente con `plot =`— controlando tamaño y resolución de salida:
+
+```{r}
+Final_plot <-
+  ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = class, shape = factor(cyl))) +
+  labs(x = "Cilindrada (litros)", y = "Rendimiento (millas/galón)",
+       title = "Rendimiento en autopista")
+
+ggsave(
+  filename = "Car_yield_highway.jpeg",
+  plot = Final_plot,
+  path = "OUTPUT/Figures",
+  scale = 0.5, width = 40, height = 20, units = "cm", dpi = 320
+)
+```
+
+Fijar explícitamente `width`, `height`, `units` y `dpi` (en lugar de dejar el tamaño por defecto del dispositivo activo) es imprescindible para que una misma figura tenga un aspecto consistente al incluirla, por ejemplo, en el documento del seminario evaluable (@sec-seminario) o en un artículo científico.
+
+## Licencia
+
+Autor: Antonio Canepa Oneto\
+Área: Lenguajes y Sistemas Informáticos\
+Departamento: Ingeniería Informática\
+Escuela Politécnica Superior, Universidad de Burgos
+
+![](images/portada/Creative_Commons.png){width="15%"}
+
+Esta obra está bajo una licencia Creative Commons *Reconocimiento-NoComercial-CompartirIgual 3.0 Unported*. No se permite un uso comercial de esta obra ni de las posibles obras derivadas; la distribución de las mismas debe hacerse con una licencia igual a la que regula esta obra original. Licencia disponible en [creativecommons.org/licenses/by-nc-sa/3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/).

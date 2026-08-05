@@ -1,0 +1,398 @@
+# Importación y exportación de datos {#sec-importacion}
+
+## Objetivos
+
+Ninguna fuente de datos biomédica sirve de nada si no sabemos leerla. Este capítulo recorre la importación de datos **estructurados** (hojas de cálculo, CSV) y **semiestructurados** (JSON, XML), y su exportación de vuelta a estos formatos. Dedicamos especial atención al formato **JSON**, por ser el formato de intercambio dominante en las API web que iremos usando a lo largo del curso (PubMed en el @sec-pubmed, *endpoints* SPARQL en el @sec-rdf-sparql, y buena parte de los portales de datos abiertos en salud y medio ambiente).
+
+Paquetes usados en este capítulo: `readxl` [@rpkg-readxl], `readr` [@rpkg-readr], `jsonlite` [@rpkg-jsonlite], `tidyjson` [@rpkg-tidyjson], `rjson` [@rpkg-rjson], `XML` [@rpkg-xml] y `xml2` [@rpkg-xml2].
+
+## Datos estructurados: hojas de cálculo y CSV
+
+### Importar desde Excel
+
+`readxl::read_excel()` lee archivos `.xls`/`.xlsx` sin necesidad de tener Excel instalado (a diferencia de paquetes más antiguos, que dependían de Java o de la propia aplicación). Podemos indicar la hoja concreta a leer con el argumento `sheet`:
+
+```{r}
+library(readxl)
+
+Galapagos <- read_excel("INPUT/DATA/Galapagos_DB.xlsx", sheet = "DBR")
+
+str(Galapagos)
+summary(Galapagos)
+```
+
+### Importar desde CSV
+
+`readr::read_delim()` (y sus variantes especializadas `read_csv()`, `read_csv2()`) leen archivos de texto delimitado, adivinando automáticamente el tipo de cada columna a partir de una muestra de los datos:
+
+```{r}
+library(readr)
+
+Acc_Car <- read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv",
+                       delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+summary(Acc_Car)
+table(Acc_Car$T.RED)
+```
+
+#### Control explícito de tipos de columna
+
+Dejar que `readr` adivine el tipo de cada columna es cómodo, pero puede llevar a que una variable categórica (por ejemplo, el tipo de red viaria) se importe como texto libre en lugar de como factor. El argumento `col_types`, junto con las funciones `col_*()`, permite fijar el tipo explícitamente:
+
+```{r}
+Acc_Car <- read_delim(
+  "INPUT/DATA/accidentalidad-por-carreteras.csv",
+  delim = ";", escape_double = FALSE, trim_ws = TRUE,
+  col_types = cols(T.RED = readr::col_factor(levels = NULL))
+)
+```
+
+::: {.callout-tip}
+## Buena práctica
+
+Fijar `col_types` de forma explícita no es solo una cuestión de estilo: evita que una columna cambie silenciosamente de tipo si una futura actualización del archivo fuente añade, por ejemplo, un valor no numérico en una columna que antes solo contenía números.
+:::
+
+### Importar datos directamente desde la web
+
+`read_delim()` (como la mayoría de funciones de importación de `readr`) acepta una URL exactamente igual que una ruta local, siempre que el recurso remoto sea directamente descargable:
+
+```{r}
+Agua_Consumo <- read_delim(
+  "https://datosabiertos.jcyl.es/web/jcyl/risp/es/salud/calidad-aguas-consumo/1284839789043.csv",
+  delim = ";"
+)
+
+Agua_Consumo$`Nº infraestructuras - Depósitos`
+```
+
+Nótese el uso de comillas invertidas (`` ` ``) para referirnos a columnas cuyo nombre contiene espacios o caracteres especiales: es sintaxis estándar de R (no exclusiva del `tidyverse`), necesaria en cuanto el nombre de una variable deja de ser un identificador válido por sí mismo.
+
+## Datos semiestructurados: por qué importan en biomedicina
+
+Los datos **estructurados** (una tabla CSV, una hoja de Excel) tienen un esquema fijo: todas las filas comparten exactamente las mismas columnas. Muchas fuentes de datos biomédicas y de la Web Semántica, en cambio, producen datos **semiestructurados**: tienen una organización jerárquica reconocible (objetos con propiedades, listas de elementos), pero esa jerarquía puede variar de un registro a otro, anidarse a varios niveles, o incluir campos opcionales. Es el caso de:
+
+- Las respuestas de prácticamente cualquier **API REST** moderna (PubMed/NCBI E-utilities, DBpedia, Wikidata, portales de datos abiertos), que se sirven en **JSON**.
+- Los documentos **RDF/JSON-LD**, que veremos en el @sec-rdf-sparql, donde el propio JSON codifica un grafo de tripletas.
+- Los registros de historia clínica electrónica en estándares como **HL7 FHIR**, que se representan tanto en XML como en JSON.
+
+Forzar estos datos a una tabla rectangular *antes* de leerlos no es una opción: primero hay que leerlos respetando su estructura jerárquica, y decidir *después*, con criterio, qué parte de esa jerarquía convertir en columnas de una tabla. Esa es, precisamente, la tarea de `jsonlite` y `tidyjson`.
+
+## JSON: JavaScript Object Notation {#sec-json}
+
+### Sintaxis y modelo de datos
+
+JSON (*JavaScript Object Notation*) es un formato de texto para el intercambio de datos, estandarizado tanto por el IETF (RFC 8259, @rfc8259) como por Ecma International (ECMA-404, @ecma404). A pesar de su nombre, es independiente de JavaScript: es simplemente una sintaxis de texto, legible por personas, que cualquier lenguaje de programación puede generar y analizar.
+
+El formato define exactamente **seis** tipos de valor, que se combinan recursivamente:
+
+| Tipo JSON | Sintaxis | Ejemplo |
+|---|---|---|
+| Objeto | `{ "clave": valor, ... }` | `{"nombre": "Ana", "edad": 34}` |
+| *Array* | `[ valor, valor, ... ]` | `[1, 2, 3]` |
+| Cadena (*string*) | Texto entre comillas dobles | `"Ana"` |
+| Número | Entero o decimal, notación científica opcional | `34`, `-2.5`, `1.2e3` |
+| Booleano | `true` / `false` (en minúsculas) | `true` |
+| Nulo | `null` | `null` |
+
+: Los seis tipos de valor definidos por la especificación JSON [@rfc8259]. {#tbl-json-tipos}
+
+Un ejemplo de documento JSON que describe a un paciente, combinando estos seis tipos:
+
+```{.json}
+{
+  "id_paciente": "P-00234",
+  "edad": 47,
+  "fumador": false,
+  "diagnosticos": ["hipertensión", "diabetes tipo 2"],
+  "ultima_revision": null,
+  "constantes": {
+    "presion_sistolica": 132,
+    "presion_diastolica": 85,
+    "frecuencia_cardiaca": 76
+  }
+}
+```
+
+Este ejemplo mínimo ya contiene los tres rasgos que distinguen a JSON de una tabla CSV: **anidamiento** (`constantes` es un objeto dentro del objeto principal), **campos de tipo lista** (`diagnosticos` es un *array* de longitud variable) y **valores nulos explícitos** (`ultima_revision`). Ninguno de los tres tiene una representación directa y sin ambigüedad en una tabla rectangular.
+
+### JSON frente a las estructuras de datos de R
+
+La correspondencia natural entre JSON y R, que siguen tanto `jsonlite` como `rjson`, es la siguiente:
+
+| JSON | Estructura de R |
+|---|---|
+| Objeto `{ }` | Lista con nombres (`list(clave = valor, ...)`) |
+| *Array* de valores del mismo tipo escalar | Vector atómico |
+| *Array* de objetos con las mismas claves | `data.frame` (una fila por objeto) |
+| *Array* heterogéneo o de longitud irregular | Lista sin nombres |
+| Cadena | `character` |
+| Número | `double` |
+| Booleano | `logical` |
+| `null` | `NULL` (o `NA` dentro de un vector) |
+
+: Correspondencia entre los tipos JSON y las estructuras de R usada por `jsonlite` [@ooms2014jsonlite]. {#tbl-json-r}
+
+La fila más delicada de la @tbl-json-r es la de los *arrays* de objetos: `jsonlite` los convierte en un `data.frame` **solo si puede**, es decir, solo si todos los objetos del *array* comparten exactamente las mismas claves. En cuanto un registro tiene un campo de más, de menos, o un array anidado en su interior, `jsonlite` no puede aplanarlo automáticamente y lo deja como lista. Este es el motivo por el que existe `tidyjson`, que veremos más adelante.
+
+### El paquete `jsonlite`
+
+`jsonlite` [@rpkg-jsonlite; @ooms2014jsonlite] es, junto con `rjson` [@rpkg-rjson], uno de los analizadores de JSON más usados en R, y el que mejor se integra con el `tidyverse` y con `data.frame`/`tibble`. Su función principal para lectura, `fromJSON()`, acepta indistintamente una cadena de texto, una ruta de archivo local o una URL:
+
+```{r}
+library(jsonlite)
+
+# Desde texto
+fromJSON('{"nombre": "Ana", "edad": 34}')
+
+# Desde archivo local
+Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json")
+
+# Desde una URL (jsonlite descarga y analiza en un solo paso)
+# fromJSON("https://api.ejemplo.org/pacientes")
+```
+
+#### Simplificación automática
+
+Por defecto, `fromJSON()` intenta **simplificar** la estructura resultante lo máximo posible: convierte objetos en vectores con nombre cuando puede, y *arrays* de objetos homogéneos directamente en `data.frame`. Este comportamiento se controla con los argumentos `simplifyVector` y `simplifyDataFrame`:
+
+```{r}
+# Comportamiento por defecto: simplifica a data.frame si es posible
+fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json")
+
+# Sin simplificar: conserva la estructura de lista anidada tal cual
+fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json", simplifyDataFrame = FALSE)
+```
+
+Trabajar con `simplifyDataFrame = FALSE` es útil para *inspeccionar* la estructura real del JSON antes de decidir cómo aplanarlo; para el trabajo habitual, la simplificación por defecto suele ser justo lo que necesitamos.
+
+#### Escritura de JSON: `toJSON()`
+
+La operación inversa, convertir un objeto de R a texto JSON, se realiza con `toJSON()`:
+
+```{r}
+x <- list(
+  alpha = 1:5,
+  beta  = "Bravo",
+  gamma = list(a = 1:3, b = NULL),
+  delta = c(TRUE, FALSE)
+)
+
+JSON_x <- toJSON(x, pretty = TRUE)
+cat(JSON_x)
+```
+
+```{.json}
+{
+  "alpha": [1, 2, 3, 4, 5],
+  "beta": ["Bravo"],
+  "gamma": {
+    "a": [1, 2, 3],
+    "b": {}
+  },
+  "delta": [true, false]
+}
+```
+
+Dos argumentos de `toJSON()` merecen mención especial:
+
+- `pretty = TRUE` indenta el JSON resultante para que sea legible por humanos (sin él, `toJSON()` produce una única línea compacta, más adecuada para transmitir por red).
+- `auto_unbox = TRUE` convierte los vectores de longitud 1 en escalares JSON en lugar de *arrays* de un elemento (`"Bravo"` en lugar de `["Bravo"]`), lo que suele ser el resultado esperado al serializar un único registro:
+
+```{r}
+toJSON(list(nombre = "Ana", edad = 34), auto_unbox = TRUE, pretty = TRUE)
+```
+
+Podemos comprobar que la conversión de ida y vuelta (*round-trip*) es coherente, y guardar el resultado en un archivo `.json`:
+
+```{r}
+fromJSON(JSON_x)   # recupera el objeto de R original
+
+write(x = JSON_x, file = "OUTPUT/DATA/JSON_x.json")
+
+# También podemos serializar un data.frame completo
+jsonstarwars <- toJSON(dplyr::starwars, pretty = TRUE)
+write(x = jsonstarwars, file = "OUTPUT/DATA/StarWars.json")
+```
+
+::: {.callout-note}
+## `jsonlite` frente a `rjson`
+
+El paquete `rjson` [@rpkg-rjson] es más antiguo y minimalista: su `fromJSON()`/`toJSON()` no simplifican automáticamente a `data.frame` y no tienen soporte nativo para leer directamente desde una URL. Ambos paquetes exportan una función `fromJSON()` y una función `toJSON()` con el **mismo nombre**, por lo que si cargáis los dos paquetes a la vez (`library(rjson)` después de `library(jsonlite)`), el último paquete cargado "enmascara" al anterior. Si necesitáis usar ambos en el mismo script, cualificad la llamada explícitamente: `jsonlite::fromJSON()` frente a `rjson::fromJSON()`. En este libro usaremos `jsonlite` como paquete de referencia, por su mejor integración con el resto del `tidyverse` y por ser el que emplean la mayoría de las fuentes recomendadas para el curso.
+:::
+
+### JSON anidado: el paquete `tidyjson`
+
+`fromJSON()` resuelve bien el caso en el que el JSON de partida ya es, esencialmente, una tabla disfrazada. Pero en cuanto los registros son heterogéneos —algunos objetos tienen un campo que otros no tienen, o un campo es a veces un escalar y a veces un *array*—, la simplificación automática de `jsonlite` deja de funcionar y el resultado es una lista profundamente anidada, difícil de explorar.
+
+`tidyjson` [@rpkg-tidyjson] resuelve este problema aplicando la filosofía *tidy* al propio proceso de aplanado: en lugar de intentar adivinar la tabla final de un solo paso, representa el JSON como un `tibble` con **una fila por documento JSON** y una columna `document.id`, y ofrece verbos que permiten "descender" nivel a nivel por la jerarquía, de forma explícita y auditable en cada paso —igual que `dplyr` permite encadenar transformaciones tabulares paso a paso (@sec-procesamiento).
+
+```{r}
+library(tidyjson)
+
+data("worldbank")   # conjunto de datos de ejemplo incluido en tidyjson
+```
+
+#### `spread_all()`: aplanar los campos escalares
+
+`spread_all()` extrae automáticamente todos los campos que son escalares (cadena, número, booleano) en columnas nuevas, ignorando (de momento) los que sean *arrays* u objetos anidados:
+
+```{r}
+worldbank %>%
+  spread_all()
+```
+
+#### Detectar qué queda sin aplanar
+
+Antes de dar por bueno un `spread_all()`, conviene comprobar si queda algún campo de tipo `array` u `object` sin resolver. `gather_object()` convierte cada clave en una fila, y `json_types()` etiqueta el tipo JSON de cada valor:
+
+```{r}
+worldbank %>%
+  spread_all() %>%
+  gather_object() %>%
+  json_types() %>%
+  count(name, type)
+```
+
+En el caso de `worldbank`, esta comprobación revela que el campo `majorsector_percent` sigue siendo de tipo `array`: es una lista de sectores de inversión (con su nombre y su porcentaje) por cada proyecto, y por tanto de longitud variable entre proyectos. `spread_all()` no puede —ni debe— aplanarlo automáticamente, porque no hay una única fila razonable a la que asignar varios sectores.
+
+#### `enter_object()` + `gather_array()`: descender en un *array* anidado
+
+Para aplanar ese campo, "entramos" explícitamente en el objeto correspondiente y desplegamos el *array* en filas, una por elemento:
+
+```{r}
+worldbank %>%
+  enter_object(majorsector_percent) %>%
+  gather_array() %>%
+  spread_all() %>%
+  select(-document.id, -array.index)
+```
+
+Encadenando estas operaciones, podemos calcular, por ejemplo, la inversión media por región y sector, recorriendo explícitamente el pipeline paso a paso:
+
+```{r}
+worldbank %>%
+  spread_all() %>%
+  select(region = regionname, funding = totalamt) %>%
+  enter_object(majorsector_percent) %>%
+  gather_array() %>%
+  spread_all() %>%
+  rename(sector = Name, percent = Percent) %>%
+  group_by(region, sector) %>%
+  summarize(funding = mean(percent, na.rm = TRUE))
+```
+
+#### Ejemplo aplicado: accidentalidad por carreteras (JCyL)
+
+Apliquemos el mismo procedimiento al archivo JSON de accidentalidad por carreteras que ya leímos con `jsonlite`, y comparemos el resultado con la versión ya tabular obtenida a partir del CSV equivalente:
+
+```{r}
+Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json", simplifyVector = FALSE)
+
+# Convertimos a tibble "tidyjson" y comprobamos que no queden arrays u objetos
+Acc_Car_Json %>%
+  gather_object() %>%
+  json_types() %>%
+  count(name, type)
+
+# Al no haber campos de tipo array/object, spread_all() ya es la tabla final
+Acc_Car_TJson <- Acc_Car_Json %>% spread_all()
+
+lobstr::obj_size(Acc_Car_TJson)
+lobstr::obj_size(Acc_Car)   # la versión leída directamente del CSV equivalente
+```
+
+::: {.callout-tip}
+## `tidyjson` frente a `jsonlite`: ¿cuándo usar cada uno?
+
+Como regla práctica: si el JSON de origen ya representa una tabla razonablemente homogénea (todos los registros comparten los mismos campos escalares), `jsonlite::fromJSON()` es más rápido de escribir y suele bastar por sí solo. En cuanto el JSON contiene *arrays* de longitud variable, objetos anidados a varios niveles, o registros con campos opcionales —algo habitual en respuestas de API biomédicas—, `tidyjson` ofrece un camino más controlado, verbo a verbo, que evita sorpresas y hace explícita cada decisión de aplanado.
+:::
+
+### Buenas prácticas al trabajar con JSON
+
+- **Inspeccionad antes de aplanar.** `str()` sobre el resultado de `fromJSON(..., simplifyVector = FALSE)`, o el patrón `gather_object() |> json_types() |> count(name, type)` de `tidyjson`, os dirán qué campos son escalares y cuáles son *arrays* u objetos, antes de decidir cómo tratarlos.
+- **No deis por hecho un esquema fijo.** A diferencia de un CSV, dos documentos JSON de la misma API pueden tener campos distintos (por ejemplo, un campo opcional que solo aparece si el paciente tiene alguna alergia registrada). Comprobad varios registros de ejemplo, no solo el primero.
+- **Cread la URI/URL base explícitamente** cuando el JSON alimenta después un flujo de trabajo RDF (@sec-rdf-sparql): un identificador numérico interno (`"id": 234`) no es una URI global; conviene transformarlo pronto (`paste0("https://miportal.org/paciente/", id)`).
+- **Guardad una copia local** de las respuestas de API antes de procesarlas (`write(JSON_x, "respuesta.json")`), especialmente si el servicio remoto tiene límites de peticiones o requiere una clave de API: así podéis volver a analizar los datos sin repetir la consulta.
+
+## XML
+
+XML (*eXtensible Markup Language*) es el otro gran formato semiestructurado, anterior a JSON y aún ampliamente usado en biomedicina (por ejemplo, en las respuestas del *E-utilities* de PubMed que usaremos en el @sec-pubmed, o en el estándar clínico HL7 CDA). A diferencia de JSON, XML distingue entre elementos y atributos, y no tiene un tipo de dato "array" nativo: la repetición de una etiqueta es lo que codifica una lista de elementos.
+
+```{r}
+library(xml2)
+
+file_url <- "https://www.w3schools.com/xml/simple.xml"
+Data <- read_xml(file_url)
+
+str(Data)   # poca información legible: no es una estructura tabular
+```
+
+El paquete `XML` [@rpkg-xml] ofrece `xmlParse()` y `xmlToDataFrame()` para convertir directamente un documento XML simple (sin atributos anidados relevantes) en un `data.frame`:
+
+```{r}
+library(XML)
+
+Data_mxl <- xmlParse(Data)
+DF_xml <- xmlToDataFrame(doc = Data_mxl, stringsAsFactors = FALSE)
+
+DF_xml %>%
+  as_tibble() %>%
+  transmute(
+    name = factor(name),
+    price_dollars = parse_number(price),
+    description = description,
+    calories = as.numeric(calories)
+  )
+```
+
+Igual que en JSON, en cuanto el XML tiene una estructura verdaderamente anidada (atributos, elementos repetidos con distinto significado según el contexto), `xmlToDataFrame()` deja de ser suficiente y hace falta recorrer el árbol XML con `xml2::xml_find_all()`/`xml_attr()`, de forma análoga a como `tidyjson` recorre un JSON anidado.
+
+## Exportación de datos
+
+### Guardar objetos de R: formato nativo (`.rds`)
+
+Cuando el destino de los datos es **otra sesión de R** (no un sistema externo), el formato más eficiente es el nativo de R, `.rds`, que preserva exactamente la clase y los atributos del objeto (factores, fechas, tipos de columna) sin necesidad de volver a especificarlos al leerlo:
+
+```{r}
+Data_WorldBank <- worldbank %>% spread_all()
+
+saveRDS(object = Data_WorldBank, file = "OUTPUT/DATA/WorldBankData.rds")
+
+rm(Data_WorldBank)
+Data_WorldBank <- readRDS(file = "OUTPUT/DATA/WorldBankData.rds")
+```
+
+### Exportar a texto plano (CSV)
+
+Para compartir datos con otros programas (Excel, Python, bases de datos), `readr::write_csv()`/`write_delim()` son la vía habitual:
+
+```{r}
+write_csv(x = Data_WorldBank, file = "OUTPUT/DATA/WorldBankData.csv")
+write_delim(x = Data_WorldBank, file = "OUTPUT/DATA/WorldBankData.txt", delim = ",")
+```
+
+### Exportar a JSON
+
+`jsonlite::write_json()` (o `toJSON()` seguido de `write()`, como vimos antes) permite el camino inverso al de `fromJSON()`: convertir un `data.frame`/`tibble` de R en un documento JSON, por ejemplo para alimentar una API propia o publicar un conjunto de datos abierto:
+
+```{r}
+write_json(Data_WorldBank, "OUTPUT/DATA/WorldBankData.json", pretty = TRUE)
+```
+
+### Exportar a XML
+
+```{r}
+write_xml(x = Data, file = "OUTPUT/DATA/Data.xml")
+```
+
+## Licencia
+
+Autor: Antonio Canepa Oneto\
+Área: Lenguajes y Sistemas Informáticos\
+Departamento: Ingeniería Informática\
+Escuela Politécnica Superior, Universidad de Burgos
+
+![](images/portada/Creative_Commons.png){width="15%"}
+
+Esta obra está bajo una licencia Creative Commons *Reconocimiento-NoComercial-CompartirIgual 3.0 Unported*. No se permite un uso comercial de esta obra ni de las posibles obras derivadas; la distribución de las mismas debe hacerse con una licencia igual a la que regula esta obra original. Licencia disponible en [creativecommons.org/licenses/by-nc-sa/3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/).
