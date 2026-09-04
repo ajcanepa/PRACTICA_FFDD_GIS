@@ -11,7 +11,7 @@ author: |
 
 date: |
  | <br>
- | "5º Semestre / Curso 2025-2026"
+ | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
 output:
   html_document:
     df_print: paged
