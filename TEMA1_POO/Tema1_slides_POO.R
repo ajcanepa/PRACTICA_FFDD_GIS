@@ -8,7 +8,7 @@
 #  | **Antonio Canepa, Ph.D.**
 #  | *[email](mailto:ajcanepa@ubu.es)* /
 # 
-# date: "5º Semestre / Curso 2023-2024"
+# date: "5º Semestre / Curso 2026-2027"
 # output:
 #   html_document:
 #     df_print: paged

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sL \"https://cran.r-project.org/package=PubMedWordcloud\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=pubmedR\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=bibliometrix\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=jsonld\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=rdflib\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=jsonlite\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=tidyjson\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=ggwordcloud\")",
+      "Bash(curl -sL \"https://cran.r-project.org/package=tidytext\")",
+      "Read(//tmp/**)",
+      "Bash(grep -oE '^@[a-z]+\\\\{[A-Za-z0-9_-]+,' referencias.bib)",
+      "Bash(quarto --version)",
+      "Bash(lualatex --version)",
+      "Bash(quarto list *)",
+      "Bash(timeout 580 quarto render)",
+      "Bash(pdfinfo \"_output/Prácticas-de-Fuentes-de-Datos-Biomédicos-y-Web-Semántica.pdf\")",
+      "Bash(quarto render *)",
+      "Bash(tee /tmp/render_full.log)"
+    ]
+  }
+}
