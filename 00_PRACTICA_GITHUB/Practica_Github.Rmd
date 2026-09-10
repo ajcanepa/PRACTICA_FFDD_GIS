@@ -10,8 +10,7 @@ author: |
  | *[E-mail](mailto:ajcanepa@ubu.es)* // [LinkedIn](https://www.linkedin.com/in/antonio-canepa-oneto-56b7b633/) // [ResearchGate](https://www.researchgate.net/profile/Antonio-Canepa-Oneto)
 
 date: |
- | <br>
- | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
 output:
   html_document:
     df_print: paged

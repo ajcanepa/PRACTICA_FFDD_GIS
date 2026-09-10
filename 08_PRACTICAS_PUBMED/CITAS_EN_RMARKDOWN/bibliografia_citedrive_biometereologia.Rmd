@@ -1,0 +1,122 @@
+---
+title: "Uso de Bibliografía con CiteDrive en Documentos RMarkdown: Ejemplo Aplicado a la Biometereología Humana"
+author: "Tu Nombre"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+bibliography: "citedrive_bib.bib"
+csl: "apa.csl"
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Resumen
+
+En este documento se ejemplifica cómo integrar referencias bibliográficas en **R Markdown** usando un archivo `.bib` gestionado desde **CiteDrive**, utilizando como caso de estudio la **biometereología humana**.  
+Se sigue el formato IMRAD: Introducción, Métodos, Resultados y Discusión–Conclusiones.  
+
+---
+
+# 1. Preparación del entorno
+
+## 1.1. ¿Qué es R Markdown?
+
+**R Markdown** permite combinar texto, código y resultados en un solo documento reproducible.  
+La estructura básica incluye metadatos (YAML), texto con sintaxis *Markdown* y bloques de código R.  
+
+Por ejemplo:
+
+````
+```{r}
+summary(cars)
+```
+````
+
+## 1.2. Configuración de salida y bibliografía
+
+En la cabecera YAML (al inicio del documento), especificamos el tipo de salida y la ruta del archivo de bibliografía:
+
+```yaml
+output: html_document
+bibliography: citedrive_bib.bib
+csl: apa.csl
+```
+
+El archivo `apa.csl` define el estilo de citación (por ejemplo, APA, Vancouver, etc.), y el archivo `citedrive_bib.bib` contiene las referencias [https://www.citedrive.com/es/](https://www.citedrive.com/es/).
+
+apa.csl puede descargarse desde [https://www.zotero.org/styles](https://www.zotero.org/styles)
+
+---
+
+# 2. Preparación de la bibliografía con CiteDrive
+
+## 2.1. Creación del proyecto en CiteDrive
+
+1. Entra a [https://www.citedrive.com](https://www.citedrive.com).  
+2. Crea un nuevo proyecto, por ejemplo **Biometereología Humana**.  
+3. Agrega referencias desde PubMed, DOI o manualmente.  
+4. Haz clic en **Export → BibTeX File (.bib)**.  
+5. Obtendrás una URL similar a:
+
+```
+https://api.citedrive.com/bibtex/project/abcd1234-b567-8901-ef23-4567890abcd/bibliography.bib
+```
+
+## 2.2. Uso del archivo `.bib` en R Markdown
+
+Guarda esa URL con el nombre `citedrive_bib.bib` en tu proyecto R.  
+Puedes descargarla automáticamente con R:
+
+```{r eval=FALSE}
+download.file("https://api.citedrive.com/bibtex/project/abcd1234-b567-8901-ef23-4567890abcd/bibliography.bib",
+              destfile = "citedrive_bib.bib")
+```
+
+---
+
+# 3. Introducción
+
+La **biometereología humana** estudia la influencia de los factores meteorológicos en la salud y el bienestar de las personas.  
+Diversos estudios han mostrado relaciones entre temperatura, humedad y presión atmosférica con la incidencia de enfermedades cardiovasculares o respiratorias [@mccormick2017weather; @havenith2019biometeorology].
+
+---
+
+# 4. Métodos
+
+En este documento demostrativo no se presentan datos empíricos, sino un flujo de trabajo reproducible para integrar la bibliografía desde CiteDrive en R Markdown.
+
+Se utilizan artículos obtenidos desde **PubMed**, añadidos a un proyecto de CiteDrive y exportados en formato **BibTeX**.  
+Las citas se incluyen en el texto con la sintaxis `[@claveBibTeX]`.  
+Por ejemplo, se puede citar un estudio sobre estrés térmico humano [@blazejczyk2018heat].
+
+---
+
+# 5. Resultados
+
+La correcta integración de la bibliografía se verifica cuando al compilar el documento (`Knit` → `HTML`), las citas aparecen con el formato seleccionado (por ejemplo, APA) y se listan automáticamente en la sección de **Referencias**.
+
+Ejemplo de cita múltiple: estudios recientes discuten los efectos combinados del calor extremo y la humedad en la salud humana [@zhao2022thermal; @sherwood2020human].
+
+---
+
+# 6. Discusión y Conclusiones
+
+La vinculación entre CiteDrive y R Markdown permite un flujo de trabajo académico altamente eficiente y reproducible.  
+Los usuarios pueden mantener una base de datos bibliográfica en la nube (CiteDrive), actualizada y sincronizada con múltiples proyectos RMarkdown.  
+
+Esto resulta especialmente útil en áreas interdisciplinarias como la biometereología humana, donde los datos provienen de fuentes meteorológicas, fisiológicas y médicas.
+
+---
+
+Revisar estas webs:
+* [https://tutorials.inbo.be/tutorials/r_citations_markdown/](https://tutorials.inbo.be/tutorials/r_citations_markdown/)
+* [https://rstudio.github.io/visual-markdown-editing/citations.html](https://rstudio.github.io/visual-markdown-editing/citations.html)
+
+# 7. Referencias
