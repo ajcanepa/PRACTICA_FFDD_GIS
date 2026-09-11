@@ -2,8 +2,7 @@
 #library(ggplot2)
 library(tidyverse)
 
-?ggplot2
-
+#?ggplot2
 
 # * Gráfico básico ---------------------------------------------------------
 
@@ -25,7 +24,7 @@ ggplot(data = mpg, aes(x = displ, y = hwy))
 
 # ** Gráfico de dispersión ------------------------------------------------
 # Incluyendo la geometría
-ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point()
 
 ?geom_point
@@ -38,7 +37,7 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = factor(cyl)))
 
-# Qué tipo de colores se obtienen con una variable continua? 
+# Qué tipo de colores se obtienen con una variable continua?
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = cyl))
 
@@ -52,7 +51,12 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   geom_smooth(method = "loess", colour = "blue", se = TRUE) +
-  geom_smooth(method = "lm", formula = y~poly(x,1), colour = "red", se = TRUE)
+  geom_smooth(
+    method = "lm",
+    formula = y ~ poly(x, 1),
+    colour = "red",
+    se = TRUE
+  )
 
 # Podemos ajustar modelos dependientes de cada nivel de la variable categórica
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
@@ -97,35 +101,35 @@ ggplot(data = diamonds, aes(x = cut, y = carat)) +
 # ** Gráficos de Coordenadas polares (Coxcomb) ----------------------------
 
 # Preparación del gráfico
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL)
 
 # Agregando las transformaciones
 # coord_flip
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL) +
   coord_flip()
 
 
 # coord_polar
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL) +
   coord_polar()
@@ -288,14 +292,14 @@ Final_plot <-
     shape = "Cylinders \n (Number)"
   )
 
-# Al imprimir el objeto (ejecutar su nombre) se "dibuja" el gráfico 
+# Al imprimir el objeto (ejecutar su nombre) se "dibuja" el gráfico
 Final_plot
 print(Final_plot)
 x11(Final_plot)
 # Usamos la siguiente instrucción para guardar el gráfico
 ggsave(
   filename = "Car_yield_highway.jpeg",
-  plot = Final_plot ,
+  plot = Final_plot,
   #path = paste(getwd(), "/OUTPUT/Figures", sep = ""), # ruta absoluta
   path = "OUTPUT/Figures", # ruta relativa
   scale = 0.5,
