@@ -100,7 +100,7 @@ glucosa_matriz <- matrix(
 glucosa_matriz
 
 # Usar apply para calcular la media de los niveles de glucosa por paciente
-media_por_paciente <- apply(glucosa_matriz, 1, mean)
+media_por_paciente <- apply(glucosa_matriz, MARGIN = 1, FUN = mean)
 
 # Mostrar los resultados
 print(media_por_paciente)
@@ -151,7 +151,9 @@ pacientes <- c("Paciente1", "Paciente2", "Paciente3", "Paciente4", "Paciente5", 
 asignacion <- vector("list", length(pacientes))
 
 # Asignar habitaciones a los pacientes
-for (i in 1:length(pacientes)) {
+# Usamos seq_along(pacientes) en lugar de 1:length(pacientes): si el vector
+# estuviese vacío, 1:length(x) generaría c(1, 0) y provocaría iteraciones no deseadas
+for (i in seq_along(pacientes)) {
   # Calcular la habitación asignada utilizando el operador módulo
   habitacion <- ((i - 1) %% num_habitaciones) + 1
   

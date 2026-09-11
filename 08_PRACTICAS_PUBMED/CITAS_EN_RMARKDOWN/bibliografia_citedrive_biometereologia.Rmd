@@ -17,6 +17,19 @@ lang: es
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r descargar-bib, include=FALSE}
+# Descarga automática del archivo .bib desde CiteDrive antes de renderizar.
+# El documento declara en su cabecera YAML  bibliography: "citedrive_bib.bib",
+# de modo que ese archivo debe existir para que las citas se resuelvan al hacer Knit.
+# IMPORTANTE: sustituye la URL por la de TU propio proyecto de CiteDrive
+# (en CiteDrive: Export -> BibTeX File (.bib)).
+url_bib <- "https://api.citedrive.com/bibtex/project/abcd1234-b567-8901-ef23-4567890abcd/bibliography.bib"
+
+if (!file.exists("citedrive_bib.bib")) {
+  try(download.file(url_bib, destfile = "citedrive_bib.bib", quiet = TRUE))
+}
+```
+
 # Resumen
 
 En este documento se ejemplifica cómo integrar referencias bibliográficas en **R Markdown** usando un archivo `.bib` gestionado desde **CiteDrive**, utilizando como caso de estudio la **biometereología humana**.  

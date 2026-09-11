@@ -10,7 +10,8 @@ author: |
  | *[E-mail](mailto:ajcanepa@ubu.es)* // [LinkedIn](https://www.linkedin.com/in/antonio-canepa-oneto-56b7b633/) // [ResearchGate](https://www.researchgate.net/profile/Antonio-Canepa-Oneto)
 
 date: |
-  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+ | <br>
+ | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
 output:
   html_document:
     df_print: paged
@@ -35,7 +36,7 @@ text-align: justify}
 # Paquetes para mejorar el aspecto de los html
 # install.packages("devtools")
 # devtools::install_github("hadley/emo")
-library(emo) # Insert emoticons en el html. Nombres desde https://emoji.muan.co/ // https://github.com/hadley/emo
+# library(emo) # (comentado: paquete solo en GitHub y no se usa en el documento) Insert emoticons en el html. Nombres desde https://emoji.muan.co/ // https://github.com/hadley/emo
 ```
 
 # Práctica GitHub

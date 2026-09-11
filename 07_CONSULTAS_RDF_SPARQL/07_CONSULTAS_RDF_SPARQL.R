@@ -243,8 +243,18 @@ iris3
 
 
 # ** Consulta Usando dbpedia ----------------------------------------------
-#install.packages("https://cran.r-project.org/src/contrib/Archive/SPARQL/SPARQL_1.16.tar.gz", repo=NULL, type="source")
+# AVISO: los paquetes SPARQL y WikidataQueryServiceR han sido RETIRADOS de CRAN
+# (SPARQL en 2022, WikidataQueryServiceR en 2026). Ya no se mantienen, aunque
+# siguen siendo instalables manualmente. Más abajo se muestra primero este
+# enfoque original (por fidelidad histórica) y, después, una alternativa moderna
+# con httr2 + jsonlite que no depende de ningún paquete huérfano.
 
+# *** Enfoque original: paquetes SPARQL y WikidataQueryServiceR ------------
+# El paquete SPARQL fue retirado de CRAN; puede instalarse desde el Archive:
+# install.packages(
+#   "https://cran.r-project.org/src/contrib/Archive/SPARQL/SPARQL_1.16.tar.gz",
+#   repos = NULL, type = "source"
+# )
 library(SPARQL)
 library(tidyverse)
 
@@ -294,8 +304,8 @@ DF$place
 
 # ** Consulta Usando Wikidata ---------------------------------------------
 # https://github.com/wikimedia/WikidataQueryServiceR
-install.packages("WikidataQueryServiceR")
-
+# WikidataQueryServiceR fue retirado de CRAN; puede instalarse desde GitHub:
+# devtools::install_github("wikimedia/WikidataQueryServiceR")
 library(WikidataQueryServiceR)
 
 ?WDQS 
@@ -326,6 +336,61 @@ gatos <- query_wikidata('SELECT
                       }')
 
 gatos
+
+
+# *** Enfoque recomendado: httr2 + jsonlite -------------------------------
+# El protocolo SPARQL 1.1 no exige ningún cliente especializado: es una petición
+# HTTP GET ordinaria, con la consulta en el parámetro 'query' y la cabecera
+# Accept: application/sparql-results+json para pedir la respuesta en JSON. Con
+# httr2 (para la petición) y jsonlite (para analizar la respuesta) no dependemos
+# de ningún paquete específico de SPARQL.
+library(httr2)
+library(jsonlite)
+
+consultar_sparql <- function(endpoint, query) {
+  resp <-
+    request(endpoint) %>%
+    req_url_query(query = query) %>%
+    req_headers(Accept = "application/sparql-results+json") %>%
+    req_perform()
+
+  resultado <- resp_body_json(resp, simplifyVector = FALSE)
+
+  # La forma JSON de una respuesta SPARQL siempre sigue el mismo esquema:
+  # resultado$head$vars        -> nombres de las variables pedidas en el SELECT
+  # resultado$results$bindings -> una lista por fila, con un {type, value} por variable
+  variables <- unlist(resultado$head$vars)
+
+  filas <- lapply(resultado$results$bindings, function(fila) {
+    valores <- lapply(variables, function(v) {
+      if (!is.null(fila[[v]])) fila[[v]]$value else NA_character_
+    })
+    names(valores) <- variables
+    as_tibble(valores)
+  })
+
+  bind_rows(filas)
+}
+
+# Con esta única función, ya reutilizable, repetimos la consulta a DBpedia:
+consultar_sparql(
+  endpoint = "https://dbpedia.org/sparql",
+  query = "SELECT * WHERE {
+    ?athlete rdfs:label 'Alexia Putellas'@en ;
+      dbo:number     ?number ;
+      dbo:birthPlace ?place .
+  }"
+)
+
+# Y la consulta a Wikidata, sin depender de WikidataQueryServiceR:
+consultar_sparql(
+  endpoint = "https://query.wikidata.org/sparql",
+  query = 'SELECT ?item ?itemLabel WHERE {
+    ?item wdt:P31 wd:Q146.
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE], en". }
+  }'
+)
+
 
 # Referencias -------------------------------------------------------------
 # https://adv-r.hadley.nz/index.html

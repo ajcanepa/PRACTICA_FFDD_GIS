@@ -133,9 +133,11 @@ rename_with(.data = starwars, toupper, ends_with("color"))
 # *** Mutate --------------------------------------------------------------
 # Crea nuevas columnas a partir de columnas previas
 
-# columna nueva con la interacción de factores
-mutate(.data = df2, alfanum = interaction(Numeros, Letras, sep = ":"))
-mutate(.data = df2, Saludo = "Hola")
+# columna nueva con la interacción de dos variables categóricas
+mutate(.data = starwars, sexo_genero = interaction(sex, gender, sep = ":"))
+
+# columna nueva con un valor constante
+mutate(.data = starwars, Saludo = "Hola")
 
 # columna nueva con la altura en metros (no en centímetros)
 mutate(.data = starwars, Altura_m = height / 100)
@@ -222,9 +224,9 @@ starwars %>%
   str()
 
 # Pipeline #2
-starwars %>% 
-  select(name, species) %>% 
-  View()
+starwars %>%
+  select(name, species)
+# %>% View()   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 # Pipeline #3 
 # Uso de Pipeline y groupby para calcular promedios de variables por grupos
@@ -397,7 +399,7 @@ Species <- read_csv("INPUT/DATA/Species_Richness_PerSite.csv", col_types = cols(
 ))
 
 Species
-View(Species)
+# View(Species)   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 # *** Inspección de los datos ---------------------------------------------
 # Vista general

@@ -19,7 +19,7 @@ library(bibliometrix)
 
 # * API KEY ---------------------------------------------------------------
 # Si tienes tu API KEY
-api_key <- "TU API KEY"
+api_key <- "TU_API_KEY"
 
 # Si no tienes una API KEY
 #api_key = NULL
@@ -119,7 +119,7 @@ plot(x = results, k = 10, pause = TRUE)
 
 
 # * Análisis de las palabras conjuntas "Co-Word" --------------------------
-# Conceptual Structure using keywords (method="CA")
+# Conceptual Structure using keywords (method="MCA")
 # El objetivo del análisis de co-palabras es mapear la estructura conceptual de un marco utilizando las co-ocurrencias de palabras en una colección bibliográfica.
 CS <- conceptualStructure(M1,field = "ID", method = "MCA", minDegree = 10, clust = 5, stemming = FALSE, labelsize = 15, documents = 20, graph = FALSE)
 

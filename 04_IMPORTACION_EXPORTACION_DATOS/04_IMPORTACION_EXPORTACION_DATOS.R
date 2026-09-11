@@ -16,7 +16,7 @@ Acc_Car <- read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv",
 
 Acc_Car
 summary(Acc_Car)
-View(Acc_Car)
+# View(Acc_Car)   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 table(Acc_Car$T.RED)
 
@@ -65,9 +65,11 @@ summary(Acc_Car)
 # https://cran.r-project.org/web/packages/tidyjson/vignettes/visualizing-json.html
 # https://www.json.org/json-en.html
 library(tidyverse)
-library(rjson)
+library(jsonlite)
 
-Acc_Car_Json <- fromJSON(file = "INPUT/DATA/accidentalidad-por-carreteras.json")
+# jsonlite::fromJSON() acepta una ruta local, una URL o una cadena de texto y,
+# por defecto, simplifica el resultado a data.frame si el JSON representa una tabla
+Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json")
 
 Acc_Car_Json
 head(Acc_Car_Json)
@@ -80,7 +82,7 @@ library(tidyjson)
 data("worldbank")
 
 head(worldbank)
-View(worldbank)
+# View(worldbank)   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 # Usamos `spread_all()` para formatear los datos
 spread_all(worldbank)
@@ -90,15 +92,18 @@ worldbank %>%
   View()
 
 # Aproximación Tidy para los accidentes en carretera
-head(Acc_Car_Json)
-spread_all(Acc_Car_Json)
+# tidyjson trabaja sobre el JSON "en crudo" (texto), no sobre el data.frame de jsonlite:
+# leemos el fichero como una cadena de texto para pasárselo a las funciones de tidyjson
+Acc_Car_Json_raw <- paste(readLines("INPUT/DATA/accidentalidad-por-carreteras.json"), collapse = "")
 
-Acc_Car_Json %>%
-  spread_all() %>% 
-  View()
+spread_all(Acc_Car_Json_raw)
+
+Acc_Car_Json_raw %>%
+  spread_all()
+# %>% View()   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 # Guardamos el objeto
-Acc_Car_TJson <- spread_all(Acc_Car_Json)
+Acc_Car_TJson <- spread_all(Acc_Car_Json_raw)
 
 # comparando
 Acc_Car_TJson
@@ -109,11 +114,12 @@ lobstr::obj_size(Acc_Car)
 
 
 # Revisando que no existan arrays --> sino: https://github.com/colearendt/tidyjson#examples
-spread_all(Acc_Car_Json) %>% View()
+spread_all(Acc_Car_Json_raw)
+# %>% View()   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
-Acc_Car_Json %>% 
-  gather_object %>% 
-  json_types %>% 
+Acc_Car_Json_raw %>%
+  gather_object %>%
+  json_types %>%
   count(name, type)
 
 # ¿Qué pasa con el conjunto de datos WorldBank?
@@ -277,23 +283,33 @@ write_csv(x = Data_WorldBank, file = "OUTPUT/DATA/WorldBankData.csv")
 write_delim(x = Data_WorldBank, file = "OUTPUT/DATA/WorldBankData.txt", delim = ",") # probar con delim = ";"
 
 # * Exportar a JSON -------------------------------------------------------
-# La función toJSON vive tanto en el paquete jsonlite como rjson
+# La operación inversa de fromJSON() es toJSON() (paquete jsonlite)
 
-# rjson
-x <- list( alpha = 1:5, beta = "Bravo", 
-           gamma = list(a=1:3, b=NULL), 
-           delta = c(TRUE, FALSE) )
+x <- list(
+  alpha = 1:5,
+  beta  = "Bravo",
+  gamma = list(a = 1:3, b = NULL),
+  delta = c(TRUE, FALSE)
+)
 
 x
 
-JSON_x <- rjson::toJSON(x)
+# pretty = TRUE indenta el JSON resultante para que sea legible por humanos
+JSON_x <- toJSON(x, pretty = TRUE)
+cat(JSON_x)
+
+# auto_unbox = TRUE convierte los vectores de longitud 1 en escalares JSON
+# ("Bravo" en lugar de ["Bravo"]), lo habitual al serializar un único registro
+toJSON(list(nombre = "Ana", edad = 34), auto_unbox = TRUE, pretty = TRUE)
+
+# La conversión de ida y vuelta (round-trip) recupera el objeto de R original
 fromJSON(JSON_x)
 
 write(x = JSON_x, file = "OUTPUT/DATA/JSON_x.json")
 
 
 # Usando el conjunto de datos starwars
-jsonstarwars <- rjson::toJSON(starwars)
+jsonstarwars <- toJSON(dplyr::starwars, pretty = TRUE)
 cat(jsonstarwars)
 fromJSON(jsonstarwars)
 

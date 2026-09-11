@@ -18,7 +18,9 @@
       "Bash(timeout 580 quarto render)",
       "Bash(pdfinfo \"_output/Prácticas-de-Fuentes-de-Datos-Biomédicos-y-Web-Semántica.pdf\")",
       "Bash(quarto render *)",
-      "Bash(tee /tmp/render_full.log)"
+      "Bash(tee /tmp/render_full.log)",
+      "Bash(pdfinfo LIBRO_PRACTICAS/*.pdf)",
+      "Bash(awk 'NR>=1 && NR<=22' 00_PRACTICA_GITHUB/Practica_Github.Rmd)"
     ]
   }
 }

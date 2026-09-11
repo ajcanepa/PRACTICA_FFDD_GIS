@@ -15,7 +15,6 @@ data("mpg")
 str(mpg)
 
 # ayuda de la función principal de ggplot2
-?qplot
 ?ggplot
 
 # Definición de las tres mínimas variables en un gráfico
@@ -71,10 +70,6 @@ str(diamonds)
 
 # Gráfico sencillo con "conteo" de ítems (solo "x" variable)
 ggplot(data = diamonds, aes(x = cut)) +
-  geom_bar()
-
-# Mismo gráfico, pero llevado a proporción (todas las áreas suman 1)
-ggplot(data = diamonds, aes(x = cut, y = ..prop.., group = 1)) +
   geom_bar()
 
 # Modificando el colour --> no es lo que esperas!
@@ -158,37 +153,37 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 # Controlando cada etiqueta por sí sola (ejes)
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point() +
-  xlab("Displacement (Litres)") +
-  ylab("Yield (miles / gallon)")
+  xlab("Cilindrada (litros)") +
+  ylab("Rendimiento en autopista (millas/galón)")
 
 # Controlando cada etiqueta por sí sola (ejes + títulos)
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point() +
-  xlab("Displacement (Litres)") +
-  ylab("Yield (miles / gallon)") +
-  ggtitle(label = "Highway yield ", subtitle = "cars")
+  xlab("Cilindrada (litros)") +
+  ylab("Rendimiento en autopista (millas/galón)") +
+  ggtitle(label = "Rendimiento en autopista", subtitle = "coches")
 
 
 # Controlando todas las etiquetas en una sola función
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   labs(
-    x = "Displacement (Litres)",
-    y = "Yield (miles / gallon)",
-    title = "Highway yield ",
-    subtitle = "cars"
+    x = "Cilindrada (litros)",
+    y = "Rendimiento en autopista (millas/galón)",
+    title = "Rendimiento en autopista",
+    subtitle = "coches"
   )
 
 # Controlando todas las etiquetas en una sola función (incluye títulos de leyendas)
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = class, shape = factor(cyl))) +
   labs(
-    x = "Displacement (Litres)",
-    y = "Yield (miles / gallon)",
-    title = "Highway yield",
-    subtitle = "cars",
-    colour = "Vehicle \n type",
-    shape = "Cylinders \n (Number)"
+    x = "Cilindrada (litros)",
+    y = "Rendimiento en autopista (millas/galón)",
+    title = "Rendimiento en autopista",
+    subtitle = "coches",
+    colour = "Tipo de \nvehículo",
+    shape = "Cilindros \n(número)"
   )
 
 
@@ -284,18 +279,17 @@ Final_plot <-
   ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = class, shape = factor(cyl))) +
   labs(
-    x = "Displacement (Litres)",
-    y = "Yield (miles / gallon)",
-    title = "Highway yield",
-    subtitle = "cars",
-    colour = "Vehicle \n type",
-    shape = "Cylinders \n (Number)"
+    x = "Cilindrada (litros)",
+    y = "Rendimiento en autopista (millas/galón)",
+    title = "Rendimiento en autopista",
+    subtitle = "coches",
+    colour = "Tipo de \nvehículo",
+    shape = "Cilindros \n(número)"
   )
 
 # Al imprimir el objeto (ejecutar su nombre) se "dibuja" el gráfico
 Final_plot
 print(Final_plot)
-x11(Final_plot)
 # Usamos la siguiente instrucción para guardar el gráfico
 ggsave(
   filename = "Car_yield_highway.jpeg",
