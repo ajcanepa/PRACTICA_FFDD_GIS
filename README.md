@@ -6,7 +6,7 @@ Más información en la [página del curso](https://ubuvirtual.ubu.es/course/vie
 
 ***
 
-## Seminarios Guays
+## Seminarios
 La idea detrás de los seminarios busca fortalecer el uso de fuentes biomédicas y su acceso, preprocesamiento y visualización usando herramientas analíticas, __como R__, para dilucidar el efecto de estresores ambientales sobre la salud humana (__Biometereología Humana__). Puedes ver más ejemplos en el [MCC Collaborative Research Network](https://mccstudy.lshtm.ac.uk/).
 
 Algunas publicaciones de ***biometereología humana*** recientes y/o interesantes, incluyen:
