@@ -21,7 +21,6 @@
 
 # Objetos en R ------------------------------------------------------------
 
-
 ## Vectores --------------------------------------------------------------
 x <- c(1,2,3)
 x
@@ -31,6 +30,39 @@ y
 
 lobstr::obj_addr(x)
 lobstr::obj_addr(y)
+
+## Copy on modify ---------------------------------------------------------
+a <- c(1,2,3)
+b <- a
+
+b[1] <- 99
+
+a
+b
+
+## Lazy Evaluation ---------------------------------------------------------
+# 1. Definimos una función que solo usa el primer argumento
+
+saludar <- function(nombre, operacion_secreta) {
+  print(paste("¡Hola,", nombre, "!"))
+}
+
+# 2. Probamos la función pasando un error en el segundo argumento
+saludar("Carlos", 10 / 0)          # Funciona (R maneja Inf, pero no da error)
+saludar("Ana", objeto_que_no_existe) # ¡También funciona!
+
+
+# Modificamos la función para que use el segundo argumento
+saludar_realmente <- function(nombre, operacion_secreta) {
+  print(paste("¡Hola,", nombre, "!"))
+  print(operacion_secreta) # Aquí obligamos a R a evaluar el argumento
+}
+
+# Esto ahora sí romperá el código:
+saludar_realmente("Ana", objeto_que_no_existe)
+# Error: objeto 'objeto_que_no_existe' no encontrado
+
+## Nombres ---------------------------------------------------------
 
 # _abc <- 1
 # 
