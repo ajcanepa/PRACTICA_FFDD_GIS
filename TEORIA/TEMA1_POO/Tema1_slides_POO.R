@@ -510,6 +510,15 @@ source("TEMA1_POO/Referencia_APA.R")
 Referencia_APA("https://doi.org/10.3390/INFO15040223", BIBTEX = TRUE)
 
 ### Lazy Evaluation ---------------------------------------------------------
+test0 <- function(x,y){
+  if (x > 0) x else y
+}
+
+test0(1) # ¿qué pasa copn y?
+
+test0(-1) # ¿qué pasa copn y?
+
+# Otro ejemplo
 # 1. Definimos una función que solo usa el primer argumento
 
 saludar <- function(nombre, operacion_secreta) {
