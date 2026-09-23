@@ -8,7 +8,8 @@
 #  | **Antonio Canepa, Ph.D.**
 #  | *[email](mailto:ajcanepa@ubu.es)* /
 # 
-# date: "5º Semestre / Curso 2026-2027"
+# date: |
+# | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
 # output:
 #   html_document:
 #     df_print: paged
@@ -31,39 +32,7 @@ y
 lobstr::obj_addr(x)
 lobstr::obj_addr(y)
 
-## Copy on modify ---------------------------------------------------------
-a <- c(1,2,3)
-b <- a
-
-b[1] <- 99
-
-a
-b
-
-## Lazy Evaluation ---------------------------------------------------------
-# 1. Definimos una función que solo usa el primer argumento
-
-saludar <- function(nombre, operacion_secreta) {
-  print(paste("¡Hola,", nombre, "!"))
-}
-
-# 2. Probamos la función pasando un error en el segundo argumento
-saludar("Carlos", 10 / 0)          # Funciona (R maneja Inf, pero no da error)
-saludar("Ana", objeto_que_no_existe) # ¡También funciona!
-
-
-# Modificamos la función para que use el segundo argumento
-saludar_realmente <- function(nombre, operacion_secreta) {
-  print(paste("¡Hola,", nombre, "!"))
-  print(operacion_secreta) # Aquí obligamos a R a evaluar el argumento
-}
-
-# Esto ahora sí romperá el código:
-saludar_realmente("Ana", objeto_que_no_existe)
-# Error: objeto 'objeto_que_no_existe' no encontrado
-
-## Nombres ---------------------------------------------------------
-
+# Importancia de los nombres
 # _abc <- 1
 # 
 # # Error: unexpected input in "_"
@@ -71,6 +40,21 @@ saludar_realmente("Ana", objeto_que_no_existe)
 `_abc` <- 1
 
 `_abc`
+
+### Copy on modify ---------------------------------------------------------
+a <- c(1,2,3)
+b <- a
+
+lobstr::obj_addr(a)
+lobstr::obj_addr(b)
+
+b[1] <- 99
+
+lobstr::obj_addr(a)
+lobstr::obj_addr(b)
+
+a
+b
 
 
 # Combinar (c) números te permitirá crear vectores numéricos (integer)
@@ -123,10 +107,133 @@ length(y)
 # Obteniendo su clase
 class(y)
 
+### Coerción ----------------------------------------------------------------
+# 1. Coerción implícita: R convierte "hacia arriba" en la jerarquía
+# logical → integer → double → character
+
+x <- c(1, "a", TRUE)
+x
+typeof(x)        # "character" -> todo se convirtió en texto: "1" "a" "TRUE"
+
+y <- c(1, TRUE, FALSE)
+y
+typeof(y)        # "double" -> TRUE pasa a 1 y FALSE a 0
+
+z <- c(1L, 2.5)
+typeof(z)        # "double" -> el entero se "sube" a double
+
+# 2. La coerción de lógicos a números es muy útil
+respuestas <- c(TRUE, FALSE, TRUE, TRUE)
+sum(respuestas)  # 3 -> cuántos TRUE hay
+mean(respuestas) # 0.75 -> proporción de TRUE
+
+# 3. Coerción explícita con las funciones as.*()
+as.numeric(c("1", "2", "tres"))
+# [1]  1  2 NA
+# Warning: NAs introducidos por coerción
+
+as.logical(c("TRUE", "T", "sí"))
+# [1] TRUE TRUE   NA
+
+# 4. ¡Cuidado! Las operaciones aritméticas NO convierten texto a número
+"5" + 1
+# Error: argumento no-numérico para operador binario
+
+as.numeric("5") +1
+
+# 5. La trampa clásica: las comparaciones SÍ aplican coerción
+10 < "9"
+# [1] TRUE  -> 10 se convierte en "10" y se compara como texto
+#              ("1" va antes que "9" en orden alfabético)
+
+
+### Vectorización -----------------------------------------------------------
+# 1. Las operaciones se aplican a todos los elementos a la vez
+x <- c(1, 4, 9, 16)
+
+x * 2            # 2 8 18 32
+sqrt(x)          # 1 2 3 4
+x > 5            # FALSE FALSE TRUE TRUE
+paste("Alumno", 1:3)   # "Alumno 1" "Alumno 2" "Alumno 3"
+
+# 2. El mismo cálculo con un bucle (estilo de otros lenguajes)
+resultado <- numeric(length(x))
+for (i in seq_along(x)) {
+  resultado[i] <- x[i] * 2
+}
+
+resultado        # 2 8 18 32 -> mismo resultado, mucho más código
+
+## Velocidad ---
+# 3. La diferencia de velocidad es enorme
+n <- 1e6
+numeros <- runif(n)
+
+system.time({
+  res_bucle <- numeric(n)
+  for (i in 1:n) res_bucle[i] <- numeros[i]^2
+})
+
+system.time({
+  res_vector <- numeros^2
+})
+# La versión vectorizada suele ser decenas de veces más rápida
+
+## Condicionales ---
+# 4. ¡Cuidado! if() NO está vectorizado: solo acepta una condición
+edades <- c(15, 22, 17, 30)
+
+if (edades >= 18) "Mayor" else "Menor"
+# Error: the condition has length > 1
+
+# La alternativa vectorizada es ifelse()
+ifelse(edades >= 18, "Mayor", "Menor")
+# "Menor" "Mayor" "Menor" "Mayor"
+
+# 5. Nuestras propias funciones son vectorizadas si usan operaciones vectorizadas
+precio_final <- function(precio, iva = 0.21) {
+  precio * (1 + iva)
+}
+
+precio_final(c(10, 50, 100))   # 12.1 60.5 121 -> funciona con vectores
+
+# Pero si usan if(), dejan de serlo
+clasificar <- function(edad) {
+  if (edad >= 18) "Mayor" else "Menor"
+}
+
+clasificar(20)                 # "Mayor"
+clasificar(c(15, 20))          # Error: the condition has length > 1
+
+# 6. Funciones vectorizadas muy útiles que evitan bucles
+ventas <- c(100, 250, 80, 300)
+cumsum(ventas)   # 100 350 430 730 -> suma acumulada
+diff(ventas)     # 150 -170 220    -> diferencia entre consecutivos
+rev(ventas)      # 300 80 250 100  -> invertir el orden
+
+
+### Reciclado ---------------------------------------------------------------
+# 1. El caso más habitual: un escalar se recicla sobre todo el vector
+precios <- c(10, 20, 30, 40)
+precios * 1.21   # El 1.21 se aplica a cada elemento (IVA)
+
+# 2. Vectores de distinta longitud (múltiplos)
+c(1, 2, 3, 4, 5, 6) + c(10, 20)
+# [1] 11 22 13 24 15 26
+# R hace internamente: c(1,2,3,4,5,6) + c(10,20,10,20,10,20)
+
+# 3. Si la longitud no es múltiplo, funciona igualmente, pero avisa
+c(1, 2, 3, 4, 5) + c(10, 20)
+# [1] 11 22 13 24 15
+# Warning: longitud de objeto mayor no es múltiplo de la longitud de uno menor
+
+# 4. El reciclado también actúa en la indexación lógica
+x <- 1:10
+x[c(TRUE, FALSE)]  # Selecciona las posiciones impares
+# [1] 1 3 5 7 9
 
 
 ## Matrices / Arrays -----------------------------------------------------
-
 
 # Para crear una matriz podemos usar la siguiente función.
 Matrix <- matrix(c(1,2,3,4,5,6,7,10,20,30,40,50,60,70), nrow = 7, ncol = 2, byrow = FALSE)
@@ -285,12 +392,20 @@ clasificacion <- ifelse(colesterol > 200, "Alto", "Normal")
 
 print(clasificacion)  # Resultado: "Normal" "Alto" "Normal" "Alto"
 
+# 4. ¡Cuidado! if() NO está vectorizado: solo acepta una condición
+edades <- c(15, 22, 17, 30)
+
+if (edades >= 18) "Mayor" else "Menor"
+# Error: the condition has length > 1
+
+# La alternativa vectorizada es ifelse()
+ifelse(edades >= 18, "Mayor", "Menor")
+# "Menor" "Mayor" "Menor" "Mayor"
+
 
 ## Iteraciones -----------------------------------------------------------
 
-
 ### tapply ---------------------------------------------------------------
-
 # tapply(vector, factor, función)
 
 presion_sistolica <- c(120, 130, 110, 140, 135, 150)
@@ -393,6 +508,78 @@ calcular(x = 8, y = 4, type = "dormir")
 source("TEMA1_POO/calcular.R")
 source("TEMA1_POO/Referencia_APA.R")
 Referencia_APA("https://doi.org/10.3390/INFO15040223", BIBTEX = TRUE)
+
+### Lazy Evaluation ---------------------------------------------------------
+# 1. Definimos una función que solo usa el primer argumento
+
+saludar <- function(nombre, operacion_secreta) {
+  print(paste("¡Hola,", nombre, "!"))
+}
+
+# 2. Probamos la función pasando un error en el segundo argumento
+saludar("Carlos", 10 / 0)          # Funciona (R maneja Inf, pero no da error)
+saludar("Ana", objeto_que_no_existe) # ¡También funciona!
+
+
+# Modificamos la función para que use el segundo argumento
+saludar_realmente <- function(nombre, operacion_secreta) {
+  print(paste("¡Hola,", nombre, "!"))
+  print(operacion_secreta) # Aquí obligamos a R a evaluar el argumento
+}
+
+# Esto ahora sí romperá el código:
+saludar_realmente("Ana", objeto_que_no_existe)
+# Error: objeto 'objeto_que_no_existe' no encontrado
+
+
+## Valores asuentes NA --------------------------------------------------
+# Si operas con NA, el resultado también es NA.
+# El NA se "contagia" a casi cualquier operación.
+
+## Propagación de NA -------------------------------------------------------
+# 1. Casi cualquier operación con NA devuelve NA
+NA + 1           # NA
+NA * 0           # NA
+NA > 5           # NA
+NA == NA         # NA -> ¿dos valores desconocidos son iguales? No se sabe
+
+# 2. Las funciones de resumen también se "contagian"
+notas <- c(7, NA, 9, 5)
+
+mean(notas)                 # NA
+sum(notas)                  # NA
+mean(notas, na.rm = TRUE)   # 7 -> ignoramos los NA de forma explícita
+max(notas, na.rm = TRUE)    # 9
+
+# 3. ¡Error típico! No se puede buscar un NA con ==
+notas == NA                 # NA NA NA NA -> no sirve para nada
+is.na(notas)                # FALSE TRUE FALSE FALSE -> esta es la forma correcta
+sum(is.na(notas))           # 1 -> cuántos NA hay (¡coerción de lógicos!)
+
+# 4. Excepciones: cuando el resultado no depende del valor desconocido
+NA & FALSE       # FALSE -> sea lo que sea NA, el resultado es FALSE
+NA | TRUE        # TRUE  -> sea lo que sea NA, el resultado es TRUE
+NA ^ 0           # 1     -> cualquier número elevado a 0 es 1
+
+# 5. Trampa al filtrar: los NA se cuelan en el resultado
+notas[notas > 6]
+# [1]  7 NA  9   -> aparece un NA que no esperábamos
+
+notas[notas > 6 & !is.na(notas)]   # 7 9 -> filtrado correcto
+notas[which(notas > 6)]            # 7 9 -> which() descarta los NA
+
+# 6. Algunas funciones ocultan los NA por defecto
+grupos <- c("A", "B", NA, "A")
+table(grupos)                  # No muestra el NA
+table(grupos, useNA = "ifany") # Ahora sí aparece
+
+# 7. No confundir NA, NaN y NULL
+0 / 0              # NaN -> "no es un número" (resultado indefinido)
+is.na(NaN)         # TRUE  -> NaN también cuenta como NA
+is.nan(NA)         # FALSE -> pero un NA no es un NaN
+length(NA)         # 1 -> NA ocupa una posición (un dato que falta)
+length(NULL)       # 0 -> NULL es la ausencia total de objeto
+c(1, NULL, 3)      # 1 3 -> NULL desaparece al combinar
 
 
 # POO ---------------------------------------------------------------------
