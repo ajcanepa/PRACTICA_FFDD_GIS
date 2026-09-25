@@ -79,6 +79,30 @@ tibble(theta = seq(-2 * pi, 4 * pi, length.out = 2000)) |>
   theme_minimal()
 
 
+# HELECHO DE BARNSLEY -----------------------------------------------------
+# Michael Barnsley lo presentó en "Fractals Everywhere"
+#     (1988). Con solo 4 transformaciones reproduce el helecho real
+#     Asplenium adiantum-nigrum.
+
+n  <- 50000
+px <- py <- numeric(n)
+regla <- sample(1:4, n, replace = TRUE, prob = c(0.01, 0.85, 0.07, 0.07))
+for (i in 2:n) {
+  x0 <- px[i - 1]; y0 <- py[i - 1]
+  nuevo <- switch(regla[i],
+                  c(0, 0.16 * y0),                                     # tallo
+                  c(0.85 * x0 + 0.04 * y0, -0.04 * x0 + 0.85 * y0 + 1.6),  # hojas menores
+                  c(0.20 * x0 - 0.26 * y0,  0.23 * x0 + 0.22 * y0 + 1.6),  # hoja izquierda
+                  c(-0.15 * x0 + 0.28 * y0, 0.26 * x0 + 0.24 * y0 + 0.44)) # hoja derecha
+  px[i] <- nuevo[1]; py[i] <- nuevo[2]
+}
+
+tibble(x = px, y = py) |>
+  ggplot(aes(x, y)) +
+  geom_point(size = 0.05, colour = "forestgreen") +
+  coord_equal() +
+  theme_void()
+
 # FLUID -------------------------------------------------------------------
 # Suele tardar mucho en su forma original
 # remotes::install_github("djnavarro/jasmines")
