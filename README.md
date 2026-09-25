@@ -11,6 +11,7 @@ La idea detrás de los seminarios busca fortalecer el uso de fuentes biomédicas
 
 Algunas publicaciones de ***biometereología humana*** recientes y/o interesantes, incluyen:
 
+* [2026. Gibb et al. The anthropogenic fingerprint on emerging infectious diseases](https://www.nature.com/articles/s41586-026-11058-6?utm_source=x&utm_medium=social&utm_campaign=nature&linkId=63855153).
 * [2025. Rui et al. Precipitation and diarrhea morbidity](https://journals.lww.com/environepidem/fulltext/2025/12000/the_association_between_total_precipitation_and.11.aspx).
 * [2025. Wu et al. Urban heat-related mortality burden due to greenness](https://www.sciencedirect.com/science/article/pii/S2542519625000622?via%3Dihub).
 * [2025. Mercat et al. Green cities and the risk for vector-borne disease](https://peercommunityjournal.org/articles/10.24072/pcjournal.641/).
