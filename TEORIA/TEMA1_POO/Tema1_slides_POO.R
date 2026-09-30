@@ -592,6 +592,17 @@ c(1, NULL, 3)      # 1 3 -> NULL desaparece al combinar
 
 
 # POO ---------------------------------------------------------------------
+
+# Ejemplo Polimorfismo
+library("tidyverse")
+
+data(mpg)
+
+summary(mpg)
+
+summary(lm(mpg$hwy ~ mpg$cyl))
+
+
 ## S3 --------------------------------------------------------------------
 
 # Definir un objeto S3 para un paciente
