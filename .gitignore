@@ -46,3 +46,5 @@ Practica_PubMed_Query/NCBI_PUBMED_APIKEY.txt
 
 # Carpeta profesor
 PROFESOR/
+*.RData
+*.rds
