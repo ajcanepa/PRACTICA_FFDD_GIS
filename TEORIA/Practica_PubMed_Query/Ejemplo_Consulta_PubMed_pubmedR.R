@@ -11,10 +11,15 @@
 # APIKEY: 
 
 # Carga de Paquetes -------------------------------------------------------
-#install.packages("pubmedR") # only once requiered
+# install.packages(c("pubmedR", "bibliometrix", "wordcloud", "wordcloud2", "RColorBrewer",
+#                    "ggplot2", "dplyr", "tidyr", "maps"))  # solo una vez
+
+library(tidyverse)
 library(pubmedR)
-#install.packages("bibliometrix") #requiered once
 library(bibliometrix)
+library(wordcloud)
+library(wordcloud2)
+library(RColorBrewer)
 
 
 # * API KEY ---------------------------------------------------------------
@@ -84,7 +89,24 @@ M1 <- convert2df(D, dbsource = "pubmed", format = "api")
 
 str(M1)
 
-results <- biblioAnalysis(M1)
+# PubMed NO proporciona número de citas (TC) ni referencias citadas (CR).
+summary(M1$TC)
+sum(!is.na(M1$CR) & M1$CR != "")
+
+# Lo que sí es muy rico en PubMed son los términos MeSH (campo ID),
+# los títulos (TI), los resúmenes (AB), autores (AU), revistas (SO) y
+# afiliaciones (C1 / AU_UN).
+
+# Términos MeSH genéricos que conviene eliminar en casi todos los gráficos
+genericos <- c("HUMANS", "HUMAN", "FEMALE", "MALE", "ADULT", "AGED",
+               "MIDDLE AGED", "AGED, 80 AND OVER", "YOUNG ADULT",
+               "ADOLESCENT", "CHILD", "CHILD, PRESCHOOL", "INFANT",
+               "INFANT, NEWBORN", "ANIMALS", "PREGNANCY")
+
+
+# ** Análisis bibliométrico -----------------------------------------------
+results <- biblioAnalysis(M1, sep = ";")
+
 summary(results)
 
 str(results)
@@ -107,7 +129,8 @@ com$allTags
 
 # * Análisis bibliométrico ------------------------------------------------
 # La función biblioAnalysis calcula las principales medidas bibliométricas.
-results <- biblioAnalysis(M1, sep = ";")
+#results <- biblioAnalysis(M1, sep = ";")
+results
 
 # summary resume los principales resultados del análisis bibliométrico
 # Muestra la producción científica anual, los principales manuscritos por número de citas, los autores más productivos, los países más productivos, el total de citas por país, las fuentes más relevantes (revistas) y las palabras clave más relevantes.
@@ -119,7 +142,7 @@ plot(x = results, k = 10, pause = TRUE)
 
 
 # * Análisis de las palabras conjuntas "Co-Word" --------------------------
-# Conceptual Structure using keywords (method="CA")
+# Conceptual Structure using keywords (method="MCA")
 # El objetivo del análisis de co-palabras es mapear la estructura conceptual de un marco utilizando las co-ocurrencias de palabras en una colección bibliográfica.
 CS <- conceptualStructure(M1,field = "ID", method = "MCA", minDegree = 10, clust = 5, stemming = FALSE, labelsize = 15, documents = 20, graph = FALSE)
 
@@ -128,3 +151,79 @@ plot(CS$graph_terms)
 
 # Gráfico de dendrograma
 plot(CS$graph_dendogram)
+
+
+
+# * Producción científica anual (ggplot2) ---------------------------------
+prod <- M1 %>%
+  filter(!is.na(PY)) %>%
+  count(PY, name = "n")
+
+ggplot(prod, aes(x = PY, y = n)) +
+  geom_col(fill = "steelblue", alpha = 0.7) +
+  geom_line(colour = "darkred", linewidth = 1) +
+  geom_point(colour = "darkred") +
+  labs(title = "Producción científica anual",
+       x = "Año", y = "Nº de artículos") +
+  theme_minimal()
+
+# * Nube de palabras de términos MeSH ------------------------------------
+# tableTag() cuenta la frecuencia de cualquier campo del data frame
+mesh <- tableTag(M1, Tag = "ID", sep = ";")
+
+mesh_df <- data.frame(word = names(mesh), freq = as.numeric(mesh)) %>%
+  filter(!word %in% genericos, word != "")
+
+head(mesh_df, 20)
+
+# a) Versión estática (paquete wordcloud)
+set.seed(123)
+wordcloud(words = mesh_df$word, freq = mesh_df$freq,
+          max.words = 100, min.freq = 2,
+          random.order = FALSE, rot.per = 0.2, scale = c(3, 0.5),
+          colors = brewer.pal(8, "Dark2"))
+
+# b) Versión interactiva (paquete wordcloud2, se abre en el Viewer)
+#wordcloud2(head(mesh_df, 150), size = 0.5, color = "random-dark")
+
+
+# * Países: producción y mapa mundial -----------------------------------
+# Extraemos el país del autor de correspondencia/primer autor desde la
+# afiliación. Puede quedar algún NA si la afiliación está incompleta.
+M1 <- metaTagExtraction(M1, Field = "AU1_CO", sep = ";")
+
+paises <- M1 %>%
+  filter(!is.na(AU1_CO), AU1_CO != "") %>%
+  count(AU1_CO, name = "n") %>%
+  arrange(desc(n))
+
+# a) Barras
+ggplot(head(paises, 15), aes(x = reorder(AU1_CO, n), y = n)) +
+  geom_col(fill = "seagreen") +
+  coord_flip() +
+  labs(title = "Países más productivos (primer autor)", x = NULL, y = "Artículos") +
+  theme_minimal()
+
+# b) Mapa mundial (los nombres de bibliometrix y de 'maps' no siempre coinciden)
+mundo <- map_data("world")
+paises_mapa <- paises %>%
+  mutate(region = tools::toTitleCase(tolower(AU1_CO)),
+         region = recode(region, "Usa" = "USA", "United Kingdom" = "UK",
+                         "Korea" = "South Korea"))
+
+ggplot(left_join(mundo, paises_mapa, by = "region"),
+       aes(long, lat, group = group, fill = n)) +
+  geom_polygon(colour = "white", linewidth = 0.1) +
+  scale_fill_gradient(low = "#c6dbef", high = "#08306b",
+                      na.value = "grey90", name = "Artículos") +
+  labs(title = "Producción científica por país") +
+  theme_void()
+
+# c) Red de colaboración entre países
+M1 <- metaTagExtraction(M1, Field = "AU_CO", sep = ";")
+NetCO <- biblioNetwork(M1, analysis = "collaboration",
+                       network = "countries", sep = ";")
+networkPlot(NetCO, n = 30, Title = "Colaboración entre países",
+            type = "circle", size = TRUE, labelsize = 0.8,
+            remove.isolates = TRUE)
+

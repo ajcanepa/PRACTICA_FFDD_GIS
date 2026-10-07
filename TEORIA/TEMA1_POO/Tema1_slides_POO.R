@@ -629,6 +629,9 @@ print.paciente <- function(paciente) {
 paciente1 <- crear_paciente("Juan Pérez", 45, 120, 80)
 print(paciente1)
 
+paciente2 <- crear_paciente("Antonio", "viejo", 120, 80)
+print(paciente2)
+
 
 ## S4 --------------------------------------------------------------------
 
@@ -661,6 +664,8 @@ setMethod("show", "Paciente", function(object) {
 paciente2 <- Paciente("Ana Gómez", 30, 110, 70)
 show(paciente2)
 
+paciente3 <- Paciente("Ana Gómez", "joven", 110, 70)
+show(paciente3)
 
 ## R6 --------------------------------------------------------------------
 library(R6)
@@ -771,3 +776,12 @@ Agua_consumo_humano <- read_delim(file = "https://datosabiertos.jcyl.es/web/jcyl
                                   delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 Agua_consumo_humano
+
+
+library(readr)
+Acc_Car <- 
+  read_delim("INPUT/DATA/accidentalidad-por-carreteras.csv", 
+            delim = ";", 
+            col_types = cols(Año = factor()),
+            escape_double = FALSE, 
+            trim_ws = TRUE)
