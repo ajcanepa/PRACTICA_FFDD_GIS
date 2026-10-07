@@ -12,7 +12,7 @@
 
 # Carga de Paquetes -------------------------------------------------------
 # install.packages(c("pubmedR", "bibliometrix", "wordcloud", "wordcloud2", "RColorBrewer",
-#                    "ggplot2", "dplyr", "tidyr", "maps"))  # solo una vez
+#                    "tidyverse", "maps"))  # solo una vez
 
 library(tidyverse)
 library(pubmedR)
@@ -155,13 +155,14 @@ plot(CS$graph_dendogram)
 
 
 # * Producción científica anual (ggplot2) ---------------------------------
-prod <- M1 %>%
+prod <- 
+  M1 %>%
   filter(!is.na(PY)) %>%
   count(PY, name = "n")
 
 ggplot(prod, aes(x = PY, y = n)) +
   geom_col(fill = "steelblue", alpha = 0.7) +
-  geom_line(colour = "darkred", linewidth = 1) +
+  geom_line(colour = "darkred", linewidth = 0.4) +
   geom_point(colour = "darkred") +
   labs(title = "Producción científica anual",
        x = "Año", y = "Nº de artículos") +
@@ -226,4 +227,3 @@ NetCO <- biblioNetwork(M1, analysis = "collaboration",
 networkPlot(NetCO, n = 30, Title = "Colaboración entre países",
             type = "circle", size = TRUE, labelsize = 0.8,
             remove.isolates = TRUE)
-
