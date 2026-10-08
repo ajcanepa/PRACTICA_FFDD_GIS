@@ -52,6 +52,7 @@ res$query_translation
 D <- pmApiRequest(query = query, limit = res$total_count, api_key = api_key)
 
 class(D)
+
 attributes(D)
 
 
@@ -91,6 +92,7 @@ str(M1)
 
 # PubMed NO proporciona número de citas (TC) ni referencias citadas (CR).
 summary(M1$TC)
+
 sum(!is.na(M1$CR) & M1$CR != "")
 
 # Lo que sí es muy rico en PubMed son los términos MeSH (campo ID),
@@ -170,6 +172,7 @@ ggplot(prod, aes(x = PY, y = n)) +
 
 # * Nube de palabras de términos MeSH ------------------------------------
 # tableTag() cuenta la frecuencia de cualquier campo del data frame
+
 mesh <- tableTag(M1, Tag = "ID", sep = ";")
 
 mesh_df <- data.frame(word = names(mesh), freq = as.numeric(mesh)) %>%
@@ -179,6 +182,7 @@ head(mesh_df, 20)
 
 # a) Versión estática (paquete wordcloud)
 set.seed(123)
+x11()
 wordcloud(words = mesh_df$word, freq = mesh_df$freq,
           max.words = 100, min.freq = 2,
           random.order = FALSE, rot.per = 0.2, scale = c(3, 0.5),
@@ -199,6 +203,7 @@ paises <- M1 %>%
   arrange(desc(n))
 
 # a) Barras
+x11()
 ggplot(head(paises, 15), aes(x = reorder(AU1_CO, n), y = n)) +
   geom_col(fill = "seagreen") +
   coord_flip() +
@@ -211,7 +216,7 @@ paises_mapa <- paises %>%
   mutate(region = tools::toTitleCase(tolower(AU1_CO)),
          region = recode(region, "Usa" = "USA", "United Kingdom" = "UK",
                          "Korea" = "South Korea"))
-
+x11()
 ggplot(left_join(mundo, paises_mapa, by = "region"),
        aes(long, lat, group = group, fill = n)) +
   geom_polygon(colour = "white", linewidth = 0.1) +
@@ -224,6 +229,8 @@ ggplot(left_join(mundo, paises_mapa, by = "region"),
 M1 <- metaTagExtraction(M1, Field = "AU_CO", sep = ";")
 NetCO <- biblioNetwork(M1, analysis = "collaboration",
                        network = "countries", sep = ";")
+
+x11()
 networkPlot(NetCO, n = 30, Title = "Colaboración entre países",
             type = "circle", size = TRUE, labelsize = 0.8,
             remove.isolates = TRUE)
