@@ -122,6 +122,8 @@ Acc_Car_Json_raw %>%
   json_types %>%
   count(name, type)
 
+
+# *** JSON Anidados -------------------------------------------------------
 # ¿Qué pasa con el conjunto de datos WorldBank?
 # worldbank %>% 
 #   spread_all() %>% 
@@ -131,31 +133,96 @@ worldbank %>% spread_all %>% glimpse() #str equivalent
 # Funciona el spread_all? ¿hay arrays?
 worldbank %>% 
   spread_all() %>% 
-  gather_object %>% 
-  json_types %>% 
+  gather_object() %>% 
+  json_types() %>% 
   count(name, type)
 
+
+#**** JSON Anidado en un pipeline ----------------------------------------
 # Observamos que uno de los elemetos sigue siendo un array. Para ingresar dentro de ese array, tenemos que:
 worldbank %>%
   enter_object(majorsector_percent) %>%
-  gather_array %>%
-  spread_all %>%
-  select(-document.id, -array.index)
+  gather_array() %>%
+  spread_all() #%>%
+  #select(-document.id, -array.index)
 
-# Si buscamos la inversión promedio para las diferentes zonas macroeconómicas
-# Revisar el pipeline paso a paso
+# Si no queremos perder la información de la tabla exterior (proyecto)
 worldbank %>%
-  spread_all %>% 
-  select(region = regionname, funding = totalamt) %>%
-  enter_object(majorsector_percent) %>% 
-  gather_array() %>% 
-  spread_all() %>% 
+  spread_all() %>%                          # columnas del proyecto
+  select(document.id, project_name, region = regionname, funding = totalamt) %>%
+  enter_object(majorsector_percent) %>%     # entramos en el array
+  gather_array() %>%                        # una fila por sector
+  spread_all() %>%                          # Name, Percent
   rename(sector = Name, percent = Percent) %>%
+  as_tibble()                               # quitamos el atributo JSON
+
+
+#**** JSON Anidado en pasos JOINS ----------------------------------------
+
+# Tabla exterior: una fila por proyecto
+proyectos <- worldbank %>%
+  spread_all() %>%
+  select(document.id, project_name, region = regionname, funding = totalamt) %>%
+  as_tibble()
+
+# Tabla interior: una fila por proyecto y sector
+sectores <- worldbank %>%
+  enter_object(majorsector_percent) %>%
+  gather_array() %>%
+  spread_all() %>%
+  select(document.id, array.index, sector = Name, percent = Percent) %>%
+  as_tibble()
+
+# Unión 1 a muchos por document.id
+proyectos_sectores <- proyectos %>%
+  left_join(sectores, by = "document.id", relationship = "one-to-many") # inner_join es otra opción.
+
+
+
+#*** Ejemplos de trabajo con JSON Anidados ------------------------------
+# Si buscamos la inversión promedio por región y sector
+# (importe del proyecto repartido según el porcentaje de cada sector)
+# Revisar el pipeline paso a paso
+
+Inversion_Region_Sector <- 
+  worldbank %>%
+  spread_all() %>%                                   # tabla exterior: un proyecto por fila
+  select(region = regionname, funding = totalamt) %>%
+  enter_object(majorsector_percent) %>%              # entramos en el array
+  gather_array() %>%                                 # tabla interior: un sector por fila
+  spread_all() %>%
+  rename(sector = Name, percent = Percent) %>%
+  mutate(funding_sector = funding * percent / 100) %>%   # combina exterior e interior
+  as_tibble() %>%                                    # quitamos el atributo JSON
   group_by(region, sector) %>%
-  summarize(funding = mean(percent, na.rm = TRUE))
+  summarize(funding_mean = mean(funding_sector, na.rm = TRUE),
+            n_proyectos  = n(),
+            .groups = "drop")
+
+Inversion_Region_Sector
 
 # EJERCICIO
-# Gráfica de barras con las áreas geográficas en el eje X, el promedio de inversiones en el Y y con colores para cada sector de inversión (quitando "Other")
+# Gráfica de barras con las áreas geográficas en el eje X, el promedio de
+# inversiones en el Y y con colores para cada sector de inversión
+# (quitando la región "Other")
+
+x11(width = 16, height = 8) # Abre una ventana nueva
+Inversion_Region_Sector %>%
+  filter(region != "Other") %>%
+  mutate(
+    region = fct_reorder(region, funding_mean, .fun = sum, .desc = TRUE), # ordena las regiones de mayor a menor suma de inversión media de sus sectores
+    sector = fct_reorder(sector, funding_mean, .fun = mean, .desc = TRUE) # cambia el orden de las barras dentro de cada región.
+  ) %>%
+  ggplot(aes(x = region, y = funding_mean, fill = sector)) +
+  geom_col(position = position_dodge(width = 0.85), width = 0.8) +
+  scale_fill_brewer(palette = "Paired") +
+  scale_y_continuous(labels = scales::label_dollar(scale = 1e-6, suffix = " M"),
+                     expand = expansion(mult = c(0, .05))) +
+  labs(x = "", y = "Inversión media por proyecto (millones US$)", fill = "Sector") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        legend.position = "bottom") +
+  guides(fill = guide_legend(ncol = 2))
 
 # * Desde XML -------------------------------------------------------------
 # https://megapteraphile.wordpress.com/2020/03/29/converting-xml-to-tibble-in-r/
@@ -187,7 +254,6 @@ DF_xml
 str(DF_xml)
 
 # Limpiamos y definimos correctamente las clases
-
 DF_xml %>% 
   as_tibble() %>%
   transmute(
@@ -211,10 +277,6 @@ Tibble_xml <-
 Tibble_xml
 
 # Graficamos
-# Tibble_xml %>% 
-#   ggplot(data = ., mapping = aes(x = name, y = price_dollars)) +
-#   geom_bar(stat = "identity", aes(fill = calories))
-
 Tibble_xml %>% 
   ggplot(data = ., mapping = aes(x = reorder(name, -price_dollars), y = price_dollars)) +
   geom_bar(stat = "identity", aes(fill = calories)) +
@@ -244,7 +306,6 @@ DF_xml %>%
 
 
 # Exportación de Datos  ---------------------------------------------------
-
 
 # * Exportar environment --------------------------------------------------
 
