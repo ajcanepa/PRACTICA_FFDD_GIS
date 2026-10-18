@@ -305,6 +305,94 @@ DF_xml %>%
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 
 
+# * desde PC-Axis ---------------------------------------------------------
+# Formato de "cubo" estadístico usado por el INE y otros institutos de estadística.
+# Defunciones por causas (capítulos CIE) por sexo. Mensual. Nacional (INE, tabla 14511)
+# https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-capitulos-por-sexo-mensual-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-145111
+# A veces conviene usar Ctrl + Shift + F10 (Win+Linux) o Cmd + Shift + 0 (Mac) Reiniciar sesión.
+
+library(tidyverse)
+# library(pxR) # ha de estar instalada, pero llamamos solo a una función, no a todas
+library(janitor) # preprocesamiento de los nombres de los atributos
+
+# 1. Descarga. mode = "wb" evita que Windows altere el fichero al guardarlo
+download.file(url  = "https://www.ine.es/jaxiT3/files/t/px/14511.px",
+              destfile = "INPUT/DATA/defunciones_causas_sexo.px",
+              mode = "wb")
+
+# 2. Lectura. El INE sirve el fichero en ISO-8859-15 (latin), no en UTF-8.
+#    Sin indicar la codificación, las tildes y la ñ pueden salir mal.
+Def_px <- pxR::read.px("INPUT/DATA/defunciones_causas_sexo.px", encoding = "latin1")
+
+class(Def_px)    # objeto "px": una lista con los metadatos y los datos
+names(Def_px)    # palabras clave del fichero: TITLE, STUB, HEADING, VALUES, DATA...
+Def_px$TITLE     # título de la tabla
+Def_px$VALUES    # dimensiones del cubo y sus categorías
+
+# 3. Tabulación: del cubo a una tabla "larga" (una fila por combinación)
+Def_df <- as.data.frame(Def_px)
+
+names(Def_df)    # COMPROBAR: nombres exactos de las columnas
+head(Def_df)
+str(Def_df)
+
+# 4. Limpieza: nombres en snake_case y tipos adecuados
+Def_tbl <- 
+  Def_df %>%
+  as_tibble() %>%
+  janitor::clean_names()     # p. ej. "Causa.de.muerte" -> "causa_de_muerte"
+
+Def_tbl
+
+
+# ** Análisis datos PC-Axis -----------------------------------------------
+# Defunciones anuales por capítulo de causa, ambos sexos
+
+# Pasar los factores a texto y separar el código CIE del nombre del capítulo
+Def_tbl <- Def_tbl %>%
+  mutate(across(where(is.factor), as.character)) %>%
+  mutate(codigo   = str_extract(causa_de_muerte, "^\\d{3}(-\\d{3})?"),
+         capitulo = str_remove(causa_de_muerte, "^\\d{3}(-\\d{3})?\\s+"))
+
+
+Def_tbl %>% distinct(codigo, capitulo)   # comprobar que se separa bien
+
+
+# Defunciones anuales por capítulo de causa, ambos sexos (sexo == "Total")
+Def_anual <- 
+  Def_tbl %>%
+  filter(sexo == "Total",
+         codigo != "001-102") %>%          # quitar el total "Todas las causas"
+  mutate(anio = as.integer(str_sub(periodo, 1, 4))) %>% # Obtiene el año del periodo.
+  group_by(anio, capitulo) %>%
+  summarise(defunciones = sum(value, na.rm = TRUE), .groups = "drop")
+
+Def_anual   # comprobar: una fila por año y capítulo, sin NA en anio
+
+# Las 5 causas con más defunciones en todo el periodo
+Top5 <- Def_anual %>%
+  group_by(capitulo) %>%
+  summarise(total = sum(defunciones)) %>%
+  slice_max(total, n = 5) %>%
+  pull(capitulo)
+
+# Gráffico
+x11(width = 16, height = 8)
+Def_anual %>%
+  filter(capitulo %in% Top5) %>%
+  mutate(capitulo = fct_reorder2(capitulo, anio, defunciones)) %>%  # leyenda en el orden del último año
+  ggplot(aes(x = anio, y = defunciones, colour = capitulo)) +
+  geom_line(linewidth = 0.8) +
+  scale_colour_brewer(palette = "Dark2", labels = ~ str_wrap(.x, 40)) +
+  scale_y_continuous(labels = scales::label_number(big.mark = ".")) +
+  labs(x = "", y = "Defunciones anuales", colour = "Capítulo CIE") +
+  theme_classic() +
+  theme(legend.position = "right",
+        legend.text  = element_text(size = 12),                  # etiquetas de cada capítulo
+        legend.title = element_text(size = 13, face = "bold"),   # título "Capítulo CIE"
+        legend.key.size = unit(8, "mm"))                         # opcional: tamaño de las líneas de color
+
+
 # Exportación de Datos  ---------------------------------------------------
 
 # * Exportar environment --------------------------------------------------
