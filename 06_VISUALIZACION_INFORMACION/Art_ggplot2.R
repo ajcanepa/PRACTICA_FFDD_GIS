@@ -110,8 +110,7 @@ library(jasmines)
 
 use_seed(1) %>%
   scene_discs(
-    rings = 3, points = 200, size = 5
-    # rings = 3, points = 5000, size = 5 # original
+    rings = 3, points = 5000, size = 5
   ) %>%
   mutate(ind = 1:n()) %>%
   unfold_warp(
@@ -127,5 +126,5 @@ use_seed(1) %>%
     palette = palette_named("vik"),
     colour = "ind",
     alpha = c(.1,.1),
-    background = "white"
+    background = "oldlace"
   )
