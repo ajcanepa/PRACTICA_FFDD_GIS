@@ -305,7 +305,7 @@ DF_xml %>%
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 
 
-# * desde PC-Axis ---------------------------------------------------------
+# * Desde PC-Axis ---------------------------------------------------------
 # Formato de "cubo" estadístico usado por el INE y otros institutos de estadística.
 # Defunciones por causas (capítulos CIE) por sexo. Mensual. Nacional (INE, tabla 14511)
 # https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-capitulos-por-sexo-mensual-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-145111
