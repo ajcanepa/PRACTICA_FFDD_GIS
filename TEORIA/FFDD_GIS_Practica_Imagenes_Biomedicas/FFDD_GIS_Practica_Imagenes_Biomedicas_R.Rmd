@@ -1,0 +1,534 @@
+---
+title: "Introducción al análisis de imágenes biomédicas con R"
+subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
+author: "Universidad de Burgos"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.align = "center", fig.width = 7, fig.height = 4.5
+)
+```
+
+# Objetivos y planificación
+
+Hasta ahora hemos trabajado con fuentes de datos **tabulares** (CSV, Excel), **semiestructuradas** (JSON, XML) y **semánticas** (RDF). En esta práctica damos el salto a una de las fuentes de datos más voluminosas de cualquier hospital: la **imagen médica**. Un único estudio de resonancia magnética puede ocupar cientos de megabytes, y el Servicio de Radiología es, con diferencia, el mayor productor de datos del sistema sanitario.
+
+Al terminar la sesión deberíais ser capaces de:
+
+1.  Explicar qué es una imagen digital desde el punto de vista matemático y cómo se relaciona la rejilla de vóxeles con el espacio físico del paciente.
+2.  Distinguir los dos formatos de referencia, **DICOM** y **NIfTI**, y leerlos en R.
+3.  Extraer y anonimizar metadatos de una cabecera DICOM, convirtiéndolos en un `tibble`.
+4.  Visualizar cortes 2D y vistas ortogonales de un volumen 3D con `ggplot2`, incluyendo el *ventaneo* (*windowing*).
+5.  Ejecutar un *pipeline* mínimo de análisis: histograma de intensidades → normalización → segmentación → cuantificación de volúmenes → exportación.
+
+| Bloque | Contenido                                  | Tiempo orientativo |
+|:-------|:-------------------------------------------|:------------------:|
+| 0      | Preparación y conceptos                    |       5 min        |
+| 1      | DICOM: lectura, metadatos y anonimización  |       7 min        |
+| 2      | Visualización 2D y ventaneo                |       5 min        |
+| 3      | NIfTI: volúmenes 3D y espacio físico       |       5 min        |
+| 4      | Intensidades, normalización y segmentación |       6 min        |
+| 5      | Exportación del resultado                  |       2 min        |
+
+# Preparación del entorno
+
+Los paquetes que vamos a usar están recogidos en el **CRAN Task View: Medical Image Analysis** (<https://cran.r-project.org/web/views/MedicalImaging.html>), que es el índice curado de referencia para este ámbito en R. Usaremos tres de sus paquetes centrales:
+
+- **`oro.dicom`**: lectura de ficheros DICOM y de sus cabeceras.
+- **`oro.nifti`** / **`RNifti`**: lectura y escritura de NIfTI. `RNifti` es una interfaz en C muy rápida a la biblioteca de referencia `niftilib`; es la que usaremos para los volúmenes.
+- **`tidyverse`** y **`patchwork`**: manipulación tidy y composición de figuras.
+
+```{r instalar, eval = FALSE}
+# Ejecutad esto UNA sola vez (no forma parte del cuaderno renderizado)
+install.packages(c("tidyverse", "oro.dicom", "oro.nifti", "RNifti", "patchwork"))
+```
+
+```{r paquetes}
+library(tidyverse)
+library(oro.dicom)
+library(RNifti)
+library(patchwork)
+```
+
+> **Nota del profesor.** Todos los datos de esta práctica vienen **dentro de los propios paquetes**, de modo que el cuaderno es 100 % reproducible sin conexión ni registro. En la sección 3 os explico por qué hemos hecho esto y cómo aplicar *exactamente el mismo código* a datos reales españoles.
+
+# Conceptos fundamentales
+
+## La imagen como función discreta
+
+Formalmente, una imagen digital de dimensión $d$ es una función
+
+$$
+I : \Omega \subset \mathbb{Z}^d \longrightarrow \mathbb{R}, \qquad (i, j, k) \longmapsto I(i,j,k),
+$$
+
+que asigna a cada elemento de una rejilla discreta (**píxel** si $d = 2$, **vóxel** si $d = 3$) un valor de **intensidad**. En R, esto no es más que un `array` numérico: una matriz para 2D, un array de tres índices para 3D y de cuatro para series temporales (fMRI, difusión, perfusión).
+
+Pero la rejilla de índices no basta. Para que la imagen tenga sentido clínico necesitamos saber **dónde está cada vóxel en el cuerpo del paciente**, en milímetros. Esto se consigue con una **transformación afín** $A \in \mathbb{R}^{4\times 4}$ que lleva índices a coordenadas físicas:
+
+$$
+\begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix}
+= A \begin{pmatrix} i \\ j \\ k \\ 1 \end{pmatrix},
+\qquad
+A = \begin{pmatrix} R \cdot \operatorname{diag}(\Delta_i, \Delta_j, \Delta_k) & \mathbf{t} \\ \mathbf{0}^\top & 1 \end{pmatrix},
+$$
+
+donde $\Delta$ es el tamaño del vóxel en mm, $R$ una matriz de rotación (o reflexión) que codifica la **orientación**, y $\mathbf{t}$ la posición del origen. Confundir esta orientación es uno de los errores clásicos del área: un hemisferio izquierdo que aparece a la derecha no es un problema estético, es un error clínico.
+
+**Ejemplo mínimo.** Una "imagen" de $5 \times 5$ píxeles con un objeto brillante en el centro, tratada al estilo tidy (un píxel = una fila):
+
+```{r juguete, fig.width = 3.5, fig.height = 3}
+juguete <- matrix(c(0, 0, 0, 0, 0,
+                    0, 2, 5, 2, 0,
+                    0, 5, 9, 5, 0,
+                    0, 2, 5, 2, 0,
+                    0, 0, 0, 0, 0), nrow = 5, byrow = TRUE)
+
+# De matriz a tibble: una fila por píxel, con sus índices (i, j)
+juguete_tbl <- expand_grid(i = 1:5, j = 1:5) |>
+  mutate(intensidad = juguete[cbind(i, j)])
+
+juguete_tbl |>
+  ggplot(aes(x = j, y = i, fill = intensidad)) +
+  geom_raster() +
+  geom_text(aes(label = intensidad), colour = "red") +
+  scale_y_reverse() +                     # fila 1 arriba, como en la matriz
+  scale_fill_gradient(low = "black", high = "white") +
+  coord_fixed() +
+  theme_void()
+```
+
+Observad que ya hemos tenido que decidir **qué índice va en el eje horizontal y en qué sentido crece el vertical**. Esta decisión, trivial aquí, es exactamente la que codifican las cabeceras DICOM y NIfTI.
+
+## Formatos: DICOM frente a NIfTI
+
+| Aspecto | **DICOM** (*Digital Imaging and Communications in Medicine*) | **NIfTI-1/2** (*Neuroimaging Informatics Technology Initiative*) |
+|:---|:---|:---|
+| Origen | Estándar clínico (NEMA, ISO 12052) | Comunidad de investigación (NIH, 2004) |
+| Unidad típica | Un fichero por corte 2D | Un fichero por volumen 3D/4D |
+| Metadatos | Cientos de etiquetas `(grupo, elemento)`: paciente, equipo, adquisición… | Cabecera fija de 348 bytes (NIfTI-1): dimensiones, vóxel, afín |
+| Datos personales | **Sí** (nombre, ID, fecha de nacimiento…) | Normalmente no |
+| Uso | PACS hospitalarios, intercambio clínico | Análisis cuantitativo, investigación |
+
+El flujo habitual en investigación es: **PACS → DICOM → (anonimización) → conversión a NIfTI → análisis**. En R, la conversión puede hacerse con `oro.dicom::dicom2nifti()` o, de forma más robusta, con el paquete `divest`, que envuelve la herramienta de referencia `dcm2niix`.
+
+## Fuentes de imagen médica en España
+
+España cuenta con algunos de los repositorios abiertos de imagen médica más relevantes de Europa:
+
+- **BIMCV** (*Banco de Imágenes Médicas de la Comunidad Valenciana*, <https://bimcv.cipf.es/>), de la Conselleria de Sanitat y FISABIO/CIPF. Destaca **BIMCV-COVID19+**, con radiografías y TC de tórax de pacientes COVID-19 en formato estructurado BIDS.
+- **PadChest**, distribuido a través de BIMCV y procedente del Hospital Universitario de San Juan de Alicante: más de 160 000 radiografías de tórax con informes etiquetados y mapeados a conceptos **UMLS**, lo que lo conecta directamente con la parte de Web Semántica de la asignatura.
+- A escala europea, la infraestructura **EUCAIM** (*Cancer Image Europe*), en la que participan centros españoles, federa repositorios de imagen oncológica.
+
+Todos ellos exigen **registro y la aceptación de un acuerdo de uso de datos**, como corresponde a datos de salud bajo el **RGPD** (art. 9, categorías especiales) y la LOPDGDD. Por eso, para la sesión de hoy usaremos ficheros de ejemplo incluidos en los paquetes de CRAN: un corte de RM abdominal en DICOM y un volumen cerebral de RM en NIfTI. Al final del cuaderno tenéis un bloque preparado para aplicar el mismo *pipeline* a PadChest o BIMCV una vez descargados.
+
+# Bloque 1: DICOM, lectura y metadatos
+
+## Lectura de un fichero
+
+El paquete `oro.dicom` incluye un corte coronal de RM de abdomen ponderado en T2. `readDICOMFile()` devuelve una lista con dos elementos: `hdr` (la cabecera) e `img` (la matriz de píxeles).
+
+```{r leer-dicom}
+ruta_dcm <- system.file("dcm", "Abdo.dcm", package = "oro.dicom")
+abdo <- readDICOMFile(ruta_dcm)
+
+names(abdo)
+dim(abdo$img)      # filas x columnas
+range(abdo$img)    # rango de intensidades (unidades arbitrarias en RM)
+```
+
+## La cabecera como tibble
+
+La cabecera ya es un `data.frame`, así que la convertimos a `tibble` y la tratamos como cualquier otra fuente tabular del curso:
+
+```{r cabecera}
+cabecera <- as_tibble(abdo$hdr)
+cabecera
+
+etiquetas_clave <- c("Modality", "Manufacturer", "MagneticFieldStrength",
+                     "SeriesDescription", "SliceThickness", "PixelSpacing",
+                     "Rows", "Columns", "BitsStored",
+                     "WindowCenter", "WindowWidth")
+
+cabecera |>
+  filter(name %in% etiquetas_clave) |>
+  select(grupo = group, elemento = element, etiqueta = name, valor = value)
+```
+
+Fijaos en la información que da contexto físico y técnico a los píxeles: equipo Philips de 1,5 T, cortes de 10 mm y píxeles de 1,465 mm. El **campo de visión** (FOV) es, por tanto:
+
+```{r fov}
+cabecera |>
+  filter(name %in% c("Rows", "PixelSpacing")) |>
+  select(name, value)
+
+pixel_mm <- extractHeader(abdo$hdr, "PixelSpacing", numeric = FALSE) |>
+  str_split_1(" ") |>
+  as.numeric()
+
+fov_mm <- dim(abdo$img) * pixel_mm
+fov_mm
+```
+
+Unos 37,5 cm de lado: el abdomen completo de un adulto.
+
+## Anonimización
+
+La cabecera contiene **información de identificación personal** (PHI). Antes de compartir cualquier imagen fuera del hospital, estas etiquetas deben eliminarse o sustituirse. Un ejemplo tidy, deliberadamente sencillo:
+
+```{r anonimizar}
+etiquetas_phi <- c("PatientsName", "PatientID", "PatientsBirthDate",
+                   "PatientsSex", "PatientsAge", "InstitutionName",
+                   "ReferringPhysiciansName")
+
+cabecera_anon <- cabecera |>
+  mutate(value = if_else(name %in% etiquetas_phi, "ANONIMIZADO", value))
+
+cabecera_anon |>
+  filter(name %in% etiquetas_phi) |>
+  select(name, value)
+```
+
+> **Nota del profesor.** Esto es una ilustración pedagógica, **no** una anonimización conforme a norma. El perfil de desidentificación de DICOM (PS3.15, Anexo E) enumera decenas de etiquetas, incluidos UIDs, fechas y etiquetas privadas del fabricante, y además pueden existir datos **incrustados en los propios píxeles** (texto sobreimpreso en ecografías o radiografías). En entornos reales se usan herramientas validadas.
+
+# Bloque 2: visualización 2D y ventaneo
+
+## Una función auxiliar tidy
+
+Vamos a reutilizar la idea del ejemplo de juguete: convertir una matriz en un `tibble` largo, con una fila por píxel.
+
+```{r aux}
+matriz_a_tibble <- function(m) {
+  expand_grid(i = seq_len(nrow(m)), j = seq_len(ncol(m))) |>
+    mutate(intensidad = m[cbind(i, j)])
+}
+
+abdo_tbl <- matriz_a_tibble(abdo$img)
+abdo_tbl
+```
+
+`oro.dicom` invierte las filas al leer (argumento `flipupdown = TRUE`), de forma que el índice de fila `i` crece hacia **craneal**. Situando las columnas `j` en el eje horizontal obtenemos la **convención radiológica**: el lado derecho del paciente aparece a la izquierda del observador.
+
+```{r dicom-plot, fig.width = 5, fig.height = 5}
+tema_imagen <- theme_void() + theme(legend.position = "right")
+
+abdo_tbl |>
+  ggplot(aes(x = j, y = i, fill = intensidad)) +
+  geom_raster() +
+  scale_fill_gradient(low = "black", high = "white") +
+  coord_fixed() +
+  labs(title = "RM abdominal coronal, T2") +
+  tema_imagen
+```
+
+Reconoced las estructuras: el hígado (hipointenso en T2) arriba a la izquierda del observador, las asas intestinales con contenido líquido muy brillantes y los cuerpos vertebrales en la línea media.
+
+## Ventaneo (*windowing*)
+
+El ojo humano distingue unos pocos cientos de niveles de gris, pero el detector registra 12 bits (4096 niveles). El **ventaneo** aplica una transformación lineal a trozos que concentra el rango dinámico de la pantalla en el intervalo de interés, definido por un **centro** $C$ y una **anchura** $W$:
+
+$$
+g(x) =
+\begin{cases}
+0 & x \le C - W/2 \\[2pt]
+\dfrac{x - (C - W/2)}{W} & C - W/2 < x < C + W/2 \\[6pt]
+1 & x \ge C + W/2
+\end{cases}
+$$
+
+En TC, donde las intensidades son **unidades Hounsfield** con significado físico (agua = 0 HU, aire = −1000 HU), las ventanas están estandarizadas: pulmón ($C = -600$, $W = 1500$), mediastino ($C = 40$, $W = 400$), hueso ($C = 400$, $W = 1800$). En RM las unidades son arbitrarias, y por eso el equipo propone una ventana en la propia cabecera.
+
+```{r ventaneo, fig.width = 9, fig.height = 4.5}
+ventana <- function(x, centro, anchura) {
+  pmin(pmax((x - (centro - anchura / 2)) / anchura, 0), 1)
+}
+
+wc <- extractHeader(abdo$hdr, "WindowCenter")
+ww <- extractHeader(abdo$hdr, "WindowWidth")
+c(centro = wc, anchura = ww)
+
+abdo_ventanas <- abdo_tbl |>
+  mutate(
+    `Ventana de la cabecera`     = ventana(intensidad, wc, ww),
+    `Ventana estrecha (C=300, W=300)` = ventana(intensidad, 300, 300)
+  ) |>
+  select(-intensidad) |>
+  pivot_longer(-c(i, j), names_to = "ventana", values_to = "gris")
+
+abdo_ventanas |>
+  ggplot(aes(j, i, fill = gris)) +
+  geom_raster() +
+  scale_fill_gradient(low = "black", high = "white", guide = "none") +
+  coord_fixed() +
+  facet_wrap(~ ventana) +
+  theme_void()
+```
+
+Con la ventana estrecha centrada en tonos bajos ganamos contraste dentro del hígado y el bazo a costa de saturar en blanco todo el contenido líquido. **El ventaneo no modifica los datos, solo su representación**: es un parámetro de visualización, no de análisis.
+
+# Bloque 3: NIfTI y volúmenes 3D
+
+## Lectura y cabecera
+
+Ahora trabajamos con un volumen cerebral de RM ponderado en T2, de baja resolución, en el que el líquido cefalorraquídeo (LCR) aparece hiperintenso y del que ya se ha extraído el cerebro (*skull stripping*: todo lo que no es intracraneal vale 0). Viene incluido en `RNifti`:
+
+```{r leer-nifti}
+ruta_nii <- system.file("extdata", "example.nii.gz", package = "RNifti")
+cerebro <- readNifti(ruta_nii)
+
+cerebro
+dim(cerebro)          # vóxeles en i, j, k
+pixdim(cerebro)       # tamaño del vóxel en mm
+orientation(cerebro)  # código de orientación
+xform(cerebro)        # matriz afín A (índices -> mm)
+```
+
+Interpretemos la salida:
+
+- 96 × 96 × 60 vóxeles **isotrópicos** de 2,5 mm, es decir, un volumen de vóxel de $2{,}5^3 = 15{,}625\ \text{mm}^3$.
+- La orientación `LAS` significa que el índice $i$ crece hacia la izquierda (*Left*) del paciente, $j$ hacia anterior y $k$ hacia superior. El $-2{,}5$ de la diagonal de la matriz afín es precisamente esa reflexión en el eje $x$ del espacio físico, que en NIfTI sigue el convenio RAS+.
+
+Podemos comprobar la fórmula de la sección 3.1 calculando la posición física del vóxel central. Atención: NIfTI indexa desde 0, R desde 1.
+
+```{r afin}
+vox_centro <- c(48, 48, 30)
+xform(cerebro) %*% c(vox_centro - 1, 1)
+```
+
+## Vistas ortogonales en formato tidy
+
+Extraemos los tres cortes centrales (axial, coronal y sagital) y los apilamos en un único `tibble` largo con una columna `plano`, lo que nos permite usar `facet_wrap()`:
+
+```{r ortogonales, fig.width = 9, fig.height = 3.8}
+corte_tbl <- function(m, plano) {
+  matriz_a_tibble(m) |> mutate(plano = plano)
+}
+
+ortogonales <- bind_rows(
+  corte_tbl(cerebro[, , 30], "Axial (k = 30)"),
+  corte_tbl(cerebro[, 48, ], "Coronal (j = 48)"),
+  corte_tbl(cerebro[48, , ], "Sagital (i = 48)")
+) |>
+  mutate(plano = fct_inorder(plano))
+
+ortogonales |>
+  ggplot(aes(x = i, y = j, fill = intensidad)) +
+  geom_raster() +
+  scale_fill_gradient(low = "black", high = "white") +
+  coord_fixed() +
+  facet_wrap(~ plano) +
+  tema_imagen
+```
+
+> **Nota del profesor.** Como $i$ crece hacia la izquierda del paciente y lo dibujamos creciendo hacia la derecha de la pantalla, los cortes axial y coronal están en **convención neurológica**: el hemisferio izquierdo aparece a la izquierda del observador. En la convención radiológica (la del bloque 2) ocurre lo contrario, y bastaría con añadir `scale_x_reverse()`. **Indicad siempre la convención en los pies de figura.**
+
+Como los vóxeles son isotrópicos, `coord_fixed()` con razón 1 basta. Si no lo fueran (por ejemplo, cortes de 10 mm como en la RM abdominal), la razón de aspecto debería ser $\Delta_y / \Delta_x$.
+
+# Bloque 4: intensidades, normalización y segmentación
+
+## Del volumen a un tibble de vóxeles
+
+El análisis cuantitativo trabaja sobre los vóxeles **del tejido**, no sobre el fondo. Como el cerebro ya está extraído, la máscara cerebral es simplemente `cerebro > 0`. Construimos un `tibble` con un vóxel por fila, conservando su índice lineal para poder reconstruir el volumen al final:
+
+```{r voxeles}
+voxeles <- tibble(
+  idx        = which(cerebro > 0),
+  intensidad = as.numeric(cerebro[idx])
+)
+
+voxeles
+
+# Volumen de la máscara en mL (1 mL = 1000 mm^3)
+vol_voxel_mm3 <- prod(pixdim(cerebro))
+nrow(voxeles) * vol_voxel_mm3 / 1000
+```
+
+Un volumen intracraneal adulto típico está entre 1200 y 1700 mL. Que el nuestro quede en el extremo alto es esperable: con vóxeles de 2,5 mm, todo vóxel del borde que toca parcialmente el cerebro entra completo en la máscara. Es nuestro primer encuentro con el **efecto de volumen parcial**.
+
+## Histograma y normalización
+
+El histograma es la herramienta diagnóstica básica de cualquier *pipeline* de imagen:
+
+```{r histograma}
+voxeles |>
+  ggplot(aes(intensidad)) +
+  geom_histogram(bins = 150, fill = "grey30") +
+  labs(x = "Intensidad (u.a.)", y = "Nº de vóxeles",
+       title = "Histograma de intensidades dentro de la máscara cerebral")
+```
+
+La distribución es asimétrica, con una moda de tejido (sustancias blanca y gris, solapadas) y una cola larga de intensidades altas que corresponde al LCR. Como en RM **las intensidades no tienen unidades absolutas** (dependen del equipo, la bobina, la ganancia del receptor…), es imprescindible **normalizar** antes de comparar sujetos. La normalización más sencilla es el *z-score* dentro de la máscara:
+
+$$
+z(\mathbf{v}) = \frac{I(\mathbf{v}) - \mu_{\text{máscara}}}{\sigma_{\text{máscara}}}
+$$
+
+```{r zscore}
+voxeles <- voxeles |>
+  mutate(z = (intensidad - mean(intensidad)) / sd(intensidad))
+
+voxeles |>
+  summarise(media = mean(z), dt = sd(z),
+            p01 = quantile(z, 0.01), p99 = quantile(z, 0.99))
+```
+
+Existen métodos más robustos (normalización por percentiles, *WhiteStripe*, igualación de histogramas), y en la práctica real se corrige antes la **inhomogeneidad de campo** (*bias field*, por ejemplo con N4) para que un mismo tejido tenga la misma intensidad en todo el volumen.
+
+## Segmentación por *k-means*
+
+**Segmentar** es asignar a cada vóxel una etiqueta de tejido. El método más simple basado en intensidad es *k-means* con $k = 3$ clases, que minimiza la varianza intraclase:
+
+$$
+\min_{\{C_c\}} \sum_{c=1}^{3} \sum_{\mathbf{v} \in C_c} \bigl(z(\mathbf{v}) - \mu_c\bigr)^2 .
+$$
+
+Como *k-means* devuelve etiquetas arbitrarias (1, 2, 3), las ordenamos por su centroide. En T2 el orden esperado sería LCR \> sustancia gris \> sustancia blanca, pero aquí seremos prudentes y hablaremos de **clases de intensidad**; enseguida veremos por qué:
+
+```{r kmeans}
+set.seed(8235)
+km <- kmeans(voxeles$z, centers = 3, nstart = 10)
+
+# Ordenamos los centroides para dar nombre anatómico a cada clase
+etiquetas <- tibble(cluster = 1:3, centro = as.numeric(km$centers)) |>
+  arrange(centro) |>
+  mutate(tejido = factor(c("Hipointensa", "Intermedia", "Hiperintensa (LCR)"),
+                         levels = c("Hipointensa", "Intermedia", "Hiperintensa (LCR)")),
+         etiqueta = as.integer(tejido))
+etiquetas
+
+voxeles <- voxeles |>
+  mutate(cluster = km$cluster) |>
+  left_join(etiquetas, by = "cluster")
+```
+
+## Cuantificación de volúmenes
+
+Pasar de vóxeles a **mililitros** es una operación tidy elemental, y es el tipo de biomarcador de imagen que luego acaba en una tabla clínica:
+
+```{r volumenes}
+volumenes <- voxeles |>
+  count(tejido, name = "n_voxeles") |>
+  mutate(volumen_mL = n_voxeles * vol_voxel_mm3 / 1000,
+         fraccion   = volumen_mL / sum(volumen_mL))
+volumenes
+```
+
+La clase hiperintensa (unos 280 mL, en torno al 16 %) es compatible con el LCR intracraneal (ventrículos y surcos) más los vóxeles de borde con volumen parcial. Las otras dos, en cambio, **no se corresponden con sustancia blanca y gris**: una relación SB/SG de 1 a 5 es anatómicamente imposible (en un adulto ambas son del mismo orden). Lo que *k-means* ha separado es la cola inferior del histograma del grueso del parénquima, y la figura siguiente revela qué es esa cola: **el anillo de vóxeles del borde de la máscara**, mezcla de tejido y fondo por volumen parcial. Retened esta lección: **un algoritmo siempre devuelve una partición; que esa partición tenga significado anatómico es algo que debéis verificar vosotros.**
+
+## Comprobación visual
+
+Una segmentación nunca se da por buena sin inspeccionarla. Reconstruimos el volumen de etiquetas en un array y lo superponemos al corte axial:
+
+```{r overlay, fig.width = 9, fig.height = 4.5}
+seg <- array(0L, dim = dim(cerebro))
+seg[voxeles$idx] <- voxeles$etiqueta
+
+k <- 30
+p_orig <- matriz_a_tibble(cerebro[, , k]) |>
+  ggplot(aes(i, j, fill = intensidad)) +
+  geom_raster() +
+  scale_fill_gradient(low = "black", high = "white", guide = "none") +
+  coord_fixed() + theme_void() + labs(title = "T2 original")
+
+p_seg <- matriz_a_tibble(seg[, , k]) |>
+  mutate(tejido = factor(intensidad, levels = 0:3,
+                         labels = c("Fondo", levels(etiquetas$tejido)))) |>
+  ggplot(aes(i, j, fill = tejido)) +
+  geom_raster() +
+  scale_fill_manual(values = c("black", "#5E5E5E", "#BDBDBD", "#2C7FB8")) +
+  coord_fixed() + theme_void() + labs(title = "Segmentación k-means", fill = NULL)
+
+p_orig + p_seg
+```
+
+> **Nota del profesor: limitaciones que debéis saber explicar.** (1) *k-means* solo usa la intensidad e ignora la vecindad espacial; los campos aleatorios de Markov (paquete `mritc` del Task View) incorporan esa información. (2) Supone implícitamente clases de varianza similar; los modelos de mezcla gaussiana relajan ese supuesto. (3) **Efecto de volumen parcial**: con vóxeles de 2,5 mm muchos contienen mezcla de tejidos, y el borde de ventrículos y surcos cae en clases intermedias. (4) El contraste entre sustancia gris y blanca en esta imagen T2 de baja resolución es pobre; por eso la segmentación tisular en neuroimagen se hace sobre T1 de alta resolución (≈ 1 mm) y con mapas de probabilidad *a priori* de un atlas (FSL FAST, SPM, ANTs Atropos). (5) Sin una segmentación manual de referencia no podemos calcular métricas de validación como el coeficiente de Dice, $\mathrm{DSC} = 2|A \cap B| / (|A| + |B|)$.
+
+# Bloque 5: exportación del resultado
+
+El resultado de un análisis de imagen es, a su vez, **una imagen**, y debe guardarse con la misma geometría (afín, orientación, tamaño de vóxel) que la original para que cualquier visor (ITK-SNAP, 3D Slicer, FSLeyes) la superponga correctamente. `asNifti()` con `reference` copia la cabecera espacial:
+
+```{r exportar}
+seg_nii <- asNifti(seg, reference = cerebro)
+ruta_salida <- file.path(tempdir(), "segmentacion_kmeans.nii.gz")
+writeNifti(seg_nii, ruta_salida)
+
+# Comprobación: misma geometría que la imagen original
+seg_releida <- readNifti(ruta_salida)
+all.equal(xform(seg_releida), xform(cerebro))
+table(seg_releida)
+```
+
+Y, en coherencia con el resto del curso, la tabla de volúmenes se exporta como cualquier otra fuente tabular:
+
+```{r exportar-tabla, eval = FALSE}
+write_csv(volumenes, "volumenes_tejido.csv")
+```
+
+# Aplicación a datos reales españoles (para casa)
+
+Una vez registrados en BIMCV y descargada una imagen de **PadChest** (radiografías de tórax en PNG de 16 bits), el *pipeline* de los bloques 2 y 4 se aplica casi sin cambios. Este bloque no se ejecuta al renderizar:
+
+```{r padchest, eval = FALSE}
+# install.packages("png")
+library(png)
+
+rx <- readPNG("ruta/a/vuestra/imagen_padchest.png")   # matriz con valores en [0, 1]
+rx <- rx[nrow(rx):1, ]                                 # fila 1 abajo, como en el bloque 2
+
+matriz_a_tibble(rx) |>
+  ggplot(aes(j, i, fill = intensidad)) +
+  geom_raster() +
+  scale_fill_gradient(low = "black", high = "white") +
+  coord_fixed() +
+  theme_void()
+
+# Las etiquetas de PadChest vienen en un CSV con códigos UMLS:
+# read_csv() + filter() sobre ese fichero os conecta con la práctica de RDF/SPARQL.
+```
+
+Para un estudio de **BIMCV-COVID19+** en NIfTI, basta con sustituir `ruta_nii` del bloque 3 por la ruta al fichero descargado.
+
+# Ejercicios propuestos
+
+1.  **Ventaneo.** Sobre la RM abdominal, busca un par $(C, W)$ que maximice el contraste entre hígado y bazo. Represéntalo junto a la ventana de la cabecera con `facet_wrap()`.
+2.  **Robustez de la segmentación.** Repite la segmentación con `k = 2` y `k = 4`, y con la intensidad bruta en lugar del *z-score*. ¿Cómo cambia el volumen de la clase hiperintensa? ¿Por qué el *z-score* no altera la partición de *k-means* en una sola variable, pero sí sería relevante al comparar sujetos? Como alternativa, implementa el **umbral de Otsu** (maximización de la varianza entre clases) con `map_dbl()` sobre una rejilla de umbrales candidatos y compáralo con `k = 2`.
+3.  **Volumen por corte.** Usando `arrayInd(voxeles$idx, dim(cerebro))`, añade la coordenada `k` a cada vóxel y representa con `geom_line()` el volumen de LCR por corte axial a lo largo del eje craneocaudal. Identifica en la curva el nivel de los ventrículos laterales.
+4.  **Metadatos semánticos.** Elige cinco etiquetas de la cabecera DICOM y propón cómo representarlas como tripletas RDF (sujeto: el estudio; predicado: la etiqueta DICOM). Pista: DICOM tiene su propia ontología, publicada en el NCBO BioPortal.
+
+# Para saber más
+
+**Paquetes del CRAN Task View: Medical Image Analysis** que conviene conocer:
+
+| Paquete | Para qué sirve |
+|:---|:---|
+| `oro.dicom`, `oro.nifti`, `RNifti` | Lectura/escritura de DICOM, ANALYZE y NIfTI |
+| `divest` | Conversión DICOM → NIfTI con el motor de `dcm2niix` |
+| `neurobase` | Funciones de alto nivel sobre objetos NIfTI (máscaras, visualización) |
+| `fslr` | Interfaz a FSL desde R (requiere FSL instalado) |
+| `mritc` | Clasificación de tejidos en RM con modelos espaciales (MRF) |
+| `dcemriS4` | Análisis cuantitativo de RM con contraste dinámico (perfusión) |
+| `imager` | Procesado general de imagen 2D/3D (filtros, morfología) |
+
+Fuera de CRAN, el ecosistema **Neuroconductor** (`ANTsR`, `extrantsr`) ofrece registro y segmentación de nivel investigador, y en Bioconductor, **EBImage** está orientado a microscopía.
+
+**Referencias**
+
+- Whitcher, B., Schmid, V. J., y Thornton, A. (2011). Working with the DICOM and NIfTI data standards in R. *Journal of Statistical Software*, 44(6), 1–28.
+- Muschelli, J., Gherman, A., Fortin, J.-P., et al. (2019). Neuroconductor: an R platform for medical imaging analysis. *Biostatistics*, 20(2), 218–239.
+- Bustos, A., Pertusa, A., Salinas, J.-M., y de la Iglesia-Vayá, M. (2020). PadChest: a large chest X-ray image dataset with multi-label annotated reports. *Medical Image Analysis*, 66, 101797.
+- de la Iglesia Vayá, M., Saborit, J. M., Montell, J. A., et al. (2020). BIMCV COVID-19+: a large annotated dataset of RX and CT images from COVID-19 patients. *arXiv:2006.01174*.
+- NEMA. *DICOM PS3.15: Security and System Management Profiles*, Anexo E (perfiles de desidentificación).
+
+```{r sesion}
+sessionInfo()
+```
