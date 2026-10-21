@@ -2875,6 +2875,11 @@ intensidades → normalización → segmentación → cuantificación de
 volúmenes → exportación.</li>
 </ol>
 <table>
+<colgroup>
+<col width="11%" />
+<col width="61%" />
+<col width="27%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Bloque</th>
@@ -3224,6 +3229,7 @@ columnas <code>j</code> en el eje horizontal obtenemos la
 aparece a la izquierda del observador.</p>
 <pre class="r"><code>tema_imagen &lt;- theme_void() + theme(legend.position = &quot;right&quot;)
 
+#x11()
 abdo_tbl |&gt;
   ggplot(aes(x = j, y = i, fill = intensidad)) +
   geom_raster() +
