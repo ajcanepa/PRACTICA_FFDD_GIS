@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 1755 1765	vitamina A
+#1	AnnotatorNotes T1	82622003
+T2	NORMALIZABLES 1230 1240	vitamina A
+#2	AnnotatorNotes T2	82622003
+T3	PROTEINAS 1243 1263	enzimas pancreáticos
+#3	AnnotatorNotes T3	443590003
+T4	NORMALIZABLES 1100 1107	retinol
+#4	AnnotatorNotes T4	82622003
+T5	NORMALIZABLES 886 898	fluoresceína
+#5	AnnotatorNotes T5	85596006
+T6	PROTEINAS 289 300	protrombina
+#6	AnnotatorNotes T6	7348004
+T7	NORMALIZABLES 257 267	vitamina K
+#7	AnnotatorNotes T7	65183007
+T8	NORMALIZABLES 219 231	vitamina B12
+#8	AnnotatorNotes T8	419679002

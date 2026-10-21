@@ -1,0 +1,32 @@
+T1	NORMALIZABLES 1526 1533	sintrom
+#1	AnnotatorNotes T1	387457003
+T2	NORMALIZABLES 1512 1524	acenocumarol
+#2	AnnotatorNotes T2	387457003
+T3	PROTEINAS 1401 1428	anticuerpos antifosfolípido
+#3	AnnotatorNotes T3	259916004
+T5	PROTEINAS 1356 1381	anticuerpos antinucleares
+#5	AnnotatorNotes T5	45530001
+T6	PROTEINAS 1343 1354	fibrinógeno
+#6	AnnotatorNotes T6	23295004
+T7	PROTEINAS 1325 1341	antitrombina III
+#7	AnnotatorNotes T7	34086003
+T8	PROTEINAS 1322 1323	C
+#8	AnnotatorNotes T8	25525005
+T9	PROTEINAS 1308 1319	proteínas S
+#9	AnnotatorNotes T9	56898001
+T14	PROTEINAS 1146 1154	factor V
+#14	AnnotatorNotes T14	60208008
+T15	PROTEINAS 1171 1180	factor II
+#15	AnnotatorNotes T15	7348004
+T16	PROTEINAS 1048 1057	factor II
+#16	AnnotatorNotes T16	7348004
+T17	PROTEINAS 1027 1035	factor V
+#17	AnnotatorNotes T17	60208008
+T19	NORMALIZABLES 998 1009	nucleótidos
+#19	AnnotatorNotes T19	71211001
+T20	PROTEINAS 977 980	ADN
+#20	AnnotatorNotes T20	24851008
+T21	PROTEINAS 883 902	proteína c activada
+#21	AnnotatorNotes T21	130626008
+T22	PROTEINAS 758 769	protrombina
+#22	AnnotatorNotes T22	7348004

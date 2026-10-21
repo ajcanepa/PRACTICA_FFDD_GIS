@@ -1,0 +1,10 @@
+T1	PROTEINAS 1326 1338	precipitinas
+#1	AnnotatorNotes T1	<null>
+T2	NORMALIZABLES 1246 1257	voriconazol
+#2	AnnotatorNotes T2	385469007
+T3	PROTEINAS 1098 1120	antígeno galactomanano
+#3	AnnotatorNotes T3	709601002
+T4	PROTEINAS 1068 1071	IgG
+#4	AnnotatorNotes T4	29246005
+T5	PROTEINAS 1055 1067	precipitinas
+#5	AnnotatorNotes T5	<null>

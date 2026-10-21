@@ -1,0 +1,16 @@
+T1	PROTEINAS 487 523	enzima conversora de la angiotensina
+#1	AnnotatorNotes T1	112049007
+T2	NORMALIZABLES 1902 1912	creatinina
+#2	AnnotatorNotes T2	15373003
+T3	NORMALIZABLES 1721 1731	creatinina
+#3	AnnotatorNotes T3	15373003
+T4	NORMALIZABLES 624 634	creatinina
+#4	AnnotatorNotes T4	15373003
+T6	NORMALIZABLES 1895 1899	urea
+#5	AnnotatorNotes T6	387092000
+T8	NORMALIZABLES 1714 1718	urea
+#6	AnnotatorNotes T8	387092000
+T7	UNCLEAR 1644 1650	drogas
+#7	AnnotatorNotes T7	<null>
+T9	UNCLEAR 2346 2352	drogas
+#9	AnnotatorNotes T9	<null>

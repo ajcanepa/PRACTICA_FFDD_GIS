@@ -1,0 +1,14 @@
+T1	PROTEINAS 1623 1646	hormonas de crecimiento
+#1	AnnotatorNotes T1	713492005
+T2	PROTEINAS 709 731	hormona de crecimiento
+#2	AnnotatorNotes T2	713492005
+T3	PROTEINAS 1746 1757	vasopresina
+#3	AnnotatorNotes T3	77671006
+T4	NORMALIZABLES 1701 1718	metilprednisolona
+#4	AnnotatorNotes T4	116593003
+T7	NORMALIZABLES 691 703	testosterona
+#5	AnnotatorNotes T7	43688007
+T8	PROTEINAS 673 675	LH
+#6	AnnotatorNotes T8	64182005
+T9	PROTEINAS 667 670	FSH
+#7	AnnotatorNotes T9	25217009

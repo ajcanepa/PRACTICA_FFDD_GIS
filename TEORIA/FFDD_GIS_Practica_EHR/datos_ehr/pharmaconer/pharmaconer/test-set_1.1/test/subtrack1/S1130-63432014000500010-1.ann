@@ -1,0 +1,14 @@
+T1	PROTEINAS 2490 2501	Tocilizumab
+#1	AnnotatorNotes T1	444648007
+T2	PROTEINAS 1662 1673	Tocilizumab
+#2	AnnotatorNotes T2	444648007
+T3	PROTEINAS 1512 1523	Tocilizumab
+#3	AnnotatorNotes T3	444648007
+T4	NORMALIZABLES 992 1009	metilprednisolona
+#4	AnnotatorNotes T4	116593003
+T5	NORMALIZABLES 931 948	metilprednisolona
+#5	AnnotatorNotes T5	116593003
+T6	NORMALIZABLES 864 875	corticoides
+#6	AnnotatorNotes T6	255877006
+T7	NORMALIZABLES 124 139	yodo radiactivo
+#7	AnnotatorNotes T7	14399003

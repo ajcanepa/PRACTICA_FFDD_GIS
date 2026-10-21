@@ -1,0 +1,18 @@
+T1	PROTEINAS 1225 1229	Ki67
+#1	AnnotatorNotes T1	259981004
+T2	PROTEINAS 1202 1207	S-100
+#2	AnnotatorNotes T2	712718002
+T3	PROTEINAS 1193 1200	desmina
+#3	AnnotatorNotes T3	83475004
+T4	PROTEINAS 1186 1191	CD 34
+#4	AnnotatorNotes T4	89771004
+T5	PROTEINAS 1171 1184	beta catenina
+#5	AnnotatorNotes T5	<null>
+T6	PROTEINAS 1156 1169	alk-protein 1
+#6	AnnotatorNotes T6	<null>
+T7	PROTEINAS 1118 1124	actina
+#7	AnnotatorNotes T7	46583003
+T8	PROTEINAS 1106 1115	vimentina
+#8	AnnotatorNotes T8	75925000
+T9	PROTEINAS 951 959	colágeno
+#9	AnnotatorNotes T9	61472002

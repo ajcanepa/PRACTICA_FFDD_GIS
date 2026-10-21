@@ -1,0 +1,16 @@
+T1	PROTEINAS 1313 1328	antineumocócica
+#1	AnnotatorNotes T1	398730001
+T2	PROTEINAS 1425 1439	gammaglobulina
+#2	AnnotatorNotes T2	116648000
+T3	PROTEINAS 1232 1246	gammaglobulina
+#3	AnnotatorNotes T3	116648000
+T4	PROTEINAS 851 854	IgE
+#4	AnnotatorNotes T4	48583005
+T5	PROTEINAS 836 839	IgM
+#5	AnnotatorNotes T5	74889000
+T6	PROTEINAS 822 825	IgA
+#6	AnnotatorNotes T6	46046006
+T7	PROTEINAS 807 810	IgG
+#7	AnnotatorNotes T7	29246005
+T8	PROTEINAS 763 779	inmunoglobulinas
+#8	AnnotatorNotes T8	112133008

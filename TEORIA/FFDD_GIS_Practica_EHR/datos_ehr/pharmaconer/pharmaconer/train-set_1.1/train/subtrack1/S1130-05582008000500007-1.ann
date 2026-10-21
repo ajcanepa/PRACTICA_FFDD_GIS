@@ -1,0 +1,12 @@
+T1	UNCLEAR 1899 1918	vacuna antitetánica
+#1	AnnotatorNotes T1	412375000
+T3	NORMALIZABLES 3065 3085	solución antiséptica
+#2	AnnotatorNotes T3	373249005
+T4	NORMALIZABLES 2014 2026	metronidazol
+#3	AnnotatorNotes T4	372602008
+T5	NORMALIZABLES 1990 2011	amoxilina-clavulánico
+#4	AnnotatorNotes T5	708558004
+T6	PROTEINAS 1921 1935	gammaglobulina
+#5	AnnotatorNotes T6	116648000
+T7	NORMALIZABLES 1821 1841	solución antiséptica
+#6	AnnotatorNotes T7	373249005

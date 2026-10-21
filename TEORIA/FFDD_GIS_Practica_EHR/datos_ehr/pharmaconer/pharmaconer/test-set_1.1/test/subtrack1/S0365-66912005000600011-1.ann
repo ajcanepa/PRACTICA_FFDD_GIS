@@ -1,0 +1,14 @@
+T1	PROTEINAS 1137 1154	Inmunoglobulina G
+#1	AnnotatorNotes T1	29246005
+T2	PROTEINAS 1156 1159	IgG
+#2	AnnotatorNotes T2	29246005
+T3	NORMALIZABLES 1287 1297	Prednisona
+#3	AnnotatorNotes T3	116602009
+T4	NORMALIZABLES 373 383	Prednisona
+#4	AnnotatorNotes T4	116602009
+T5	NORMALIZABLES 990 1004	fluorometolona
+#5	AnnotatorNotes T5	2925007
+T6	NORMALIZABLES 965 976	gentamicina
+#6	AnnotatorNotes T6	387321007
+T7	NORMALIZABLES 474 486	torvastatina
+#7	AnnotatorNotes T7	373444002

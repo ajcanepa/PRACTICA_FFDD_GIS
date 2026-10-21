@@ -1,0 +1,16 @@
+T1	PROTEINAS 1643 1673	antígeno epitelial de membrana
+#1	AnnotatorNotes T1	103092003
+T2	PROTEINAS 1675 1678	EMA
+#2	AnnotatorNotes T2	103092003
+T3	PROTEINAS 1693 1697	cd10
+#3	AnnotatorNotes T3	50988004
+T4	PROTEINAS 1681 1690	vimentina
+#4	AnnotatorNotes T4	75925000
+T5	PROTEINAS 1627 1641	citoqueratinas
+#5	AnnotatorNotes T5	259987000
+T6	PROTEINAS 540 551	bevacizumab
+#6	AnnotatorNotes T6	409406007
+T7	PROTEINAS 527 537	interferón
+#7	AnnotatorNotes T7	49327004
+T8	NORMALIZABLES 91 105	claritromicina
+#8	AnnotatorNotes T8	387487009

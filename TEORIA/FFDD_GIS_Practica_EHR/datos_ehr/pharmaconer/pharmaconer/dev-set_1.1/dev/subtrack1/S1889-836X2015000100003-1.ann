@@ -1,0 +1,10 @@
+T1	PROTEINAS 404 452	propéptido amino-terminal del procolágeno tipo 1
+#1	AnnotatorNotes T1	712593005
+T2	PROTEINAS 398 402	P1NP
+#2	AnnotatorNotes T2	712593005
+T3	NORMALIZABLES 672 683	risedronato
+#3	AnnotatorNotes T3	387582001
+T5	NORMALIZABLES 493 504	risedronato
+#4	AnnotatorNotes T5	387582001
+T6	NORMALIZABLES 293 304	risedronato
+#5	AnnotatorNotes T6	387582001

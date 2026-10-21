@@ -1,0 +1,10 @@
+T3	PROTEINAS 2310 2334	reactantes de fase aguda
+#1	AnnotatorNotes T3	91309004
+T4	NORMALIZABLES 2096 2104	opiáceos
+#2	AnnotatorNotes T4	395994000
+T6	NORMALIZABLES 1808 1819	cloxacilina
+#3	AnnotatorNotes T6	373276005
+T7	PROTEINAS 1590 1609	proteína C reactiva
+#4	AnnotatorNotes T7	61425002
+T8	NORMALIZABLES 1161 1172	vancomicina
+#5	AnnotatorNotes T8	372735009

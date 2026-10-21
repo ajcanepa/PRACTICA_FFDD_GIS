@@ -1,0 +1,26 @@
+T3	NORMALIZABLES 1487 1497	creatinina
+#2	AnnotatorNotes T3	15373003
+T4	NORMALIZABLES 391 401	creatinina
+#3	AnnotatorNotes T4	15373003
+T5	PROTEINAS 1516 1527	hemoglobina
+#4	AnnotatorNotes T5	38082009
+T6	PROTEINAS 562 573	hemoglobina
+#5	AnnotatorNotes T6	38082009
+T7	PROTEINAS 186 197	hemoglobina
+#6	AnnotatorNotes T7	38082009
+T8	NORMALIZABLES 1394 1400	hierro
+#7	AnnotatorNotes T8	3829006
+T9	PROTEINAS 1377 1391	eritropoyetina
+#8	AnnotatorNotes T9	83042003
+T10	PROTEINAS 1173 1183	antígeno P
+#9	AnnotatorNotes T10	<null>
+T11	PROTEINAS 1035 1043	anti-Tja
+#10	AnnotatorNotes T11	<null>
+T13	PROTEINAS 664 676	haptoglobina
+#11	AnnotatorNotes T13	85294008
+T14	NORMALIZABLES 609 620	bilirrubina
+#12	AnnotatorNotes T14	79706000
+T15	PROTEINAS 593 596	LDH
+#13	AnnotatorNotes T15	259319003
+T16	NORMALIZABLES 423 427	urea
+#14	AnnotatorNotes T16	387092000

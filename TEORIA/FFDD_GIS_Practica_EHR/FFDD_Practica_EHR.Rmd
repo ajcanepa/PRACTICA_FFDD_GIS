@@ -1,0 +1,463 @@
+---
+title: "La Historia Clínica Electrónica (EHR) como fuente de datos biomédicos"
+subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
+author: "Dr. Antonio Canepa-Oneto"
+date: |
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      cache = TRUE, fig.width = 8, fig.height = 4.5)
+options(timeout = 900)   # algunas descargas son grandes
+```
+
+# Introducción: ¿qué es una EHR?
+
+La **Historia Clínica Electrónica** (*Electronic Health Record*, EHR) no se diseñó para investigar sino para **atender pacientes**, y precisamente por eso es a la vez una de las fuentes más ricas y más difíciles de explotar.
+
+Os propongo una definición que debéis ser capaces de reproducir con vuestras palabras:
+
+> La EHR es el registro **longitudinal**, **digital** y, idealmente, **interoperable** de la información de salud de una persona, generado en sus contactos con el sistema sanitario y compartible entre profesionales e instituciones autorizadas.
+
+Fijaos en los tres adjetivos, porque cada uno esconde un problema técnico.
+
+*Longitudinal* significa que acompaña al paciente a lo largo del tiempo, pero solo registra algo cuando el paciente acude. Las mediciones son, por tanto, irregulares y con abundantes valores ausentes que **no** son aleatorios: un paciente sano tiene pocos datos porque está sano.
+
+*Digital* no significa *estructurado*. Junto a diagnósticos codificados, prescripciones o resultados de laboratorio, una parte enorme de la información clínica vive en **texto libre**: notas de evolución, informes de alta, informes radiológicos.
+
+*Interoperable* exige estándares en dos niveles. Para la **estructura** y el intercambio se usan HL7 FHIR, openEHR o ISO 13606. Para el **significado** se usan terminologías como CIE-10-ES (diagnósticos), SNOMED CT (conceptos clínicos), LOINC (pruebas de laboratorio) o ATC (fármacos). Aquí conecta todo lo que hemos visto de Web Semántica: SNOMED CT se apoya en lógica descriptiva y puede representarse como ontología OWL.
+
+Conviene no confundir tres términos. El **EMR** (*Electronic Medical Record*) es el registro de un único centro. La **EHR** integra varios proveedores a lo largo de la vida del paciente. El **PHR** (*Personal Health Record*) lo gestiona el propio paciente, por ejemplo con datos de dispositivos *wearables*.
+
+## Un ejemplo para fijar ideas
+
+Una paciente con diabetes tipo 2 acude a su centro de salud y, meses después, a urgencias del hospital. Un extracto de su EHR en formato "largo" (una fila por evento) tendría este aspecto:
+
+```{r ejemplo-ehr}
+library(tidyverse)
+
+ehr_ejemplo <- tribble(
+  ~fecha,       ~centro,               ~tipo,         ~sistema, ~codigo,  ~valor,
+  "2026-02-10", "Centro de salud",     "Diagnóstico", "CIE-10", "E11",     "Diabetes mellitus tipo 2",
+  "2026-02-10", "Centro de salud",     "Laboratorio", "LOINC",  "4548-4",  "HbA1c = 8,1 %",
+  "2026-02-10", "Centro de salud",     "Prescripción","ATC",    "A10BA02", "Metformina 850 mg/12 h",
+  "2026-07-03", "Hospital (urgencias)","Nota clínica", NA,       NA,        "Paciente refiere mareo y sudoración...",
+  "2026-07-03", "Hospital (urgencias)","Laboratorio", "LOINC",  "2345-7",  "Glucosa = 52 mg/dL"
+) |>
+  mutate(fecha = as.Date(fecha))
+
+ehr_ejemplo
+```
+
+Observad que en cinco filas aparecen ya todos los rasgos de una EHR. Es **longitudinal**, porque recoge dos momentos. Es **multicéntrica**, porque combina dos proveedores. Es **mixta**, porque una fila es texto libre sin codificar. Y es **interoperable** gracias a los códigos: el médico de urgencias puede saber que la paciente toma metformina y valorar la hipoglucemia en ese contexto.
+
+Esta tabla es *tidy*: cada fila es una observación y cada columna una variable. Es el formato natural en el que extraeremos datos de una EHR para analizarlos.
+
+# La EHR en España: ¿por qué no podemos descargar una?
+
+Lo lógico sería ahora descargar una EHR real española y trabajar con ella. No podemos, y entender por qué forma parte de la lección.
+
+Los datos de salud son una **categoría especial de datos personales** según el artículo 9 del RGPD, y su tratamiento con fines distintos de la asistencia exige una base jurídica y garantías específicas. El **Espacio Europeo de Datos Sanitarios** (EHDS, Reglamento (UE) 2025/327) distingue dos usos. El **uso primario** es la asistencia al paciente. El **uso secundario** es la investigación, la salud pública y la innovación, y se canaliza a través de organismos de acceso a datos sanitarios con entornos de tratamiento seguros, no mediante descargas abiertas.
+
+Las fuentes españolas más cercanas a la EHR confirman este patrón:
+
+| Fuente | Contenido | Acceso a datos individuales |
+|---|---|---|
+| RAE-CMBD (Ministerio de Sanidad) | Altas hospitalarias y atención especializada, diagnósticos CIE-10-ES | Previa solicitud formal |
+| Encuesta de Morbilidad Hospitalaria (INE) | Diagnóstico principal, edad, sexo, fechas, estancia | Desde 2016, solo bajo condiciones especiales |
+| Historia Clínica Digital del SNS | Informes clínicos interoperables entre CC. AA. | Uso asistencial, no investigación abierta |
+
+Por tanto, en esta práctica trabajaremos con **dos sustitutos abiertos**, uno por cada gran tipo de dato de la EHR.
+
+El primero es **texto clínico no estructurado**: el corpus *PharmaCoNER* del Barcelona Supercomputing Center. Contiene 1000 casos clínicos en español, procedentes de publicaciones de acceso abierto, con anotaciones manuales de fármacos. No son notas reales de historia clínica, sino casos publicados; tenedlo presente al interpretar resultados.
+
+El segundo son **datos estructurados con dimensión temporal**: los datos abiertos del Centro Nacional de Epidemiología (ISCIII) sobre hospitalizaciones por COVID-19. Proceden de la notificación individual a la Red Nacional de Vigilancia (SiViES) y se publican agregados por día, sexo, grupo de edad y provincia. Son, en sentido estricto, un **uso secundario** de información que nace en la historia clínica.
+
+Usaremos tres paquetes de CRAN:
+
+* **`medExtractR`** (Vanderbilt): extracción de medicación en texto clínico mediante reglas y expresiones regulares.
+* **`EHR`** (Vanderbilt): procesa la salida del PLN y construye variables de dosis.
+* **`EHRtemporalVariability`** (Universitat Politècnica de València y Harvard): detecta desplazamientos temporales en la distribución de los datos (*dataset shifts*).
+
+```{r paquetes, cache=FALSE}
+# install.packages(c("tidyverse", "medExtractR", "EHR", "EHRtemporalVariability"))
+library(tidyverse)
+library(medExtractR)
+library(EHR)
+library(EHRtemporalVariability)
+
+dir_datos <- "datos_ehr"
+dir.create(dir_datos, showWarnings = FALSE)
+```
+
+> **Aviso práctico.** Trabajad con la sesión de R en UTF-8 (en Windows, R ≥ 4.2 ya lo hace por defecto). La primera ejecución descarga unos 80 MB; las siguientes reutilizan los ficheros.
+
+# Parte A. Texto clínico: de la nota a la variable
+
+## Descarga y lectura del corpus
+
+```{r descarga-pharmaconer}
+zip_pc <- file.path(dir_datos, "pharmaconer.zip")
+if (!file.exists(zip_pc)) {
+  download.file("https://zenodo.org/records/4270158/files/pharmaconer.zip?download=1",
+                zip_pc, mode = "wb")
+}
+unzip(zip_pc, exdir = file.path(dir_datos, "pharmaconer"))
+
+ficheros_txt <- list.files(file.path(dir_datos, "pharmaconer"),
+                           pattern = "\\.txt$", recursive = TRUE, full.names = TRUE)
+length(ficheros_txt)
+```
+
+Antes de aplicar ninguna herramienta de PLN conviene preguntarse para qué idioma se diseñó. `medExtractR` se desarrolló sobre notas clínicas en inglés, y sus expresiones regulares no esperan tildes, eñes ni comas decimales. Por eso normalizamos el texto de dos formas.
+
+Primero lo transliteramos a ASCII. La conversión *á → a* o *ñ → n* conserva la longitud de la cadena, así que las posiciones de carácter siguen siendo válidas. Después convertimos la coma decimal española en punto, porque *0,5 mg* no se reconocería como número.
+
+```{r lectura-corpus}
+normalizar <- function(x) {
+  x |>
+    stringi::stri_trans_general("Latin-ASCII") |>
+    str_replace_all("(\\d),(\\d)", "\\1.\\2")
+}
+
+corpus <- tibble(fichero = ficheros_txt) |>
+  mutate(doc_id = tools::file_path_sans_ext(basename(fichero)),
+         texto  = map_chr(fichero, read_file) |> normalizar()) |>
+  distinct(doc_id, .keep_all = TRUE)
+
+corpus |>
+  mutate(n_palabras = str_count(texto, "\\S+")) |>
+  summarise(documentos = n(), palabras_media = mean(n_palabras))
+```
+
+## El *gold standard*: anotaciones en formato brat
+
+Cada documento `.txt` tiene un fichero `.ann` con las anotaciones manuales en formato **brat**. Cada línea contiene un identificador, el tipo de entidad, las posiciones de inicio y fin, y la mención literal. Por ejemplo:
+
+```
+T3    NORMALIZABLES 512 523    metformina
+```
+
+Las leemos y las convertimos en una tabla *tidy*. Nos servirán dos veces: para construir el diccionario de fármacos que buscaremos y, al final, para evaluar el extractor.
+
+```{r anotaciones}
+anotaciones <- list.files(file.path(dir_datos, "pharmaconer"),
+                          pattern = "\\.ann$", recursive = TRUE, full.names = TRUE) |>
+  map_dfr(\(f) read_tsv(f, col_names = c("id", "tipo_pos", "mencion"),
+                        col_types = "ccc", quote = "") |>
+            mutate(doc_id = tools::file_path_sans_ext(basename(f)))) |>
+  filter(str_starts(id, "T")) |>
+  separate_wider_delim(tipo_pos, " ", names = c("tipo", "inicio", "fin"),
+                       too_many = "drop") |>
+  mutate(mencion = str_to_lower(normalizar(mencion)))
+
+farmacos <- anotaciones |>
+  filter(tipo == "NORMALIZABLES") |>
+  count(mencion, sort = TRUE)
+
+head(farmacos, 15)
+```
+
+`medExtractR` es un sistema **dirigido**: no descubre fármacos, sino que busca la información de dosis de los fármacos que le indicamos. Seleccionamos aquellos que aparecen en al menos tres documentos seguidos de una dosis en miligramos.
+
+```{r farmacos-dosificados}
+farmacos_dosificados <- farmacos |>
+  filter(str_length(mencion) > 4) |>
+  mutate(con_dosis = map_int(mencion, \(m)
+           sum(str_detect(corpus$texto,
+                          regex(paste0("\\b", m, "\\b.{0,25}\\d+\\s?mg"),
+                                ignore_case = TRUE))))) |>
+  filter(con_dosis >= 3) |>
+  slice_max(con_dosis, n = 15)
+
+farmacos_dosificados
+```
+
+## Adaptar `medExtractR` al español
+
+Los diccionarios que trae el paquete están en inglés: *bid*, *twice daily*, *by mouth*. Podéis comprobarlo con `data(frequency_vals); head(frequency_vals)`. Cada diccionario es un `data.frame` con una columna `expr` (expresión regular) y, opcionalmente, una columna `value` (forma normalizada). Construimos los equivalentes en español. Para la frecuencia, `value` es el número de tomas al día.
+
+```{r diccionarios}
+frecuencia_es <- tribble(
+  ~expr,                                     ~value,
+  "cada\\s?24\\s?h(oras)?",                  1,
+  "cada\\s?12\\s?h(oras)?",                  2,
+  "cada\\s?8\\s?h(oras)?",                   3,
+  "cada\\s?6\\s?h(oras)?",                   4,
+  "/\\s?24\\s?h(oras)?",                     1,
+  "/\\s?12\\s?h(oras)?",                     2,
+  "/\\s?8\\s?h(oras)?",                      3,
+  "/\\s?6\\s?h(oras)?",                      4,
+  "(una\\svez|1\\svez)\\sal\\sdia",          1,
+  "(dos|2)\\sveces\\sal\\sdia",              2,
+  "(tres|3)\\sveces\\sal\\sdia",             3,
+  "(al|/|por)\\s?dia|diari[oa]s?",           1,
+  "semanal(es)?|a\\sla\\ssemana",            1/7
+) |> as.data.frame()
+
+via_es <- tribble(
+  ~expr,                                      ~value,
+  "(por\\s)?via\\soral|v\\.o\\.|oral",        "orally",
+  "(via\\s)?(intra|endo)venos[ao]|i\\.v\\.",  "intravenous",
+  "(via\\s)?subcutane[ao]|s\\.c\\.",          "subcutaneous",
+  "(via\\s)?intramuscular|i\\.m\\.",          "intramuscular",
+  "transdermic[ao]",                          "transdermal"
+) |> as.data.frame()
+
+momento_es <- data.frame(expr = c("(por|en)\\sla\\smanana", "(por|en)\\sla\\snoche",
+                                  "al\\sacostarse", "con\\s(las\\s)?comidas",
+                                  "en\\sayunas", "antes\\sde\\s(las\\s)?comidas"))
+
+# El cambio de dosis se busca como palabra literal, no como regex
+cambio_es <- data.frame(expr = c("aumenta", "se aumenta", "aumento", "incrementa",
+                                 "reduce", "se reduce", "disminuye", "se disminuye",
+                                 "suspende", "se suspende", "retira", "se retira"))
+
+# Otros fármacos que cortan la ventana de búsqueda (sustituye a la lista RxNorm)
+lista_corte <- farmacos$mencion
+```
+
+> **Atención: primera trampa.** La documentación de `medExtractR` sugiere llamar al argumento `freq_dict`, pero el nombre que el código fuente reconoce realmente es **`frequency_dict`**. Con `freq_dict` la función no da error: crea una entidad nueva llamada *freq* que ningún paso posterior entiende. Es un buen recordatorio de que, en informática biomédica, leer el código fuente forma parte del método.
+
+## Extracción con `medExtractR`
+
+Cada mención encontrada se devuelve en formato largo: tipo de entidad, expresión literal y posición `inicio:fin` en el texto. La ventana de búsqueda (`window_length`) es de 60 caracteres tras el nombre del fármaco. Permitimos una distancia de edición de 1 (`max_dist`) para tolerar erratas.
+
+> **Atención: segunda trampa.** `medExtractR` no siempre devuelve un `data.frame`. Si encuentra el fármaco pero ninguna entidad asociada (por ejemplo, *"se suspende la metformina"*), devuelve un simple `NA` lógico. Si no encuentra el fármaco, devuelve una fila con todo `NA`. Una función que cambia el tipo de su salida según el caso rompe cualquier *pipeline*. Por eso la envolvemos en otra que **siempre** devuelva una tabla con el mismo esquema: es el principio de estabilidad de tipos del tidyverse.
+
+```{r medextractr}
+esquema_vacio <- tibble(entity = character(), expr = character(), pos = character())
+
+extraer <- function(texto, farmaco) {
+  res <- medExtractR(note = texto, drug_names = farmaco, unit = "mg",
+                     window_length = 60, max_dist = 1, drug_list = lista_corte,
+                     dosechange_dict = cambio_es,
+                     frequency_dict  = frecuencia_es,
+                     route_dict      = via_es,
+                     intaketime_dict = momento_es)
+  if (!is.data.frame(res)) return(esquema_vacio)
+  res |>
+    mutate(across(everything(), as.character)) |>
+    filter(!is.na(entity))
+}
+
+mxr <- corpus |>
+  select(doc_id, texto) |>
+  mutate(res = map(texto, \(t) map_dfr(farmacos_dosificados$mencion,
+                                       \(f) extraer(t, f)))) |>
+  select(-texto) |>
+  unnest(res) |>
+  as_tibble()
+
+mxr |> count(entity, sort = TRUE)
+```
+
+Veamos qué ha extraído en el primer documento:
+
+```{r mxr-ejemplo}
+mxr |> filter(doc_id == first(doc_id))
+```
+
+## Del texto a variables analizables con el paquete `EHR`
+
+El paquete `EHR` organiza este proceso en dos módulos. **Extract-Med** ejecuta el PLN sobre ficheros de notas mediante `extractMed()`, que por dentro llama a `medExtractR`. **Pro-Med-NLP** convierte la salida en un formato estándar (`parseMedExtractR()`) y empareja cada dosis y frecuencia con su mención de fármaco (`buildDose()`).
+
+> **Atención: tercera trampa, y la más grave.** En principio usaríamos `extractMed()` para el primer módulo, pero tiene un fallo que borra los datos en silencio. Une los resultados de cada nota con una función interna que fuerza todas las columnas a la clase que tenían en la **primera** nota. Si en la primera nota no aparece ningún fármaco, `medExtractR` devuelve una fila de `NA` lógicos; a partir de ahí, todos los textos extraídos del corpus se convierten a `logical` y pasan a ser `NA`. No hay error ni aviso: simplemente obtenéis una tabla vacía de contenido. Podéis comprobarlo vosotros mismos con este pequeño experimento.
+
+```{r bug-extractmed, cache=FALSE}
+dir_prueba <- tempfile()
+dir.create(dir_prueba)
+write_file("Paciente sin tratamiento farmacologico.", file.path(dir_prueba, "a.txt"))
+write_file("metformina 850 mg cada 12 horas", file.path(dir_prueba, "b.txt"))
+
+extractMed(file.path(dir_prueba, c("a.txt", "b.txt")),
+           drugnames = "metformina", drgunit = "mg", windowlength = 60,
+           progress = FALSE) |>
+  str()
+```
+
+La nota `b.txt` contiene una dosis perfectamente extraíble, y sin embargo todas las columnas salen como `logi NA`. La lección es doble: **comprobad siempre la clase y el contenido de las salidas intermedias**, y no deis por buena una función solo porque no produce errores.
+
+Afortunadamente no necesitamos `extractMed()`. Esa función solo ejecuta `medExtractR` sobre cada nota y añade el nombre del fichero, y eso ya lo hemos hecho nosotros, con estabilidad de tipos, en la tabla `mxr`. Basta con darle el formato que espera el módulo Pro-Med-NLP: columnas `filename`, `entity`, `expr` y `pos`.
+
+> **Atención: cuarta trampa.** Desde la versión 0.4, `medExtractR` etiqueta la dosis como `DoseStrength`, pero `EHR::parseMedExtractR()` (versión 0.4-11) sigue esperando la etiqueta antigua `Dose`. Si no recodificamos, la dosis desaparece, de nuevo **sin ningún aviso**. Dos paquetes del mismo grupo de investigación, en sus últimas versiones de CRAN, no son compatibles entre sí.
+
+```{r parse-build}
+salida_ext <- mxr |>
+  transmute(filename = paste0(doc_id, ".txt"),
+            entity   = recode(entity, DoseStrength = "Dose"),
+            expr, pos)
+
+write_csv(salida_ext, file.path(dir_datos, "mxr_salida.csv"))
+
+parseado <- parseMedExtractR(file.path(dir_datos, "mxr_salida.csv"))
+dosis    <- buildDose(parseado) |> as_tibble()
+dosis
+```
+
+La **quinta trampa** es más sutil. Las funciones de normalización del paquete (`stdzFreq()`, `collapseDose()`) convierten frecuencias escritas en inglés a números, pero no entienden *cada 12 horas*. Haremos esa normalización nosotros, reutilizando la columna `value` de nuestro diccionario, y calcularemos la **dosis diaria**: la variable que realmente necesitaría un estudio farmacoepidemiológico.
+
+```{r dosis-diaria}
+frecuencia_num <- function(txt) {
+  if (is.na(txt)) return(NA_real_)
+  hit <- frecuencia_es$value[str_detect(txt, regex(frecuencia_es$expr, ignore_case = TRUE))]
+  if (length(hit)) hit[1] else NA_real_
+}
+
+dosis_tidy <- dosis |>
+  transmute(doc_id    = str_remove(filename, "\\.txt$"),
+            farmaco   = str_to_lower(drugname),
+            dosis_mg  = parse_number(coalesce(dosestr, strength)),
+            frecuencia_txt = freq,
+            tomas_dia = map_dbl(freq, frecuencia_num),
+            cambio    = !is.na(dosechange)) |>
+  mutate(dosis_diaria_mg = dosis_mg * tomas_dia)
+
+dosis_tidy |>
+  group_by(farmaco) |>
+  summarise(menciones = n(),
+            con_frecuencia = sum(!is.na(tomas_dia)),
+            dosis_mediana_mg = median(dosis_mg, na.rm = TRUE),
+            dosis_diaria_mediana_mg = median(dosis_diaria_mg, na.rm = TRUE)) |>
+  arrange(desc(menciones))
+```
+
+## ¿Funciona? Evaluación frente al *gold standard*
+
+Ningún sistema de PLN debe usarse sin evaluarlo. Calculamos una sensibilidad aproximada a nivel de documento: de los pares documento–fármaco anotados manualmente, ¿cuántos ha detectado el sistema?
+
+```{r evaluacion}
+anotaciones |>
+  filter(mencion %in% farmacos_dosificados$mencion) |>
+  distinct(doc_id, mencion) |>
+  left_join(mxr |>
+              filter(entity == "DrugName") |>
+              transmute(doc_id, mencion = str_to_lower(expr), detectado = TRUE) |>
+              distinct(),
+            by = c("doc_id", "mencion")) |>
+  summarise(pares_anotados = n(),
+            sensibilidad   = mean(!is.na(detectado)))
+```
+
+Detectar el **nombre** del fármaco es la parte fácil. La parte difícil, y la que deberíais discutir, es si la dosis y la frecuencia se asocian al fármaco correcto. Para evaluarlo haría falta un *gold standard* de dosis, que PharmaCoNER no incluye.
+
+# Parte B. Datos estructurados: el dato también cambia con el tiempo
+
+Un modelo entrenado con datos de una EHR asume, implícitamente, que el futuro se parecerá al pasado. Pero la distribución de los datos cambia. Puede cambiar la epidemiología, y puede cambiar la forma de registrar: una nueva versión de la CIE, un nuevo programa informático o un nuevo protocolo. A esto lo llamamos **desplazamiento temporal del conjunto de datos** (*temporal dataset shift*). `EHRtemporalVariability` permite detectarlo y visualizarlo.
+
+## Descarga y preparación
+
+```{r descarga-cne}
+csv_cne <- file.path(dir_datos, "casos_hosp_uci_def_sexo_edad_provres.csv")
+if (!file.exists(csv_cne)) {
+  download.file("https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv",
+                csv_cne, mode = "wb")
+}
+
+covid <- read_csv(csv_cne, na = "",
+                  col_types = cols(fecha = col_date(), .default = col_guess()))
+glimpse(covid)
+```
+
+> **Atención: sexta trampa.** Hemos leído el fichero con `na = ""`. ¿Por qué? Porque el código ISO de **Navarra** es `NA`, y con la lectura por defecto R la convertiría en un valor perdido. Una comunidad autónoma entera desaparecería del análisis sin ningún mensaje de error.
+
+`EHRtemporalVariability` trabaja con registros individuales: una fila por episodio con su fecha. Nuestros datos están agregados, así que "desagregamos" los recuentos con `tidyr::uncount()`. Cada hospitalización se convierte en una fila.
+
+```{r episodios}
+episodios <- covid |>
+  filter(num_hosp > 0, sexo != "NC", grupo_edad != "NC") |>
+  select(fecha, sexo, grupo_edad, provincia_iso, num_hosp) |>
+  uncount(num_hosp) |>
+  mutate(across(c(sexo, grupo_edad, provincia_iso), as.factor)) |>
+  as.data.frame()
+
+nrow(episodios)
+```
+
+## Mapas de probabilidad temporales
+
+`estimateDataTemporalMap()` estima, para cada variable y cada periodo (aquí, cada mes), la distribución de probabilidad de sus valores. El resultado es una matriz *periodos × valores* que podemos ver como un mapa de calor.
+
+```{r mapas}
+mapas <- estimateDataTemporalMap(data = episodios,
+                                 dateColumnName = "fecha",
+                                 period = "month")
+names(mapas)
+```
+
+```{r heatmap-edad, cache=FALSE}
+plotDataTemporalMap(mapas$grupo_edad)
+```
+
+## Proyección IGT (*Information Geometric Temporal*)
+
+La proyección IGT resume la variabilidad en un solo gráfico. Cada mes es un punto, y la distancia entre dos puntos refleja la **divergencia de Jensen-Shannon** entre sus distribuciones. Los meses con datos parecidos quedan cerca; un salto brusco entre puntos consecutivos delata un cambio en la distribución.
+
+```{r igt, cache=FALSE}
+igt_edad <- estimateIGTProjection(mapas$grupo_edad, dimensions = 2)
+plotIGTProjection(igt_edad, dimensions = 2, trajectory = TRUE)
+```
+
+Hagamos la misma lectura con `ggplot2`, extrayendo la matriz de probabilidades a formato *tidy* para centrarnos en tres grupos de edad:
+
+```{r tidy-mapa}
+as_tibble(mapas$grupo_edad@probabilityMap, .name_repair = "minimal") |>
+  set_names(mapas$grupo_edad@support[[1]]) |>
+  mutate(mes = mapas$grupo_edad@dates) |>
+  pivot_longer(-mes, names_to = "grupo_edad", values_to = "prob") |>
+  filter(grupo_edad %in% c("0-9", "20-29", "80+")) |>
+  ggplot(aes(mes, prob, colour = grupo_edad)) +
+  geom_line(linewidth = 1) +
+  labs(x = NULL, y = "Proporción de ingresos", colour = "Edad",
+       title = "Distribución por edad de los ingresos por COVID-19") +
+  theme_minimal()
+```
+
+## Interpretación
+
+Al mirar estos gráficos os pido que distingáis dos tipos de cambio.
+
+Unos son cambios **reales** en la población: las sucesivas olas, el efecto de la vacunación (que empezó por los mayores) o variantes con distinta gravedad por edad.
+
+Otros son cambios **en el proceso de registro**. En marzo de 2022, la estrategia de vigilancia tras la fase aguda de la pandemia pasó a centrarse en personas de 60 años o más y en ámbitos vulnerables. Si veis una ruptura brusca a partir de esa fecha, no es la enfermedad la que ha cambiado, sino lo que se registra.
+
+Un algoritmo no distingue entre ambos tipos de cambio. Vosotros sí debéis hacerlo, y esa es la razón de ser de herramientas como esta: auditar los datos **antes** de modelizar.
+
+```{r heatmap-provincia, cache=FALSE}
+plotDataTemporalMap(mapas$provincia_iso)
+```
+
+# Lo que os debéis llevar de esta práctica
+
+La EHR es la fuente de datos clínicos más rica que existe, pero no está pensada para investigar. Eso se traduce en tres dificultades que hemos tocado con las manos.
+
+La primera es el **acceso**. En España y en Europa, el acceso a datos individuales es restringido por diseño. El EHDS regula su uso secundario mediante entornos seguros, no descargas abiertas.
+
+La segunda es la **heterogeneidad**. Una parte crítica de la información está en texto libre y en el idioma local. Las herramientas suelen nacer en inglés, y adaptarlas exige diccionarios propios, normalización del texto y una revisión cuidadosa de cada paso intermedio: hemos encontrado seis trampas en una sola práctica.
+
+La tercera es la **no estacionariedad**. La distribución de los datos cambia con el tiempo, a veces por motivos clínicos y a veces por motivos administrativos. Ignorarlo invalida cualquier modelo predictivo construido sobre ella.
+
+# Ejercicios propuestos
+
+1. Ampliad el diccionario `frecuencia_es` con expresiones como *c/12h*, *cada 12 h.* o *1-0-1* (pauta de mañana, mediodía y noche) y medid cuántas frecuencias adicionales se recuperan.
+2. Repetid la evaluación de la sección A con `max_dist = 0` y `max_dist = 2`. ¿Cómo cambia la sensibilidad? ¿Qué coste tendría aumentar la tolerancia en términos de falsos positivos?
+3. Repetid el análisis de la Parte B con las defunciones (`num_def`) en lugar de las hospitalizaciones. ¿Aparecen los mismos puntos de ruptura?
+4. Proponed una representación RDF para una fila de `dosis_tidy`, enlazando el fármaco con su código ATC y la dosis con una unidad de una ontología de unidades (por ejemplo, UO o QUDT).
+
+# Referencias
+
+* Choi L, Beck C, McNeer E, et al. Development of a system for postmarketing population pharmacokinetic analysis using large-scale data repositories. *Clin Pharmacol Ther*. 2020. doi:10.1002/cpt.1787
+* Weeks HL, Beck C, McNeer E, et al. medExtractR: a targeted, customizable approach to medication extraction from electronic health records. *J Am Med Inform Assoc*. 2020;27(3):407-418.
+* Sáez C, Gutiérrez-Sacristán A, Kohane I, García-Gómez JM, Avillach P. EHRtemporalVariability: delineating temporal data-set shifts in electronic health records. *GigaScience*. 2020;9(8):giaa079.
+* Gonzalez-Agirre A, Marimon M, Intxaurrondo A, et al. PharmaCoNER: Pharmacological Substances, Compounds and proteins Named Entity Recognition track. *Proceedings of the 5th Workshop on BioNLP Open Shared Tasks*. 2019.
+* Jain V, et al. (eds.). *Semantic Web for Effective Healthcare Systems*. Wiley-Scrivener. Cap. 2, §2.3.3.1.
+* Reglamento (UE) 2025/327 del Parlamento Europeo y del Consejo relativo al Espacio Europeo de Datos Sanitarios.

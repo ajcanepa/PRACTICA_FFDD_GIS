@@ -1,0 +1,12 @@
+T1	PROTEINAS 1953 1956	IgM
+#1	AnnotatorNotes T1	74889000
+T2	NORMALIZABLES 1743 1752	aciclovir
+#2	AnnotatorNotes T2	372729009
+T3	PROTEINAS 1181 1205	reactantes de fase aguda
+#3	AnnotatorNotes T3	91309004
+T4	NORMALIZABLES 1079 1091	clorhexidina
+#4	AnnotatorNotes T4	373568007
+T5	NORMALIZABLES 1015 1038	amoxicilina-clavulánico
+#5	AnnotatorNotes T5	708558004
+T6	NORMALIZABLES 964 973	aciclovir
+#6	AnnotatorNotes T6	372729009

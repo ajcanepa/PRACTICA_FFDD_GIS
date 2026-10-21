@@ -1,0 +1,12 @@
+T1	NORMALIZABLES 4123 4129	formol
+#1	AnnotatorNotes T1	111095003
+T2	UNCLEAR 4644 4650	drogas
+#2	AnnotatorNotes T2	<null>
+T3	UNCLEAR 4626 4633	alcohol
+#3	AnnotatorNotes T3	53041004
+T5	NORMALIZABLES 4225 4231	eosina
+#4	AnnotatorNotes T5	256012001
+T6	NORMALIZABLES 4212 4224	hematoxilina
+#5	AnnotatorNotes T6	12710003
+T7	NORMALIZABLES 4187 4195	parafina
+#6	AnnotatorNotes T7	255667006

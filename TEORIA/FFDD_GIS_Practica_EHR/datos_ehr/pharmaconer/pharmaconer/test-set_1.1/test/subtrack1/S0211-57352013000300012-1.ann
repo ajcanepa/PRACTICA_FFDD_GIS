@@ -1,0 +1,12 @@
+T1	PROTEINAS 648 671	hormona del crecimiento
+#1	AnnotatorNotes T1	713492005
+T2	PROTEINAS 673 675	GH
+#2	AnnotatorNotes T2	713492005
+T4	NORMALIZABLES 2380 2390	Sertralina
+#3	AnnotatorNotes T4	372594008
+T5	UNCLEAR 922 929	tóxicos
+#4	AnnotatorNotes T5	264324001
+T6	NORMALIZABLES 781 788	lactosa
+#5	AnnotatorNotes T6	47703008
+T7	NORMALIZABLES 720 728	fructosa
+#6	AnnotatorNotes T7	58202007

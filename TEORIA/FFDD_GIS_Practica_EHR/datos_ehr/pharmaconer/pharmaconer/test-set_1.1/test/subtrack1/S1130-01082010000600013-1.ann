@@ -1,0 +1,11 @@
+T1	PROTEINAS 154 171	bomba de protones
+#1	AnnotatorNotes T1	<null>
+T2	PROTEINAS 1773 1783	ciclina D1
+T3	PROTEINAS 1800 1805	Ki-67
+#2	AnnotatorNotes T3	259981004
+T4	PROTEINAS 1787 1792	bcl-2
+#3	AnnotatorNotes T4	112215008
+T5	PROTEINAS 1766 1771	CD 20
+#4	AnnotatorNotes T5	82753007
+T6	NORMALIZABLES 95 120	mononitrato de isosorbida
+#5	AnnotatorNotes T6	386854005

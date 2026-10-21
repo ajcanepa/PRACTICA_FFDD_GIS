@@ -1,0 +1,28 @@
+T2	NORMALIZABLES 2142 2156	ciclofosfamida
+#1	AnnotatorNotes T2	387420009
+T3	NORMALIZABLES 1457 1471	ciclofosfamida
+#2	AnnotatorNotes T3	387420009
+T4	NORMALIZABLES 2128 2139	epirubicina
+#3	AnnotatorNotes T4	417916005
+T5	NORMALIZABLES 1474 1491	metilprednisolona
+#4	AnnotatorNotes T5	116593003
+T6	PROTEINAS 1439 1455	inmunoglobulinas
+#5	AnnotatorNotes T6	112133008
+T7	PROTEINAS 1284 1303	anticuerpos anti-Yo
+#6	AnnotatorNotes T7	121155004
+T8	PROTEINAS 1067 1094	antígeno carcinoembrionario
+#7	AnnotatorNotes T8	67246004
+T9	PROTEINAS 1048 1064	alfafetoproteína
+#8	AnnotatorNotes T9	49944008
+T10	PROTEINAS 1040 1046	CA19-9
+#9	AnnotatorNotes T10	103086009
+T11	PROTEINAS 1031 1038	CA 15-3
+#10	AnnotatorNotes T11	103092003
+T12	PROTEINAS 1023 1029	CA 125
+#11	AnnotatorNotes T12	103084007
+T13	NORMALIZABLES 546 556	anastrozol
+#12	AnnotatorNotes T13	386910003
+T14	NORMALIZABLES 362 374	progesterona
+#13	AnnotatorNotes T14	16683002
+T15	PROTEINAS 336 359	receptores a estrógenos
+#14	AnnotatorNotes T15	23307004

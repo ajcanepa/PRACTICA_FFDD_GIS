@@ -1,0 +1,10 @@
+T1	PROTEINAS 88 103	interferón-beta
+#1	AnnotatorNotes T1	420710006
+T2	NORMALIZABLES 1009 1019	fingolimod
+#2	AnnotatorNotes T2	449000008
+T3	NORMALIZABLES 926 936	fingolimod
+#3	AnnotatorNotes T3	449000008
+T4	PROTEINAS 125 136	natalizumab
+#4	AnnotatorNotes T4	414805007
+T5	NORMALIZABLES 382 392	fingolimod
+#5	AnnotatorNotes T5	449000008

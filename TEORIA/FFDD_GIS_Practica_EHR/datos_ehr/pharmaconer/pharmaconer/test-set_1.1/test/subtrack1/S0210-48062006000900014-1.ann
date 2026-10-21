@@ -1,0 +1,14 @@
+T1	PROTEINAS 3814 3848	b-lactamasas de espectro extendido
+#1	AnnotatorNotes T1	102769001
+T2	NORMALIZABLES 3861 3869	Imipenem
+#2	AnnotatorNotes T2	46558003
+T3	NORMALIZABLES 3634 3642	Imipenem
+#3	AnnotatorNotes T3	46558003
+T4	NORMALIZABLES 4309 4323	Ciprofloxacino
+#4	AnnotatorNotes T4	372840008
+T5	NORMALIZABLES 3291 3303	Metronidazol
+#5	AnnotatorNotes T5	372602008
+T6	NORMALIZABLES 3254 3265	Ceftriaxona
+#6	AnnotatorNotes T6	372670001
+T7	PROTEINAS 777 779	Hb
+#7	AnnotatorNotes T7	38082009

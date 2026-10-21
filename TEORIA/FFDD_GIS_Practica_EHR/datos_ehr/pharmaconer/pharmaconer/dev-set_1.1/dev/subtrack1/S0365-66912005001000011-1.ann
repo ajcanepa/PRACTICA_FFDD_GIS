@@ -1,0 +1,15 @@
+T1	NORMALIZABLES 1271 1284	triamcinolona
+#1	AnnotatorNotes T1	116594009
+T2	NORMALIZABLES 1918 1931	triamcinolona
+#2	AnnotatorNotes T2	116594009
+T3	NORMALIZABLES 32 45	triamcinolona
+#3	AnnotatorNotes T3	116594009
+T5	NORMALIZABLES 1416 1425	Oftacilox
+#5	AnnotatorNotes T5	372840008
+T6	NORMALIZABLES 1383 1397	ciprofloxacino
+#6	AnnotatorNotes T6	372840008
+T7	NORMALIZABLES 385 397	Trigon depot
+#7	AnnotatorNotes T7	395913005
+T8	NORMALIZABLES 360 383	triamcinolona acetonido
+#8	AnnotatorNotes T8	395913005
+T4	NO_NORMALIZABLES 1472 1481	Poly-pred

@@ -1,0 +1,14 @@
+T2	PROTEINAS 1418 1429	bevacizumab
+#1	AnnotatorNotes T2	409406007
+T3	PROTEINAS 1293 1304	bevacizumab
+#2	AnnotatorNotes T3	409406007
+T4	NORMALIZABLES 917 927	prednisona
+#3	AnnotatorNotes T4	116602009
+T5	NORMALIZABLES 879 891	ciclosporina
+#4	AnnotatorNotes T5	387467008
+T6	NO_NORMALIZABLES 836 844	Tobradex
+#5	AnnotatorNotes T6	<null>
+T7	NORMALIZABLES 788 798	esteroides
+#6	AnnotatorNotes T7	116566001
+T8	NORMALIZABLES 570 577	lípidos
+#7	AnnotatorNotes T8	70106000

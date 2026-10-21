@@ -1,0 +1,12 @@
+T1	PROTEINAS 2027 2037	Infliximab
+#1	AnnotatorNotes T1	386891004
+T2	PROTEINAS 1975 1985	Infliximab
+#2	AnnotatorNotes T2	386891004
+T3	PROTEINAS 365 375	Infliximab
+#3	AnnotatorNotes T3	386891004
+T4	NORMALIZABLES 2082 2099	metilprednisolona
+#4	AnnotatorNotes T4	116593003
+T5	PROTEINAS 377 385	Remicade
+#5	AnnotatorNotes T5	386891004
+T6	NORMALIZABLES 304 315	Metotrexate
+#6	AnnotatorNotes T6	387381009

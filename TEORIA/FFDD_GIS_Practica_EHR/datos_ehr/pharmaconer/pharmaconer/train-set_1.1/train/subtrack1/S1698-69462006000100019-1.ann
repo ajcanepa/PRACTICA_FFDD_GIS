@@ -1,0 +1,24 @@
+T1	PROTEINAS 1384 1411	antígeno carcinoembrionario
+#1	AnnotatorNotes T1	67246004
+T2	PROTEINAS 1379 1382	CEA
+#2	AnnotatorNotes T2	67246004
+T3	NORMALIZABLES 1631 1641	leucovorin
+#3	AnnotatorNotes T3	43289005
+T4	NORMALIZABLES 1615 1630	5 fluorouracilo
+#4	AnnotatorNotes T4	387172005
+T5	NORMALIZABLES 1609 1614	CPT11
+#5	AnnotatorNotes T5	372538008
+T6	UNCLEAR 1600 1607	FOLFORI
+#6	AnnotatorNotes T6	<null>
+T7	PROTEINAS 1432 1435	CK7
+#7	AnnotatorNotes T7	<null>
+T8	PROTEINAS 1355 1376	citoqueratina (CK) 20
+#8	AnnotatorNotes T8	259615002
+T9	NORMALIZABLES 499 509	leucovorin
+#9	AnnotatorNotes T9	43289005
+T10	NORMALIZABLES 483 498	5 fluorouracilo
+#10	AnnotatorNotes T10	387172005
+T11	NORMALIZABLES 470 482	oxaliplatino
+#11	AnnotatorNotes T11	395814003
+T12	UNCLEAR 462 468	FOLFOX
+#12	AnnotatorNotes T12	<null>

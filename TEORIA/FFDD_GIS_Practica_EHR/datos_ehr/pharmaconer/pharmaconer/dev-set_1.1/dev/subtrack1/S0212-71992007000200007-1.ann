@@ -1,0 +1,10 @@
+T1	UNCLEAR 215 221	CHOP-R
+#1	AnnotatorNotes T1	<null>
+T4	PROTEINAS 1166 1204	factores de crecimiento granulocitario
+#2	AnnotatorNotes T4	415246002
+T6	NORMALIZABLES 257 271	ciclofosfamida
+#3	AnnotatorNotes T6	387420009
+T7	PROTEINAS 1783 1794	factor VIII
+#7	AnnotatorNotes T7	278910002
+T5	PROTEINAS 1797 1812	mieloperoxidasa
+#5	AnnotatorNotes T5	259723008

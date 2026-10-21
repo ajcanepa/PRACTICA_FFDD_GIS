@@ -1,0 +1,14 @@
+T1	NORMALIZABLES 662 684	ácido acetilsalicílico
+#1	AnnotatorNotes T1	387458008
+T2	PROTEINAS 496 499	IgG
+#2	AnnotatorNotes T2	29246005
+T3	PROTEINAS 544 547	IgM
+#3	AnnotatorNotes T3	74889000
+T4	PROTEINAS 527 543	anticardiolipina
+#4	AnnotatorNotes T4	45396006
+T5	PROTEINAS 467 495	anticuerpos anticardiolipina
+#5	AnnotatorNotes T5	45396006
+T6	UNCLEAR 256 262	gluten
+#6	AnnotatorNotes T6	89811004
+T7	PROTEINAS 70 102	anticuerpos antitransglutaminasa
+#7	AnnotatorNotes T7	703491009

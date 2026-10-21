@@ -1,0 +1,14 @@
+T1	PROTEINAS 1711 1725	factor anti-Xa
+#1	AnnotatorNotes T1	259747001
+T2	PROTEINAS 1502 1516	factor anti-Xa
+#2	AnnotatorNotes T2	259747001
+T3	PROTEINAS 1364 1378	factor anti-Xa
+#3	AnnotatorNotes T3	259747001
+T4	NORMALIZABLES 1205 1216	enoxaparina
+#4	AnnotatorNotes T4	372562003
+T6	NORMALIZABLES 826 837	enoxaparina
+#5	AnnotatorNotes T6	372562003
+T7	NORMALIZABLES 709 720	Rivaroxabán
+#6	AnnotatorNotes T7	442031002
+T10	NORMALIZABLES 302 313	Rivaroxabán
+#7	AnnotatorNotes T10	442031002

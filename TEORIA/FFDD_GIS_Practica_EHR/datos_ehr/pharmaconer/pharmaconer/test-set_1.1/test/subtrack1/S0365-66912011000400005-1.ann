@@ -1,0 +1,28 @@
+T1	PROTEINAS 112 129	factor reumatoide
+#1	AnnotatorNotes T1	77089006
+T4	NORMALIZABLES 1091 1101	prednisona
+#3	AnnotatorNotes T4	116602009
+T5	NORMALIZABLES 403 413	prednisona
+#4	AnnotatorNotes T5	116602009
+T6	PROTEINAS 1794 1803	rituximab
+#5	AnnotatorNotes T6	386919002
+T7	PROTEINAS 1556 1565	rituximab
+#6	AnnotatorNotes T7	386919002
+T8	NORMALIZABLES 1294 1307	cianoacrilato
+#7	AnnotatorNotes T8	79549001
+T9	NORMALIZABLES 1159 1176	metilprednisolona
+#8	AnnotatorNotes T9	116593003
+T10	PROTEINAS 730 740	infliximab
+#9	AnnotatorNotes T10	386891004
+T11	PROTEINAS 437 447	infliximab
+#10	AnnotatorNotes T11	386891004
+T12	NORMALIZABLES 372 383	metrotexato
+#11	AnnotatorNotes T12	387381009
+T13	NORMALIZABLES 301 312	leflunomida
+#12	AnnotatorNotes T13	386981009
+T14	NORMALIZABLES 286 298	ciclosporina
+#13	AnnotatorNotes T14	387467008
+T15	NORMALIZABLES 271 284	sulfasalacina
+#14	AnnotatorNotes T15	387248006
+T16	NORMALIZABLES 252 269	hidroxicloroquina
+#15	AnnotatorNotes T16	373540008

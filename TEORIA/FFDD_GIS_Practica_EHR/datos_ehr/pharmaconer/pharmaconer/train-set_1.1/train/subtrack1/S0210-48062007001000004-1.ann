@@ -1,0 +1,46 @@
+T1	PROTEINAS 1860 1888	beta-gonadotropina coriónica
+#1	AnnotatorNotes T1	40940006
+T2	PROTEINAS 1890 1898	Beta-HCG
+#2	AnnotatorNotes T2	40940006
+T3	PROTEINAS 982 1010	beta-gonadotropina coriónica
+#3	AnnotatorNotes T3	40940006
+T4	PROTEINAS 1012 1020	Beta-HCG
+#4	AnnotatorNotes T4	40940006
+T5	PROTEINAS 1825 1841	alfafetoproteína
+#5	AnnotatorNotes T5	49944008
+T6	PROTEINAS 1843 1846	AFP
+#6	AnnotatorNotes T6	49944008
+T7	PROTEINAS 948 964	alfafetoproteína
+#7	AnnotatorNotes T7	49944008
+T8	PROTEINAS 966 969	AFP
+#8	AnnotatorNotes T8	49944008
+T9	PROTEINAS 1785 1807	Lactato deshidrogenasa
+#9	AnnotatorNotes T9	259319003
+T10	PROTEINAS 1809 1812	LDH
+#10	AnnotatorNotes T10	259319003
+T11	PROTEINAS 907 929	Lactato deshidrogenasa
+#11	AnnotatorNotes T11	259319003
+T12	PROTEINAS 931 934	LDH
+#12	AnnotatorNotes T12	259319003
+T13	NORMALIZABLES 3519 3528	etopósido
+#13	AnnotatorNotes T13	387316009
+T14	NORMALIZABLES 3531 3541	cisplatino
+#14	AnnotatorNotes T14	387318005
+T15	PROTEINAS 3325 3347	lactato deshidrogenasa
+#15	AnnotatorNotes T15	259319003
+T16	PROTEINAS 3377 3405	beta-gonadotropina coriónica
+#16	AnnotatorNotes T16	40940006
+T17	PROTEINAS 3358 3374	alfafetoproteína
+#17	AnnotatorNotes T17	49944008
+T18	NORMALIZABLES 3300 3310	Creatinina
+#18	AnnotatorNotes T18	15373003
+T19	PROTEINAS 1345 1348	LDH
+#19	AnnotatorNotes T19	259319003
+T20	NORMALIZABLES 1427 1436	etopósido
+#20	AnnotatorNotes T20	387316009
+T24	UNCLEAR 1409 1412	BEP
+#24	AnnotatorNotes T24	<null>
+T21	NORMALIZABLES 1414 1425	bleom<icina
+#21	AnnotatorNotes T21	372843005
+T25	NORMALIZABLES 1439 1448	cisplatin
+#25	AnnotatorNotes T25	387318005

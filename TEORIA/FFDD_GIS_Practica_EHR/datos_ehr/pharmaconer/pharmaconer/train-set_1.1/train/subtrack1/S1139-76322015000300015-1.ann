@@ -1,0 +1,12 @@
+T1	PROTEINAS 932 951	proteína C reactiva
+#1	AnnotatorNotes T1	61425002
+T2	PROTEINAS 953 956	PCR
+#2	AnnotatorNotes T2	61425002
+T4	NORMALIZABLES 1212 1235	amoxicilina-clavulánico
+#3	AnnotatorNotes T4	708558004
+T5	PROTEINAS 990 999	α-amilasa
+#4	AnnotatorNotes T5	3340007
+T6	NORMALIZABLES 564 587	amoxicilina-clavulánico
+#5	AnnotatorNotes T6	708558004
+T8	NORMALIZABLES 300 323	amoxicilina-clavulánico
+#6	AnnotatorNotes T8	708558004

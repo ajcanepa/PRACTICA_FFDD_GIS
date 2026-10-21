@@ -1,0 +1,20 @@
+T1	PROTEINAS 260 284	alanina aminotransferasa
+#1	AnnotatorNotes T1	56935002
+T2	PROTEINAS 286 289	ALT
+#2	AnnotatorNotes T2	56935002
+T3	PROTEINAS 215 237	aspartato transaminasa
+#3	AnnotatorNotes T3	26091008
+T4	PROTEINAS 239 242	AST
+#4	AnnotatorNotes T4	26091008
+T5	PROTEINAS 153 174	lactatodeshidrogenasa
+#5	AnnotatorNotes T5	259319003
+T6	PROTEINAS 176 179	LDH
+#6	AnnotatorNotes T6	259319003
+T8	PROTEINAS 1493 1496	CPK
+#7	AnnotatorNotes T8	75828004
+T9	PROTEINAS 979 993	miofosforilasa
+#8	AnnotatorNotes T9	<null>
+T10	PROTEINAS 200 213	transaminasas
+#9	AnnotatorNotes T10	130093006
+T11	PROTEINAS 130 133	CPK
+#10	AnnotatorNotes T11	75828004

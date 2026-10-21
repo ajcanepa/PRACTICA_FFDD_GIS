@@ -1,0 +1,26 @@
+T2	PROTEINAS 2735 2767	kinasa de linfocitos anaplásicos
+#1	AnnotatorNotes T2	<null>
+T3	PROTEINAS 2730 2733	ALK
+#2	AnnotatorNotes T3	<null>
+T4	PROTEINAS 2648 2678	antígeno de membrana epitelial
+#3	AnnotatorNotes T4	103092003
+T5	PROTEINAS 2643 2646	EMA
+#4	AnnotatorNotes T5	103092003
+T6	PROTEINAS 2722 2727	CD 20
+#5	AnnotatorNotes T6	82753007
+T7	PROTEINAS 2706 2719	citoqueratina
+#6	AnnotatorNotes T7	259987000
+T8	PROTEINAS 2695 2700	CKAE1
+#7	AnnotatorNotes T8	116822005
+T9	PROTEINAS 2701 2704	AE3
+#8	AnnotatorNotes T9	116823000
+T10	PROTEINAS 2635 2640	CD 30
+#9	AnnotatorNotes T10	4761007
+T11	PROTEINAS 2630 2633	CD3
+#10	AnnotatorNotes T11	44706009
+T12	PROTEINAS 2623 2628	CD 45
+#11	AnnotatorNotes T12	19677004
+T13	NORMALIZABLES 689 720	antinflamatorios no esteroideos
+#12	AnnotatorNotes T13	372665008
+T14	NO_NORMALIZABLES 256 262	McGhan
+#13	AnnotatorNotes T14	<null>

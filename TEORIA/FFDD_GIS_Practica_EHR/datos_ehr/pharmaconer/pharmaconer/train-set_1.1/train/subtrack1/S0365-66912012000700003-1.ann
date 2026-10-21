@@ -1,0 +1,24 @@
+T1	PROTEINAS 560 565	K-ras
+#1	AnnotatorNotes T1	85460009
+T2	NORMALIZABLES 1890 1907	metilprednisolona
+#2	AnnotatorNotes T2	116593003
+T3	PROTEINAS 743 754	bevacizumab
+#3	AnnotatorNotes T3	409406007
+T4	PROTEINAS 608 619	panitumumab
+#4	AnnotatorNotes T4	423259008
+T5	PROTEINAS 596 605	cetuximab
+#5	AnnotatorNotes T5	409400001
+T6	NORMALIZABLES 492 502	irinotecán
+#6	AnnotatorNotes T6	372538008
+T7	NORMALIZABLES 463 475	oxaliplatino
+#7	AnnotatorNotes T7	395814003
+T8	NORMALIZABLES 410 422	oxaliplatino
+#8	AnnotatorNotes T8	395814003
+T9	NORMALIZABLES 479 491	capecitabina
+#9	AnnotatorNotes T9	386906001
+T10	NORMALIZABLES 450 462	capecitabina
+#10	AnnotatorNotes T10	386906001
+T11	NORMALIZABLES 438 448	fluoracilo
+#11	AnnotatorNotes T11	387172005
+T12	NORMALIZABLES 423 437	acido folínico
+#12	AnnotatorNotes T12	396065004

@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 1141 1159	hormonas tiroideas
+#1	AnnotatorNotes T1	18220004
+T2	NORMALIZABLES 1165 1173	cortisol
+#2	AnnotatorNotes T2	396458002
+T3	NORMALIZABLES 1112 1125	triglicéridos
+#3	AnnotatorNotes T3	85600001
+T4	NORMALIZABLES 1095 1098	LDL
+#4	AnnotatorNotes T4	102739008
+T5	NORMALIZABLES 1067 1077	colesterol
+#5	AnnotatorNotes T5	84698008
+T6	PROTEINAS 1054 1057	GGT
+#6	AnnotatorNotes T6	60153001
+T7	PROTEINAS 1026 1045	alanina transferasa
+#7	AnnotatorNotes T7	56935002
+T8	PROTEINAS 995 1016	aspartato transferasa
+#8	AnnotatorNotes T8	26091008

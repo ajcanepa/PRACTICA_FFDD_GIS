@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 2410 2441	heparina de bajo peso molecular
+#1	AnnotatorNotes T1	373294004
+T2	NORMALIZABLES 1973 1982	fentanilo
+#2	AnnotatorNotes T2	373492002
+T3	NORMALIZABLES 1936 1947	bupivacaína
+#3	AnnotatorNotes T3	387150008
+T4	NORMALIZABLES 1886 1895	fentanilo
+#4	AnnotatorNotes T4	373492002
+T6	NORMALIZABLES 1836 1847	bupivacaína
+#5	AnnotatorNotes T6	387150008
+T7	NORMALIZABLES 1796 1806	epinefrina
+#6	AnnotatorNotes T7	387362001
+T8	NORMALIZABLES 1774 1785	bupivacaína
+#7	AnnotatorNotes T8	387150008
+T9	PROTEINAS 1395 1406	hemoglobina
+#8	AnnotatorNotes T9	38082009

@@ -1,0 +1,12 @@
+T1	PROTEINAS 834 851	bomba de protones
+#1	AnnotatorNotes T1	<null>
+T4	PROTEINAS 1676 1693	proteínas totales
+#2	AnnotatorNotes T4	395835001
+T5	UNCLEAR 1243 1251	cannabis
+#3	AnnotatorNotes T5	398705004
+T8	NORMALIZABLES 644 658	claritromicina
+#4	AnnotatorNotes T8	387487009
+T9	NORMALIZABLES 630 641	amoxicilina
+#5	AnnotatorNotes T9	372687004
+T10	NORMALIZABLES 619 628	omeprazol
+#6	AnnotatorNotes T10	387137007

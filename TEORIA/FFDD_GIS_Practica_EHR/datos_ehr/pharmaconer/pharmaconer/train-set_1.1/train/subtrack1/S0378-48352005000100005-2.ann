@@ -1,0 +1,18 @@
+T1	PROTEINAS 938 956	fosfatasa alcalina
+#1	AnnotatorNotes T1	57056007
+T2	PROTEINAS 924 929	CA153
+#2	AnnotatorNotes T2	103092003
+T3	PROTEINAS 658 669	trastuzumab
+#3	AnnotatorNotes T3	387003001
+T4	NORMALIZABLES 646 655	docetaxel
+#4	AnnotatorNotes T4	386918005
+T5	NORMALIZABLES 632 644	epirrubicina
+#5	AnnotatorNotes T5	417916005
+T6	NORMALIZABLES 474 482	letrozol
+#6	AnnotatorNotes T6	386911004
+T7	NORMALIZABLES 288 298	tamoxifeno
+#7	AnnotatorNotes T7	373345002
+T8	UNCLEAR 267 270	CMF
+#8	AnnotatorNotes T8	<null>
+T9	PROTEINAS 141 162	receptores hormonales
+#9	AnnotatorNotes T9	<null>

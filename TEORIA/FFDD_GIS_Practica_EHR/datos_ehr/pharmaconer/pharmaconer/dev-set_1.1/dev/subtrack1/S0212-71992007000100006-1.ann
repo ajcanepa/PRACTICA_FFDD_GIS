@@ -1,0 +1,11 @@
+T1	PROTEINAS 2761 2777	inmunoglobulinas
+#1	AnnotatorNotes T1	112133008
+T2	PROTEINAS 1909 1925	immunoglobulinas
+#2	AnnotatorNotes T2	112133008
+T3	NORMALIZABLES 2651 2662	corticoides
+#3	AnnotatorNotes T3	255877006
+T4	PROTEINAS 2053 2062	proteínas
+#4	AnnotatorNotes T4	88878007
+T5	PROTEINAS 1875 1878	ECA
+#5	AnnotatorNotes T5	67246004
+T6	NO_NORMALIZABLES 185 196	pirazolonas

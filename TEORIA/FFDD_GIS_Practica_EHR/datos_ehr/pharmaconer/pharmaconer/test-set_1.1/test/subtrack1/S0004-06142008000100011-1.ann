@@ -1,0 +1,12 @@
+T1	NORMALIZABLES 3327 3341	agua oxigenada
+#1	AnnotatorNotes T1	129505000
+T2	NORMALIZABLES 3319 3324	suero
+#2	AnnotatorNotes T2	67922002
+T3	PROTEINAS 1915 1918	PCR
+#3	AnnotatorNotes T3	61425002
+T4	PROTEINAS 1901 1912	fibrinógeno
+#4	AnnotatorNotes T4	23295004
+T6	PROTEINAS 4222 4231	coagulasa
+#6	AnnotatorNotes T6	<null>
+T7	PROTEINAS 4385 4394	coagulasa
+#7	AnnotatorNotes T7	<null>

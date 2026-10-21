@@ -1,0 +1,42 @@
+T2	NORMALIZABLES 4622 4633	azatioprina
+#2	AnnotatorNotes T2	372574004
+T4	NORMALIZABLES 3863 3872	piracetan
+#3	AnnotatorNotes T4	395833008
+T5	NORMALIZABLES 3850 3860	clonazepan
+#4	AnnotatorNotes T5	387383007
+T6	NORMALIZABLES 3689 3694	suero
+#5	AnnotatorNotes T6	67922002
+T7	NORMALIZABLES 3341 3346	suero
+#6	AnnotatorNotes T7	67922002
+T9	UNCLEAR 1321 1327	gluten
+#7	AnnotatorNotes T9	89811004
+T10	NORMALIZABLES 1049 1057	D-xilosa
+#8	AnnotatorNotes T10	19160003
+T11	PROTEINAS 992 1000	HLA-DQA1
+#9	AnnotatorNotes T11	<null>
+T12	PROTEINAS 1009 1013	DQB1
+#10	AnnotatorNotes T12	260082001
+T13	PROTEINAS 987 990	DQ2
+#11	AnnotatorNotes T13	117164003
+T14	PROTEINAS 965 968	HLA
+#12	AnnotatorNotes T14	725674007
+T15	PROTEINAS 919 936	anti-músculo liso
+#13	AnnotatorNotes T15	121122009
+T16	PROTEINAS 857 899	anticuerpos anti-citoplasma de neutrófilos
+#14	AnnotatorNotes T16	23318004
+T17	PROTEINAS 800 826	anticuerpos anti-endomisio
+#15	AnnotatorNotes T17	11825009
+T18	PROTEINAS 766 787	anti-transglutaminasa
+#16	AnnotatorNotes T18	720318007
+T19	PROTEINAS 738 763	anticuerpos anti-gliadina
+#17	AnnotatorNotes T19	74002006
+T21	NORMALIZABLES 631 637	calcio
+#18	AnnotatorNotes T21	5540006
+T22	NORMALIZABLES 616 628	vitamina B-2
+#19	AnnotatorNotes T22	13235001
+T23	NORMALIZABLES 585 603	hormonas tiroideas
+#20	AnnotatorNotes T23	18220004
+T24	UNCLEAR 493 499	gluten
+#21	AnnotatorNotes T24	89811004
+T25	UNCLEAR 226 232	gluten
+#22	AnnotatorNotes T25	89811004

@@ -1,0 +1,12 @@
+T1	PROTEINAS 2003 2011	beta-HCG
+#1	AnnotatorNotes T1	40940006
+T2	PROTEINAS 761 769	beta-HCG
+#2	AnnotatorNotes T2	40940006
+T3	NORMALIZABLES 2553 2563	Cisplatino
+#3	AnnotatorNotes T3	387318005
+T4	NORMALIZABLES 2541 2550	Etopósido
+#4	AnnotatorNotes T4	387316009
+T5	PROTEINAS 820 836	alfafetoproteína
+#5	AnnotatorNotes T5	49944008
+T6	PROTEINAS 792 814	lactato deshidrogenasa
+#6	AnnotatorNotes T6	259319003

@@ -1,0 +1,26 @@
+T1	PROTEINAS 814 839	alanina amino transferasa
+#1	AnnotatorNotes T1	56935002
+T2	PROTEINAS 841 847	A.L.T.
+#2	AnnotatorNotes T2	56935002
+T3	PROTEINAS 737 764	aspartato amino transferasa
+#3	AnnotatorNotes T3	26091008
+T4	PROTEINAS 766 771	A.S.T
+#4	AnnotatorNotes T4	26091008
+T5	NORMALIZABLES 1777 1788	bilirrubina
+#5	AnnotatorNotes T5	79706000
+T6	NORMALIZABLES 860 871	bilirrubina
+#6	AnnotatorNotes T6	79706000
+T7	NORMALIZABLES 500 511	bilirrubina
+#7	AnnotatorNotes T7	79706000
+T8	PROTEINAS 1762 1775	transaminasas
+#8	AnnotatorNotes T8	130093006
+T9	PROTEINAS 478 491	transaminasas
+#9	AnnotatorNotes T9	130093006
+T11	NORMALIZABLES 1457 1466	Enalapril
+#10	AnnotatorNotes T11	372658000
+T12	NORMALIZABLES 1405 1414	Labetalol
+#11	AnnotatorNotes T12	372750000
+T14	NORMALIZABLES 714 724	creatinina
+#12	AnnotatorNotes T14	15373003
+T15	PROTEINAS 569 580	hemoglobina
+#13	AnnotatorNotes T15	38082009

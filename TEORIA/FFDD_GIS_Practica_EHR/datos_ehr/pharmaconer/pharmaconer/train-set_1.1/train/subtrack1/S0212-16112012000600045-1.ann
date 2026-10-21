@@ -1,0 +1,16 @@
+T2	NORMALIZABLES 2559 2573	ciprofloxacino
+#1	AnnotatorNotes T2	372840008
+T3	NORMALIZABLES 2520 2531	fosfomicina
+#2	AnnotatorNotes T3	372534005
+T4	PROTEINAS 841 849	albúmina
+#3	AnnotatorNotes T4	52454007
+T5	PROTEINAS 697 708	hemoglobina
+#4	AnnotatorNotes T5	38082009
+T6	NORMALIZABLES 2441 2449	nitritos
+#5	AnnotatorNotes T6	31528005
+T9	NORMALIZABLES 1684 1695	fosfomicina
+#8	AnnotatorNotes T9	372534005
+T11	NORMALIZABLES 1184 1192	Fortimel
+#9	AnnotatorNotes T11	373453009
+T1	NORMALIZABLES 2321 2346	fosfato amónico magnésico
+#6	AnnotatorNotes T1	259549000

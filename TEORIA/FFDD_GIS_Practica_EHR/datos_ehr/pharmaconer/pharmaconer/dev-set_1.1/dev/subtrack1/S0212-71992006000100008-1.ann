@@ -1,0 +1,16 @@
+T1	PROTEINAS 2661 2666	C-Kit
+#1	AnnotatorNotes T1	103165007
+T2	PROTEINAS 1525 1541	alfafetoproteína
+#2	AnnotatorNotes T2	49944008
+T3	PROTEINAS 1480 1509	gonadotropinacoriónica humana
+#3	AnnotatorNotes T3	59433001
+T4	PROTEINAS 1459 1462	LDH
+#4	AnnotatorNotes T4	259319003
+T5	NORMALIZABLES 1427 1437	creatinina
+#5	AnnotatorNotes T5	15373003
+T6	NORMALIZABLES 1404 1408	urea
+#6	AnnotatorNotes T6	387092000
+T7	PROTEINAS 1349 1360	fibrinógeno
+#7	AnnotatorNotes T7	23295004
+T8	UNCLEAR 272 275	cig
+#8	AnnotatorNotes T8	722496004

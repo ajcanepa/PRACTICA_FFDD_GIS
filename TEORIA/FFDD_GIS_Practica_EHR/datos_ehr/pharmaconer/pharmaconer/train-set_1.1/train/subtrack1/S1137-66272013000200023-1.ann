@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 3624 3634	creatinina
+#1	AnnotatorNotes T1	15373003
+T3	NORMALIZABLES 3134 3146	Carboplatino
+#2	AnnotatorNotes T3	386905002
+T4	NORMALIZABLES 3121 3131	Paclitaxel
+#3	AnnotatorNotes T4	387374002
+T6	NORMALIZABLES 1934 1945	Gemcitabina
+#4	AnnotatorNotes T6	386920008
+T7	NORMALIZABLES 1921 1931	Cisplatino
+#5	AnnotatorNotes T7	387318005
+T9	PROTEINAS 1616 1629	citoquetatina
+#6	AnnotatorNotes T9	259987000
+T10	PROTEINAS 1594 1610	citoqueratina-20
+#7	AnnotatorNotes T10	259615002
+T11	PROTEINAS 1558 1573	citoqueratina-7
+#8	AnnotatorNotes T11	<null>

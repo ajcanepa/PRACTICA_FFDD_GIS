@@ -1,0 +1,6 @@
+T1	PROTEINAS 1260 1279	proteína C reactiva
+#1	AnnotatorNotes T1	61425002
+T2	PROTEINAS 1236 1247	hemoglobina
+#2	AnnotatorNotes T2	38082009
+T3	NORMALIZABLES 291 317	trimetoprim-sulfametoxazol
+#3	AnnotatorNotes T3	703745000

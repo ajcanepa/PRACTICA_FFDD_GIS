@@ -1,0 +1,18 @@
+T1	PROTEINAS 1310 1332	citoqueratinas 19 y 20
+#1	AnnotatorNotes T1	<null>
+T2	NORMALIZABLES 2113 2128	tecnecio 99-MDP
+#2	AnnotatorNotes T2	96390006
+T4	NORMALIZABLES 2750 2755	Co 60
+#3	AnnotatorNotes T4	5405008
+T5	PROTEINAS 2428 2445	alfa-fetoproteina
+#4	AnnotatorNotes T5	49944008
+T6	PROTEINAS 2258 2275	alfa-fetoproteina
+#5	AnnotatorNotes T6	49944008
+T7	UNCLEAR 1704 1715	cigarrillos
+#6	AnnotatorNotes T7	722496004
+T8	NORMALIZABLES 1647 1653	etanol
+#7	AnnotatorNotes T8	419442005
+T9	PROTEINAS 1344 1361	alfa-fetoproteina
+#8	AnnotatorNotes T9	49944008
+T11	NORMALIZABLES 927 935	Surgicel
+#9	AnnotatorNotes T11	44262008

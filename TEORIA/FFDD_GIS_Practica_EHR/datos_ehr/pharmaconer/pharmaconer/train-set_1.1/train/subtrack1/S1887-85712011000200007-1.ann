@@ -1,0 +1,22 @@
+T1	PROTEINAS 1579 1598	anhidrasa carbónica
+#1	AnnotatorNotes T1	85717001
+T2	NORMALIZABLES 2542 2552	topiramato
+#2	AnnotatorNotes T2	386844006
+T3	NORMALIZABLES 2010 2023	acetazolamida
+#3	AnnotatorNotes T3	372709008
+T4	NORMALIZABLES 1773 1783	topiramato
+#4	AnnotatorNotes T4	386844006
+T5	NORMALIZABLES 1763 1770	nadolol
+#5	AnnotatorNotes T5	387482003
+T6	NORMALIZABLES 1671 1689	maleato de timolol
+#6	AnnotatorNotes T6	75359005
+T7	NORMALIZABLES 1657 1668	bimatoprost
+#7	AnnotatorNotes T7	129492005
+T8	NORMALIZABLES 1600 1613	acetazolamida
+#8	AnnotatorNotes T8	372709008
+T9	NORMALIZABLES 346 356	topiramato
+#9	AnnotatorNotes T9	386844006
+T10	NORMALIZABLES 320 327	nadolol
+#10	AnnotatorNotes T10	387482003
+T11	NORMALIZABLES 216 228	levotiroxina
+#11	AnnotatorNotes T11	710809001

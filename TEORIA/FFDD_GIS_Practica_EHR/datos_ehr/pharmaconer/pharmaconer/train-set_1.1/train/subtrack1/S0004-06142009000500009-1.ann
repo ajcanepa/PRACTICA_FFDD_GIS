@@ -1,0 +1,40 @@
+T1	NORMALIZABLES 1960 1978	cefuroxima-axetilo
+#1	AnnotatorNotes T1	89678001
+T2	NORMALIZABLES 2776 2799	amoxicilina-clavulánico
+#2	AnnotatorNotes T2	708558004
+T3	NORMALIZABLES 1935 1958	amoxicilina-clavulánico
+#3	AnnotatorNotes T3	708558004
+T4	NORMALIZABLES 369 379	trometamol
+#4	AnnotatorNotes T4	59034000
+T5	NORMALIZABLES 357 368	fosfomicina
+#5	AnnotatorNotes T5	372534005
+T7	NORMALIZABLES 932 943	bilirrubina
+#6	AnnotatorNotes T7	79706000
+T8	NORMALIZABLES 901 912	bilirrubina
+#7	AnnotatorNotes T8	79706000
+T9	NORMALIZABLES 2216 2239	piperacilina-tazobactam
+#8	AnnotatorNotes T9	703743007
+T10	NORMALIZABLES 2017 2028	gentamicina
+#9	AnnotatorNotes T10	387321007
+T11	NORMALIZABLES 2031 2058	trimetroprim-sulfametoxazol
+#10	AnnotatorNotes T11	703745000
+T12	NORMALIZABLES 1992 2015	piperacilina-tazobactam
+#11	AnnotatorNotes T12	703743007
+T13	NORMALIZABLES 1980 1990	cefotaxima
+#12	AnnotatorNotes T13	372704003
+T14	NORMALIZABLES 1316 1324	nitritos
+#13	AnnotatorNotes T14	31528005
+T15	PROTEINAS 1178 1189	hemoglobina
+#14	AnnotatorNotes T15	38082009
+T16	NORMALIZABLES 1067 1077	creatinina
+#15	AnnotatorNotes T16	15373003
+T17	PROTEINAS 1005 1023	fosfatasa alcalina
+#16	AnnotatorNotes T17	57056007
+T18	PROTEINAS 991 994	GGT
+#17	AnnotatorNotes T18	60153001
+T19	PROTEINAS 977 980	GPT
+#18	AnnotatorNotes T19	56935002
+T20	PROTEINAS 964 967	GOT
+#19	AnnotatorNotes T20	26091008
+T21	NORMALIZABLES 847 854	glucosa
+#20	AnnotatorNotes T21	67079006

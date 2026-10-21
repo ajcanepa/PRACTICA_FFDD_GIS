@@ -1,0 +1,10 @@
+T1	PROTEINAS 1864 1881	bomba de protones
+#1	AnnotatorNotes T1	<null>
+T3	NORMALIZABLES 1229 1240	pantoprazol
+#2	AnnotatorNotes T3	395821003
+T4	NORMALIZABLES 1189 1199	fluconazol
+#3	AnnotatorNotes T4	387174006
+T5	NORMALIZABLES 661 670	omeprazol
+#4	AnnotatorNotes T5	387137007
+T6	NORMALIZABLES 513 522	omeprazol
+#5	AnnotatorNotes T6	387137007

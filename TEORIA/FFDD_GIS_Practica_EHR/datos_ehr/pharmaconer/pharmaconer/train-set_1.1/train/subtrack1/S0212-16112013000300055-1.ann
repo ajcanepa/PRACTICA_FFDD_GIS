@@ -1,0 +1,22 @@
+T2	NORMALIZABLES 489 510	ácidos grasos omega 3
+#1	AnnotatorNotes T2	226365003
+T4	PROTEINAS 1901 1912	hemoglobina
+#2	AnnotatorNotes T4	38082009
+T5	PROTEINAS 1816 1827	prealbúmina
+#3	AnnotatorNotes T5	37959007
+T6	PROTEINAS 1782 1790	albúmina
+#4	AnnotatorNotes T6	52454007
+T7	PROTEINAS 1725 1742	proteínas totales
+#5	AnnotatorNotes T7	395835001
+T8	NORMALIZABLES 538 547	omeprazol
+#6	AnnotatorNotes T8	387137007
+T9	NORMALIZABLES 525 535	mesalazina
+#7	AnnotatorNotes T9	387501005
+T10	NORMALIZABLES 512 523	fenofibrato
+#8	AnnotatorNotes T10	386879008
+T11	NORMALIZABLES 477 487	metformina
+#9	AnnotatorNotes T11	372567009
+T12	PROTEINAS 444 452	insulina
+#10	AnnotatorNotes T12	67866001
+T13	PROTEINAS 166 177	protrombina
+#11	AnnotatorNotes T13	7348004

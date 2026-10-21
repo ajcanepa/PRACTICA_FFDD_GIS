@@ -1,0 +1,26 @@
+T1	NORMALIZABLES 1278 1285	oxígeno
+#1	AnnotatorNotes T1	24099007
+T2	NORMALIZABLES 691 700	omeprazol
+#2	AnnotatorNotes T2	387137007
+T3	NORMALIZABLES 680 688	tramadol
+#3	AnnotatorNotes T3	386858008
+T4	NORMALIZABLES 668 679	paracetamol
+#4	AnnotatorNotes T4	387517004
+T5	PROTEINAS 638 666	insulina isofánica protamina
+#5	AnnotatorNotes T5	53235000
+T6	NORMALIZABLES 621 636	espironolactona
+#6	AnnotatorNotes T6	387078006
+T7	NORMALIZABLES 597 619	ácido acetilsalicílico
+#7	AnnotatorNotes T7	387458008
+T8	NORMALIZABLES 587 595	atenolol
+#8	AnnotatorNotes T8	387506000
+T9	NORMALIZABLES 572 585	atorvastatina
+#9	AnnotatorNotes T9	373444002
+T10	NORMALIZABLES 558 570	acenocumarol
+#10	AnnotatorNotes T10	387457003
+T11	NORMALIZABLES 532 546	nitroglicerina
+#11	AnnotatorNotes T11	387404004
+T12	NORMALIZABLES 519 530	repaglinida
+#12	AnnotatorNotes T12	386964000
+T13	NORMALIZABLES 507 517	amlodipino
+#13	AnnotatorNotes T13	386864001

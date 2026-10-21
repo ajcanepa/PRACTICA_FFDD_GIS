@@ -1,0 +1,8 @@
+T1	PROTEINAS 1485 1507	lactato deshidrogenada
+#1	AnnotatorNotes T1	259319003
+T2	PROTEINAS 1509 1512	LDH
+#2	AnnotatorNotes T2	259319003
+T3	PROTEINAS 1669 1680	Hemoglobina
+#3	AnnotatorNotes T3	38082009
+T4	NORMALIZABLES 1605 1615	creatinina
+#4	AnnotatorNotes T4	15373003

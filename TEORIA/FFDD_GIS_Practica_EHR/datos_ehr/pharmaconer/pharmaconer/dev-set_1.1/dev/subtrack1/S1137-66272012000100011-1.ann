@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 2302 2312	dosazoxina
+#1	AnnotatorNotes T1	372508002
+T2	NORMALIZABLES 1973 1993	metanefrinas totales
+#2	AnnotatorNotes T2	706935003
+T3	NORMALIZABLES 2010 2030	catecolaminas libres
+#3	AnnotatorNotes T3	259341003
+T4	NORMALIZABLES 1887 1900	catecolaminas
+#4	AnnotatorNotes T4	34582008
+T5	NORMALIZABLES 1872 1884	metanefrinas
+#5	AnnotatorNotes T5	24427005
+T6	PROTEINAS 1303 1306	PCR
+#6	AnnotatorNotes T6	61425002
+T7	UNCLEAR 32 40	cigarros
+#7	AnnotatorNotes T7	722496004
+T8	NORMALIZABLES 2125 2137	metanefrinas
+#8	AnnotatorNotes T8	24427005

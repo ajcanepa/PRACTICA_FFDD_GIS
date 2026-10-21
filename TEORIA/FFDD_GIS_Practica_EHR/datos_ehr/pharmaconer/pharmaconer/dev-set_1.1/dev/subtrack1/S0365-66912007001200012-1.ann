@@ -1,0 +1,32 @@
+T1	PROTEINAS 1365 1392	gammaglutamiltranspeptidasa
+#1	AnnotatorNotes T1	60153001
+T2	PROTEINAS 1360 1363	GGT
+#2	AnnotatorNotes T2	60153001
+T3	PROTEINAS 1474 1477	AMA
+#3	AnnotatorNotes T3	51950007
+T4	PROTEINAS 1479 1509	Anticuerpos antimitocondriales
+#4	AnnotatorNotes T4	51950007
+T5	PROTEINAS 1440 1465	Anticuerpos antinucleares
+#5	AnnotatorNotes T5	45530001
+T6	PROTEINAS 1435 1438	ANA
+#6	AnnotatorNotes T6	45530001
+T7	NORMALIZABLES 1715 1730	ácidos biliares
+#7	AnnotatorNotes T7	431067008
+T8	PROTEINAS 1593 1612	Anticuerpo anti-VHC
+#8	AnnotatorNotes T8	116893005
+T9	PROTEINAS 1571 1590	Anticuerpo anti-HBc
+#9	AnnotatorNotes T9	11447000
+T10	PROTEINAS 1550 1569	Anticuerpo anti-HBs
+#10	AnnotatorNotes T10	122450004
+T11	PROTEINAS 1522 1548	Antígeno de superficie VHB
+#11	AnnotatorNotes T11	<null>
+T12	PROTEINAS 1424 1427	IgG
+#12	AnnotatorNotes T12	29246005
+T13	PROTEINAS 1351 1354	GPT
+#13	AnnotatorNotes T13	56935002
+T14	PROTEINAS 1341 1344	GOT
+#14	AnnotatorNotes T14	26091008
+T15	PROTEINAS 1326 1339	transaminasas
+#15	AnnotatorNotes T15	130093006
+T17	NORMALIZABLES 1047 1059	fluoresceína
+#17	AnnotatorNotes T17	85596006

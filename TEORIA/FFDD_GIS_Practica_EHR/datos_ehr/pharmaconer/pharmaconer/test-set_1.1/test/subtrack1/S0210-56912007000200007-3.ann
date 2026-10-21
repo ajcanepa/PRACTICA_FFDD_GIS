@@ -1,0 +1,38 @@
+T1	NORMALIZABLES 1251 1264	noradrenalina
+#1	AnnotatorNotes T1	45555007
+T2	NORMALIZABLES 1228 1236	dopamina
+#2	AnnotatorNotes T2	412383006
+T3	NORMALIZABLES 1213 1226	catecolaminas
+#3	AnnotatorNotes T3	34582008
+T4	NORMALIZABLES 525 528	Na+
+#18	AnnotatorNotes T4	39972003
+T5	NORMALIZABLES 1184 1196	teicoplanina
+#4	AnnotatorNotes T5	387529008
+T6	NORMALIZABLES 1171 1181	cefotaxima
+#5	AnnotatorNotes T6	372704003
+T7	NORMALIZABLES 1137 1155	bicarbonato sódico
+#6	AnnotatorNotes T7	387319002
+T8	NORMALIZABLES 1010 1017	lactato
+#7	AnnotatorNotes T8	83036002
+T9	NORMALIZABLES 978 983	HCO3-
+#8	AnnotatorNotes T9	68615006
+T10	NORMALIZABLES 916 927	bilirrubina
+#9	AnnotatorNotes T10	79706000
+T11	NORMALIZABLES 888 899	bilirrubina
+#10	AnnotatorNotes T11	79706000
+T12	PROTEINAS 852 876	alanino aminotransferasa
+#11	AnnotatorNotes T12	56935002
+T13	PROTEINAS 814 840	aspartato aminotransferasa
+#12	AnnotatorNotes T13	26091008
+T14	PROTEINAS 770 786	antitrombina-III
+#13	AnnotatorNotes T14	34086003
+T15	PROTEINAS 733 744	fibrinógeno
+#14	AnnotatorNotes T15	23295004
+T16	PROTEINAS 672 683	protrombina
+#15	AnnotatorNotes T16	7348004
+T17	PROTEINAS 603 617	tromboplastina
+#16	AnnotatorNotes T17	387124009
+T18	NORMALIZABLES 541 551	creatinina
+#17	AnnotatorNotes T18	15373003
+T20	PROTEINAS 490 509	proteína C reactiva
+#19	AnnotatorNotes T20	61425002

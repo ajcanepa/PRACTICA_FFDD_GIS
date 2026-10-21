@@ -1,0 +1,14 @@
+T1	PROTEINAS 325 352	fosfatasas ácida y alcalina
+#1	AnnotatorNotes T1	<null>
+T3	NORMALIZABLES 299 305	calcio
+#2	AnnotatorNotes T3	5540006
+T5	PROTEINAS 1279 1291	parathormona
+#3	AnnotatorNotes T5	4076007
+T6	NORMALIZABLES 1267 1273	calcio
+#4	AnnotatorNotes T6	5540006
+T7	NORMALIZABLES 771 777	calcio
+#5	AnnotatorNotes T7	5540006
+T8	PROTEINAS 744 756	parathormona
+#6	AnnotatorNotes T8	4076007
+T9	NORMALIZABLES 307 318	bilirrubina
+#7	AnnotatorNotes T9	79706000

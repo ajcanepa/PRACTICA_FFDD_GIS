@@ -1,0 +1,48 @@
+T1	PROTEINAS 736 762	receptor de interleucina 1
+#1	AnnotatorNotes T1	<null>
+T2	NORMALIZABLES 3816 3827	corticoides
+#2	AnnotatorNotes T2	255877006
+T3	NORMALIZABLES 3708 3718	etanercept
+#3	AnnotatorNotes T3	387045004
+T4	PROTEINAS 3538 3551	transaminasas
+#4	AnnotatorNotes T4	130093006
+T5	NORMALIZABLES 3292 3302	etanercept
+#5	AnnotatorNotes T5	387045004
+T6	PROTEINAS 3137 3148	canakinumab
+#6	AnnotatorNotes T6	698091001
+T7	NORMALIZABLES 3123 3134	metotrexate
+#7	AnnotatorNotes T7	387381009
+T8	NORMALIZABLES 3053 3064	metotrexate
+#8	AnnotatorNotes T8	387381009
+T9	NORMALIZABLES 2775 2791	folinato cálcico
+#9	AnnotatorNotes T9	126223008
+T10	NORMALIZABLES 2727 2738	metotrexate
+#10	AnnotatorNotes T10	387381009
+T11	NORMALIZABLES 2506 2517	corticoides
+#11	AnnotatorNotes T11	255877006
+T12	PROTEINAS 2435 2446	canakinumab
+#12	AnnotatorNotes T12	698091001
+T13	PROTEINAS 2206 2217	canakinumab
+#13	AnnotatorNotes T13	698091001
+T14	NORMALIZABLES 2128 2138	corticoide
+#14	AnnotatorNotes T14	255877006
+T15	NORMALIZABLES 1050 1061	corticoides
+#15	AnnotatorNotes T15	255877006
+T16	PROTEINAS 1508 1518	Criopirina
+#16	AnnotatorNotes T16	<null>
+T17	PROTEINAS 1417 1428	canakinumab
+#17	AnnotatorNotes T17	698091001
+T18	PROTEINAS 1316 1342	interleucina humana-1 beta
+#18	AnnotatorNotes T18	116722001
+T19	PROTEINAS 1221 1232	Canakinumab
+#19	AnnotatorNotes T19	698091001
+T20	PROTEINAS 1208 1219	canakinumab
+#20	AnnotatorNotes T20	698091001
+T21	NORMALIZABLES 910 918	anakinra
+#21	AnnotatorNotes T21	385549000
+T22	NORMALIZABLES 764 772	Anakinra
+#22	AnnotatorNotes T22	385549000
+T23	NORMALIZABLES 627 637	prednisona
+#23	AnnotatorNotes T23	116602009
+T24	NORMALIZABLES 2255 2265	corticoide
+#24	AnnotatorNotes T24	255877006

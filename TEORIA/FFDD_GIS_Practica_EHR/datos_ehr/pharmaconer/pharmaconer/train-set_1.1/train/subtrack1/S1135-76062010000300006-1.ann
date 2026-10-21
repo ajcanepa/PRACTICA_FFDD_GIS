@@ -1,0 +1,12 @@
+T1	PROTEINAS 1097 1126	proteína glial fibrilar ácida
+#1	AnnotatorNotes T1	24675006
+T2	PROTEINAS 1128 1132	GFAP
+#2	AnnotatorNotes T2	24675006
+T3	UNCLEAR 1498 1505	tóxicos
+#3	AnnotatorNotes T3	264324001
+T4	PROTEINAS 1191 1204	sinaptofisina
+#4	AnnotatorNotes T4	115478005
+T6	PROTEINAS 1164 1171	enolasa
+#5	AnnotatorNotes T6	25089008
+T8	NORMALIZABLES 198 211	oxcarbazepina
+#6	AnnotatorNotes T8	387025007

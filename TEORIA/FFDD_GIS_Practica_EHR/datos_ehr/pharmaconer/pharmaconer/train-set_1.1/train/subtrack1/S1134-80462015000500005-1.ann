@@ -1,0 +1,14 @@
+T1	PROTEINAS 1095 1112	toxina botulínica
+#1	AnnotatorNotes T1	11894001
+T2	NORMALIZABLES 1050 1060	capsaicina
+#2	AnnotatorNotes T2	95995002
+T3	NORMALIZABLES 1023 1032	lidocaína
+#3	AnnotatorNotes T3	387480006
+T4	NORMALIZABLES 1005 1016	pregabalina
+#4	AnnotatorNotes T4	415160008
+T5	NORMALIZABLES 986 996	corticoide
+#5	AnnotatorNotes T5	255877006
+T6	NORMALIZABLES 965 975	capsaícina
+#6	AnnotatorNotes T6	95995002
+T7	NORMALIZABLES 955 963	ebastina
+#7	AnnotatorNotes T7	697997002

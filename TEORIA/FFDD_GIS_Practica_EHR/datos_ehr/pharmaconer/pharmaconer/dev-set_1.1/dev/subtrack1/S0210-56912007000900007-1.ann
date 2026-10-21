@@ -1,0 +1,28 @@
+T1	NORMALIZABLES 1406 1419	noradrenalina
+#1	AnnotatorNotes T1	45555007
+T2	NORMALIZABLES 1174 1187	noradrenalina
+#2	AnnotatorNotes T2	45555007
+T3	NORMALIZABLES 1616 1627	bicarbonato
+#3	AnnotatorNotes T3	68615006
+T4	NORMALIZABLES 1503 1514	bicarbonato
+#4	AnnotatorNotes T4	68615006
+T5	NORMALIZABLES 1385 1403	bicarbonato sódico
+#5	AnnotatorNotes T5	387319002
+T6	NORMALIZABLES 707 715	digoxina
+#6	AnnotatorNotes T6	387461009
+T7	NORMALIZABLES 693 704	mirtazapina
+#7	AnnotatorNotes T7	386847004
+T8	NORMALIZABLES 657 679	clorazepato dipotásico
+#8	AnnotatorNotes T8	CHEBI:3762
+T9	NORMALIZABLES 681 691	alopurinol
+#9	AnnotatorNotes T9	387135004
+T10	NORMALIZABLES 645 655	enalaprilo
+#10	AnnotatorNotes T10	372658000
+T11	NORMALIZABLES 633 643	torasemida
+#11	AnnotatorNotes T11	108476002
+T12	NORMALIZABLES 620 631	enoxaparina
+#12	AnnotatorNotes T12	372562003
+T13	NORMALIZABLES 590 600	metformina
+#13	AnnotatorNotes T13	372567009
+T14	PROTEINAS 576 588	insulina NPH
+#14	AnnotatorNotes T14	412221009

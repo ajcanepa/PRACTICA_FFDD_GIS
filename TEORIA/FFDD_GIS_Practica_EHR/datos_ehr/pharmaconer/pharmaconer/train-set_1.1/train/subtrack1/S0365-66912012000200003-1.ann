@@ -1,0 +1,12 @@
+T1	NORMALIZABLES 1886 1896	prednisona
+#1	AnnotatorNotes T1	116602009
+T2	PROTEINAS 1723 1751	anticuerpos frente al HTLV-1
+#2	AnnotatorNotes T2	<null>
+T3	PROTEINAS 1511 1538	anticuerpos frente a VLHT-1
+#3	AnnotatorNotes T3	<null>
+T4	NORMALIZABLES 1186 1198	TRIGON depot
+#4	AnnotatorNotes T4	395913005
+T5	NORMALIZABLES 1160 1173	triamcinolona
+#5	AnnotatorNotes T5	116594009
+T6	PROTEINAS 1547 1560	HTLV-1/HTLV-2
+T7	PROTEINAS 1661 1670	HTLV I/II

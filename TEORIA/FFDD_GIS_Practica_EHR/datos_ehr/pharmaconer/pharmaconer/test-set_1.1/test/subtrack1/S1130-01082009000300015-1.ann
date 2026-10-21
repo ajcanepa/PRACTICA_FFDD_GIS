@@ -1,0 +1,18 @@
+T1	UNCLEAR 1888 1902	plantago ovata
+#1	AnnotatorNotes T1	260202007
+T2	NORMALIZABLES 3071 3081	esteroides
+#2	AnnotatorNotes T2	116566001
+T3	NORMALIZABLES 3045 3055	mesalacina
+#3	AnnotatorNotes T3	387501005
+T4	NORMALIZABLES 2684 2693	omeprazol
+#4	AnnotatorNotes T4	387137007
+T5	UNCLEAR 2667 2681	plantago ovata
+#5	AnnotatorNotes T5	260202007
+T6	NORMALIZABLES 2636 2642	hierro
+#6	AnnotatorNotes T6	3829006
+T7	PROTEINAS 2417 2425	gastrina
+#7	AnnotatorNotes T7	62854002
+T9	NORMALIZABLES 1864 1873	omeprazol
+#8	AnnotatorNotes T9	387137007
+T10	PROTEINAS 1711 1719	gastrina
+#9	AnnotatorNotes T10	62854002

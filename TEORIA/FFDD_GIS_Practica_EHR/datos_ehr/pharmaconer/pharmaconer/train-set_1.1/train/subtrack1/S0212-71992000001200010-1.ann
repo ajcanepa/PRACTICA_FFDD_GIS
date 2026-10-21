@@ -1,0 +1,16 @@
+T2	NORMALIZABLES 1453 1465	Clindamicina
+#1	AnnotatorNotes T2	372786004
+T3	NORMALIZABLES 1420 1431	Gentamicina
+#2	AnnotatorNotes T3	387321007
+T4	NORMALIZABLES 1127 1131	urea
+#3	AnnotatorNotes T4	387092000
+T5	NORMALIZABLES 1114 1124	creatinina
+#4	AnnotatorNotes T5	15373003
+T6	PROTEINAS 1094 1112	fosfatasa alcalina
+#5	AnnotatorNotes T6	57056007
+T7	PROTEINAS 1078 1091	transaminasas
+#6	AnnotatorNotes T7	130093006
+T8	PROTEINAS 925 936	hemoglobina
+#7	AnnotatorNotes T8	38082009
+T9	NORMALIZABLES 487 498	corticoides
+#8	AnnotatorNotes T9	255877006

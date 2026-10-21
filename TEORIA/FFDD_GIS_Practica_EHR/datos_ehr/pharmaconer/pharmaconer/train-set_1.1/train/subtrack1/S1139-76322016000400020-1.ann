@@ -1,0 +1,10 @@
+T1	PROTEINAS 2373 2405	anticuerpos antiestreptolisina O
+#1	AnnotatorNotes T1	78460003
+T2	PROTEINAS 2407 2411	ASLO
+#2	AnnotatorNotes T2	78460003
+T3	PROTEINAS 1315 1334	proteína C reactiva
+#3	AnnotatorNotes T3	61425002
+T4	PROTEINAS 1336 1339	PCR
+#4	AnnotatorNotes T4	61425002
+T5	NORMALIZABLES 1525 1536	amoxicilina
+#5	AnnotatorNotes T5	372687004

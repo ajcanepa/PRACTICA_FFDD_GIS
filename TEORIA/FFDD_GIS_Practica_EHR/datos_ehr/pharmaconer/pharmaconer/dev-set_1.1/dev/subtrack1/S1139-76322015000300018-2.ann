@@ -1,0 +1,12 @@
+T1	PROTEINAS 411 413	Hb
+#1	AnnotatorNotes T1	38082009
+T3	PROTEINAS 1321 1339	IgM parvovirus B19
+#2	AnnotatorNotes T3	710677003
+T4	PROTEINAS 1126 1140	gammaglobulina
+#3	AnnotatorNotes T4	116648000
+T5	PROTEINAS 779 803	reactantes de fase aguda
+#4	AnnotatorNotes T5	91309004
+T6	NORMALIZABLES 689 712	amoxicilina-clavulánico
+#5	AnnotatorNotes T6	708558004
+T8	PROTEINAS 552 555	PCR
+#6	AnnotatorNotes T8	61425002

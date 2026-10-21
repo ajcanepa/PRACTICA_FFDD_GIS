@@ -1,0 +1,32 @@
+T1	NORMALIZABLES 2104 2115	azatioprina
+#1	AnnotatorNotes T1	372574004
+T2	NORMALIZABLES 2062 2073	corticoides
+#2	AnnotatorNotes T2	255877006
+T3	NORMALIZABLES 2047 2060	pentoxifilina
+#3	AnnotatorNotes T3	387522004
+T4	PROTEINAS 1762 1779	factor reumatoide
+#4	AnnotatorNotes T4	77089006
+T5	PROTEINAS 1745 1759	anticentrómero
+#5	AnnotatorNotes T5	121132002
+T6	PROTEINAS 1738 1743	scl70
+#6	AnnotatorNotes T6	103176006
+T7	PROTEINAS 1720 1736	anticardiolipina
+#7	AnnotatorNotes T7	45396006
+T8	PROTEINAS 1715 1718	ENA
+#8	AnnotatorNotes T8	116761009
+T9	PROTEINAS 1694 1713	anticuerpos antiDNA
+#9	AnnotatorNotes T9	6741004
+T10	PROTEINAS 1641 1644	ANA
+#10	AnnotatorNotes T10	45530001
+T11	PROTEINAS 1520 1534	antiperoxidasa
+#11	AnnotatorNotes T11	103184005
+T12	PROTEINAS 1488 1517	anticuerpos antitiroglobulina
+#12	AnnotatorNotes T12	121128008
+T13	PROTEINAS 1362 1376	crioglobulinas
+#13	AnnotatorNotes T13	18819001
+T14	PROTEINAS 1345 1360	crioaglutininas
+#14	AnnotatorNotes T14	399773001
+T15	PROTEINAS 1327 1343	inmunoglobulinas
+#15	AnnotatorNotes T15	112133008
+T16	PROTEINAS 1314 1325	complemento
+#16	AnnotatorNotes T16	20823009

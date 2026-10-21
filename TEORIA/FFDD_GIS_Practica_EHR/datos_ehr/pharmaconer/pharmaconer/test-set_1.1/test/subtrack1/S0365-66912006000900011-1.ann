@@ -1,0 +1,16 @@
+T1	PROTEINAS 1554 1572	factores VIII y XI
+#1	AnnotatorNotes T1	<null>
+T2	NORMALIZABLES 1665 1670	argón
+#2	AnnotatorNotes T2	52503005
+T3	NORMALIZABLES 1586 1596	vitamina K
+#3	AnnotatorNotes T3	65183007
+T4	NORMALIZABLES 1319 1338	ácido aminocaproico
+#4	AnnotatorNotes T4	59882007
+T5	NORMALIZABLES 1262 1294	antiinflamatorios no esteroideos
+#5	AnnotatorNotes T5	372665008
+T6	NORMALIZABLES 1245 1256	salicilatos
+#6	AnnotatorNotes T6	255637000
+T7	NORMALIZABLES 1088 1099	corticoides
+#7	AnnotatorNotes T7	255877006
+T8	NORMALIZABLES 1063 1082	sulfato de atropina
+#8	AnnotatorNotes T8	74237004

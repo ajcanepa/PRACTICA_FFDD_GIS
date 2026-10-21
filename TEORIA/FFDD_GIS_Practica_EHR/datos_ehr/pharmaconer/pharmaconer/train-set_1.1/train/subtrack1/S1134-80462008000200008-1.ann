@@ -1,0 +1,12 @@
+T1	NORMALIZABLES 2080 2091	bupivacaína
+#1	AnnotatorNotes T1	387150008
+T3	NORMALIZABLES 1468 1478	prednisona
+#2	AnnotatorNotes T3	116602009
+T4	NORMALIZABLES 1448 1459	corticoides
+#3	AnnotatorNotes T4	255877006
+T5	NORMALIZABLES 1409 1424	cloruro mórfico
+#4	AnnotatorNotes T5	395804007
+T6	NORMALIZABLES 1355 1364	fentanilo
+#5	AnnotatorNotes T6	373492002
+T7	PROTEINAS 199 225	anticuerpo antifosfolípido
+#6	AnnotatorNotes T7	259916004

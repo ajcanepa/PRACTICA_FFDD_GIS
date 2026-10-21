@@ -1,0 +1,24 @@
+T1	PROTEINAS 1621 1636	metahemoglobina
+#1	AnnotatorNotes T1	27840003
+T2	UNCLEAR 1551 1555	EMLA
+#2	AnnotatorNotes T2	<null>
+T3	PROTEINAS 1223 1238	metahemoglobina
+#3	AnnotatorNotes T3	27840003
+T4	NORMALIZABLES 1113 1129	azul de metileno
+#4	AnnotatorNotes T4	6725000
+T5	NORMALIZABLES 1054 1064	prilocaína
+#5	AnnotatorNotes T5	387107003
+T6	NORMALIZABLES 1038 1047	lidocaína
+#6	AnnotatorNotes T6	387480006
+T7	UNCLEAR 1031 1035	EMLA
+#7	AnnotatorNotes T7	<null>
+T8	PROTEINAS 907 922	metahemoglobina
+#8	AnnotatorNotes T8	27840003
+T9	UNCLEAR 869 873	EMLA
+#9	AnnotatorNotes T9	<null>
+T10	UNCLEAR 278 282	EMLA
+#10	AnnotatorNotes T10	<null>
+T11	NORMALIZABLES 301 311	prilocaína
+#11	AnnotatorNotes T11	387107003
+T12	NORMALIZABLES 285 294	lidocaína
+#12	AnnotatorNotes T12	387480006

@@ -1,0 +1,6 @@
+T1	PROTEINAS 1824 1840	inmunoglobulinas
+#1	AnnotatorNotes T1	112133008
+T2	PROTEINAS 1651 1672	anticuerpo anti GQ-1b
+#2	AnnotatorNotes T2	<null>
+T3	NORMALIZABLES 1181 1188	oxígeno
+#3	AnnotatorNotes T3	24099007

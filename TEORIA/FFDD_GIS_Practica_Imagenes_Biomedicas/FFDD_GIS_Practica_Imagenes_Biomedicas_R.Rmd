@@ -1,15 +1,17 @@
 ---
 title: "Introducción al análisis de imágenes biomédicas con R"
 subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
-author: "Universidad de Burgos"
-date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+author: "Dr. Antonio Canepa-Oneto"
+date: |
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
 output:
   html_document:
     toc: true
     toc_float: true
     number_sections: true
-    code_folding: show
-    df_print: paged
+    theme: flatly
+    highlight: tango
+lang: es
 ---
 
 ```{r setup, include = FALSE}
@@ -113,7 +115,7 @@ Observad que ya hemos tenido que decidir **qué índice va en el eje horizontal 
 ## Formatos: DICOM frente a NIfTI
 
 | Aspecto | **DICOM** (*Digital Imaging and Communications in Medicine*) | **NIfTI-1/2** (*Neuroimaging Informatics Technology Initiative*) |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | Origen | Estándar clínico (NEMA, ISO 12052) | Comunidad de investigación (NIH, 2004) |
 | Unidad típica | Un fichero por corte 2D | Un fichero por volumen 3D/4D |
 | Metadatos | Cientos de etiquetas `(grupo, elemento)`: paciente, equipo, adquisición… | Cabecera fija de 348 bytes (NIfTI-1): dimensiones, vóxel, afín |
@@ -222,7 +224,6 @@ abdo_tbl
 ```{r dicom-plot, fig.width = 5, fig.height = 5}
 tema_imagen <- theme_void() + theme(legend.position = "right")
 
-#x11()
 abdo_tbl |>
   ggplot(aes(x = j, y = i, fill = intensidad)) +
   geom_raster() +
@@ -511,7 +512,7 @@ Para un estudio de **BIMCV-COVID19+** en NIfTI, basta con sustituir `ruta_nii` d
 **Paquetes del CRAN Task View: Medical Image Analysis** que conviene conocer:
 
 | Paquete | Para qué sirve |
-|:-----------------------------------|:-----------------------------------|
+|:---|:---|
 | `oro.dicom`, `oro.nifti`, `RNifti` | Lectura/escritura de DICOM, ANALYZE y NIfTI |
 | `divest` | Conversión DICOM → NIfTI con el motor de `dcm2niix` |
 | `neurobase` | Funciones de alto nivel sobre objetos NIfTI (máscaras, visualización) |

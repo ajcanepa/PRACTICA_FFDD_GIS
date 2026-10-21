@@ -1,0 +1,64 @@
+T1	NORMALIZABLES 1970 1974	FiO2
+#1	AnnotatorNotes T1	250774007
+T2	PROTEINAS 1784 1825	anticuerpos anticitoplasma del neutrófilo
+#2	AnnotatorNotes T2	23318004
+T3	PROTEINAS 1827 1831	ANCA
+#3	AnnotatorNotes T3	23318004
+T4	PROTEINAS 1751 1776	anticuerpos antinucleares
+#4	AnnotatorNotes T4	45530001
+T5	PROTEINAS 1778 1781	ANA
+#5	AnnotatorNotes T5	45530001
+T6	PROTEINAS 3564 3592	anticuerpos anticardiolipina
+#6	AnnotatorNotes T6	45396006
+T7	PROTEINAS 714 755	anticuerpos anticardiolipina de tipo Ig G
+#7	AnnotatorNotes T7	710401005
+T8	NORMALIZABLES 3777 3789	acenocumarol
+#8	AnnotatorNotes T8	387457003
+T9	NORMALIZABLES 428 440	acenocumarol
+#9	AnnotatorNotes T9	387457003
+T10	NORMALIZABLES 3792 3814	ácido acetilsalicílico
+#10	AnnotatorNotes T10	387458008
+T11	PROTEINAS 3595 3616	anticoagulante lúpico
+#11	AnnotatorNotes T11	16923002
+T12	NORMALIZABLES 3458 3472	azul de Prusia
+#12	AnnotatorNotes T12	255809005
+T13	NORMALIZABLES 2541 2570	amoxicilina/ácido clavulánico
+#13	AnnotatorNotes T13	708558004
+T14	PROTEINAS 1914 1920	antiSM
+#14	AnnotatorNotes T14	46195008
+T15	PROTEINAS 1903 1911	anti-SSA
+#15	AnnotatorNotes T15	44212003
+T16	PROTEINAS 1894 1901	anti-Ro
+#16	AnnotatorNotes T16	44212003
+T17	PROTEINAS 1881 1892	antihistona
+#17	AnnotatorNotes T17	767024009
+T18	PROTEINAS 1865 1879	antiperoxidasa
+#18	AnnotatorNotes T18	103184005
+T20	PROTEINAS 1735 1749	crioglobulinas
+#19	AnnotatorNotes T20	18819001
+T21	PROTEINAS 1716 1733	Factor reumatoide
+#20	AnnotatorNotes T21	77089006
+T22	PROTEINAS 1639 1652	transaminasas
+#21	AnnotatorNotes T22	130093006
+T23	NORMALIZABLES 1598 1610	acenocumarol
+#22	AnnotatorNotes T23	387457003
+T24	PROTEINAS 1361 1372	hemoglobina
+#23	AnnotatorNotes T24	38082009
+T25	PROTEINAS 906 916	proteína C
+#24	AnnotatorNotes T25	25525005
+T26	PROTEINAS 893 903	proteína S
+#25	AnnotatorNotes T26	56898001
+T27	PROTEINAS 875 891	antitrombina III
+#26	AnnotatorNotes T27	34086003
+T28	PROTEINAS 783 824	anticuerpos anticardiolipinas de tipo IgM
+#27	AnnotatorNotes T28	710615004
+T29	PROTEINAS 619 633	tromboplastina
+#28	AnnotatorNotes T29	387124009
+T30	PROTEINAS 562 573	protrombina
+#29	AnnotatorNotes T30	7348004
+T31	UNCLEAR 87 98	cigarrillos
+#30	AnnotatorNotes T31	722496004
+T32	PROTEINAS 3688 3703	antifosfolípido
+#32	AnnotatorNotes T32	259916004
+T33	PROTEINAS 1834 1852	antimembrana basal
+#33	AnnotatorNotes T33	259895000

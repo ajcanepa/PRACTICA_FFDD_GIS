@@ -1,0 +1,18 @@
+T2	NORMALIZABLES 1544 1556	clindamicina
+#1	AnnotatorNotes T2	372786004
+T3	NORMALIZABLES 1519 1541	amoxicilna-clavulánico
+#2	AnnotatorNotes T3	708558004
+T4	NORMALIZABLES 1506 1517	cloxacilina
+#3	AnnotatorNotes T4	373276005
+T5	NORMALIZABLES 1483 1493	penicilina
+#4	AnnotatorNotes T5	764146007
+T6	NORMALIZABLES 1254 1266	clindamicina
+#5	AnnotatorNotes T6	372786004
+T8	NORMALIZABLES 1018 1028	mupirocina
+#6	AnnotatorNotes T8	387397004
+T9	NORMALIZABLES 1001 1012	cloxacilina
+#7	AnnotatorNotes T9	373276005
+T10	PROTEINAS 906 930	reactantes de fase aguda
+#8	AnnotatorNotes T10	91309004
+T12	NORMALIZABLES 340 350	corticoide
+#9	AnnotatorNotes T12	255877006

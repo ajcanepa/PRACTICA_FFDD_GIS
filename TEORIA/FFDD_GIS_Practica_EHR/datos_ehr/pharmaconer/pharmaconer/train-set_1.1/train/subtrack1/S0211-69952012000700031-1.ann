@@ -1,0 +1,22 @@
+T1	PROTEINAS 1440 1474	transaminasa glutámico-oxalacética
+#1	AnnotatorNotes T1	26091008
+T2	PROTEINAS 1476 1479	TGO
+#2	AnnotatorNotes T2	26091008
+T3	PROTEINAS 1490 1521	transaminasa glutámico-pirúvica
+#3	AnnotatorNotes T3	56935002
+T4	PROTEINAS 1523 1526	TGP
+#4	AnnotatorNotes T4	56935002
+T6	NORMALIZABLES 1649 1659	prednisona
+#5	AnnotatorNotes T6	116602009
+T7	NORMALIZABLES 1570 1584	anfotericina B
+#6	AnnotatorNotes T7	77703004
+T8	NORMALIZABLES 1388 1399	bilirrubina
+#7	AnnotatorNotes T8	79706000
+T9	NORMALIZABLES 1280 1291	voriconazol
+#8	AnnotatorNotes T9	385469007
+T10	PROTEINAS 1040 1046	ureasa
+#9	AnnotatorNotes T10	19986007
+T12	NORMALIZABLES 168 178	esteroides
+#10	AnnotatorNotes T12	116566001
+T11	NORMALIZABLES 892 907	tinción de Gram
+#11	AnnotatorNotes T11	385484003

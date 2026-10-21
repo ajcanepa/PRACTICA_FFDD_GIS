@@ -1,0 +1,10 @@
+T1	PROTEINAS 3156 3192	hormona liberadora de gonadotropinas
+#1	AnnotatorNotes T1	49869009
+T5	PROTEINAS 987 994	amilasa
+#2	AnnotatorNotes T5	387031005
+T6	PROTEINAS 968 985	enzimas hepáticos
+#3	AnnotatorNotes T6	259670004
+T8	NORMALIZABLES 937 944	glucosa
+#4	AnnotatorNotes T8	67079006
+T9	PROTEINAS 889 892	PCR
+#5	AnnotatorNotes T9	61425002

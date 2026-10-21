@@ -1,0 +1,10 @@
+T1	PROTEINAS 877 888	hemoglobina
+#1	AnnotatorNotes T1	38082009
+T2	NORMALIZABLES 682 684	O2
+#2	AnnotatorNotes T2	24099007
+T3	NORMALIZABLES 532 547	heparina sódica
+#3	AnnotatorNotes T3	50045009
+T4	NORMALIZABLES 506 517	clopidogrel
+#4	AnnotatorNotes T4	386952008
+T5	NORMALIZABLES 472 494	ácido acetilsalicílico
+#5	AnnotatorNotes T5	387458008

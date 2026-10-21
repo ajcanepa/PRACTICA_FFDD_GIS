@@ -1,0 +1,50 @@
+T1	PROTEINAS 1399 1418	proteína C activada
+#1	AnnotatorNotes T1	130626008
+T2	PROTEINAS 1494 1509	proteínas C y S
+#2	AnnotatorNotes T2	<null>
+T3	NORMALIZABLES 1928 1940	acenocumarol
+#3	AnnotatorNotes T3	387457003
+T4	NORMALIZABLES 1532 1544	homocisteína
+#4	AnnotatorNotes T4	102747008
+T5	PROTEINAS 1514 1526	antitrombina
+#5	AnnotatorNotes T5	259742007
+T6	PROTEINAS 1485 1488	IgM
+#6	AnnotatorNotes T6	74889000
+T7	PROTEINAS 1479 1482	IgG
+#7	AnnotatorNotes T7	29246005
+T8	PROTEINAS 1450 1478	anticuerpos anticardiolipina
+#8	AnnotatorNotes T8	45396006
+T9	PROTEINAS 1423 1444	anticoagulante lúpico
+#9	AnnotatorNotes T9	16923002
+T10	PROTEINAS 1359 1367	factor V
+#10	AnnotatorNotes T10	60208008
+T12	PROTEINAS 1315 1326	protrombina
+#12	AnnotatorNotes T12	7348004
+T13	NORMALIZABLES 1207 1219	acenocumarol
+#13	AnnotatorNotes T13	387457003
+T14	NORMALIZABLES 1082 1093	enoxaparina
+#14	AnnotatorNotes T14	372562003
+T15	PROTEINAS 735 743	dímero-D
+#15	AnnotatorNotes T15	25607008
+T16	PROTEINAS 711 722	fibrinógeno
+#16	AnnotatorNotes T16	23295004
+T17	PROTEINAS 694 705	protrombina
+#17	AnnotatorNotes T17	7348004
+T18	PROTEINAS 612 623	hemoglobina
+#18	AnnotatorNotes T18	38082009
+T19	PROTEINAS 581 600	proteína C reactiva
+#19	AnnotatorNotes T19	61425002
+T20	NORMALIZABLES 552 563	bilirrubina
+#20	AnnotatorNotes T20	79706000
+T21	PROTEINAS 517 543	aspartato-aminotransferasa
+#21	AnnotatorNotes T21	26091008
+T22	PROTEINAS 486 507	láctico-dehidrogenasa
+#22	AnnotatorNotes T22	259319003
+T23	PROTEINAS 470 477	amilasa
+#23	AnnotatorNotes T23	387031005
+T24	NORMALIZABLES 448 458	creatinina
+#24	AnnotatorNotes T24	15373003
+T25	NORMALIZABLES 433 437	urea
+#25	AnnotatorNotes T25	387092000
+T26	NORMALIZABLES 415 422	glucosa
+#26	AnnotatorNotes T26	67079006

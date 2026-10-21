@@ -1,0 +1,8 @@
+T1	PROTEINAS 413 448	enzima convertidora de angiotensina
+#1	AnnotatorNotes T1	112049007
+T2	NORMALIZABLES 2061 2067	formol
+#2	AnnotatorNotes T2	111095003
+T3	NORMALIZABLES 2127 2133	eosina
+#3	AnnotatorNotes T3	256012001
+T4	NORMALIZABLES 2112 2124	hematoxilina
+#4	AnnotatorNotes T4	12710003

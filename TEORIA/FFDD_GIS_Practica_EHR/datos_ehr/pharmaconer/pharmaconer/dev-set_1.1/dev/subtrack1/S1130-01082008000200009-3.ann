@@ -1,0 +1,14 @@
+T1	NORMALIZABLES 510 518	heparina
+#1	AnnotatorNotes T1	372877000
+T2	UNCLEAR 547 553	gluten
+#2	AnnotatorNotes T2	89811004
+T3	PROTEINAS 394 397	IgG
+#3	AnnotatorNotes T3	29246005
+T4	PROTEINAS 345 348	IgM
+#4	AnnotatorNotes T4	74889000
+T5	PROTEINAS 377 393	anticardiolipina
+#5	AnnotatorNotes T5	45396006
+T6	PROTEINAS 316 344	anticuerpos anticardiolipina
+#6	AnnotatorNotes T6	45396006
+T7	PROTEINAS 70 102	anticuerpos antitransglutaminasa
+#7	AnnotatorNotes T7	703491009

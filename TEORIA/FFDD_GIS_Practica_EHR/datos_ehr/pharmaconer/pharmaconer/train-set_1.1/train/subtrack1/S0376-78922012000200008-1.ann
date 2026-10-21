@@ -1,0 +1,22 @@
+T1	NORMALIZABLES 1658 1668	adrenalina
+#1	AnnotatorNotes T1	387362001
+T2	NORMALIZABLES 4199 4207	silicona
+#2	AnnotatorNotes T2	13652007
+T3	NORMALIZABLES 1098 1106	silicona
+#3	AnnotatorNotes T3	13652007
+T4	NORMALIZABLES 430 438	silicona
+#4	AnnotatorNotes T4	13652007
+T5	NORMALIZABLES 1640 1649	lidocaína
+#5	AnnotatorNotes T5	387480006
+T8	NORMALIZABLES 887 895	letrozol
+#6	AnnotatorNotes T8	386911004
+T9	PROTEINAS 831 842	trastuzumab
+#7	AnnotatorNotes T9	387003001
+T10	NORMALIZABLES 704 710	taxano
+#8	AnnotatorNotes T10	418965003
+T11	NORMALIZABLES 687 701	ciclofosfamida
+#9	AnnotatorNotes T11	387420009
+T12	NORMALIZABLES 676 687	adriamicina
+#10	AnnotatorNotes T12	372817009
+T13	PROTEINAS 186 207	receptores hormonales
+#11	AnnotatorNotes T13	<null>

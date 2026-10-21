@@ -1,0 +1,12 @@
+T1	PROTEINAS 81 96	interferón beta
+#1	AnnotatorNotes T1	420710006
+T2	NORMALIZABLES 1732 1740	diazepam
+#2	AnnotatorNotes T2	387264003
+T3	NORMALIZABLES 1719 1729	ibuprofeno
+#3	AnnotatorNotes T3	387207008
+T4	NORMALIZABLES 1703 1717	metoclopramida
+#4	AnnotatorNotes T4	372776000
+T8	NORMALIZABLES 150 159	metamizol
+#5	AnnotatorNotes T8	22165008
+T9	NORMALIZABLES 137 147	ibuprofeno
+#6	AnnotatorNotes T9	387207008

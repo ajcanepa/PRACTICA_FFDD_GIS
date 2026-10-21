@@ -1,0 +1,23 @@
+T3	NORMALIZABLES 2627 2639	dexametasona
+#3	AnnotatorNotes T3	372584003
+T4	NORMALIZABLES 2429 2440	corticoides
+#4	AnnotatorNotes T4	255877006
+T5	NORMALIZABLES 2379 2382	PAS
+#5	AnnotatorNotes T5	27192005
+T6	PROTEINAS 1717 1756	enzima de conversión de la angiotensina
+#6	AnnotatorNotes T6	112049007
+T7	NORMALIZABLES 1631 1637	calcio
+#7	AnnotatorNotes T7	5540006
+T8	PROTEINAS 1527 1546	Ac antifosfolípidos
+#8	AnnotatorNotes T8	<null>
+T9	PROTEINAS 1520 1525	cANCA
+#9	AnnotatorNotes T9	103180001
+T10	PROTEINAS 1502 1518	Ac antinucleares
+#10	AnnotatorNotes T10	45530001
+T11	PROTEINAS 1483 1500	factor reumatoide
+#11	AnnotatorNotes T11	77089006
+T13	NORMALIZABLES 1073 1093	verde de indocianina
+#12	AnnotatorNotes T13	384954007
+T1	NO_NORMALIZABLES 2359 2376	metamina de plata
+T2	NORMALIZABLES 2720 2728	atropina
+#2	AnnotatorNotes T2	372832002

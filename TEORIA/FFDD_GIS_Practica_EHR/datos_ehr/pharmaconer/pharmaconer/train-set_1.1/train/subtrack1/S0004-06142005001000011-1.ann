@@ -1,0 +1,18 @@
+T1	NORMALIZABLES 2246 2266	6-Metil-Prednisolona
+#1	AnnotatorNotes T1	116593003
+T2	NORMALIZABLES 965 977	ciclosporina
+#2	AnnotatorNotes T2	387467008
+T3	NORMALIZABLES 885 897	ciclosporina
+#3	AnnotatorNotes T3	387467008
+T4	NORMALIZABLES 2480 2490	creatinina
+#4	AnnotatorNotes T4	15373003
+T5	PROTEINAS 2329 2339	Interferón
+#5	AnnotatorNotes T5	49327004
+T6	PROTEINAS 2000 2010	polimerasa
+#6	AnnotatorNotes T6	116740002
+T7	NORMALIZABLES 1019 1029	prednisona
+#7	AnnotatorNotes T7	116602009
+T8	NORMALIZABLES 986 1007	micofenolato mofetilo
+#8	AnnotatorNotes T8	386976000
+T9	PROTEINAS 196 199	IgA
+#9	AnnotatorNotes T9	46046006

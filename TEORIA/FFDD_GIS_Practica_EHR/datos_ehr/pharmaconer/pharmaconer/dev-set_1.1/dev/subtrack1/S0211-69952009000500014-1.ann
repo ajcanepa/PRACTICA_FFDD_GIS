@@ -1,0 +1,51 @@
+T1	PROTEINAS 2135 2164	anticuerpos antitiroglobulina
+#1	AnnotatorNotes T1	121128008
+T2	NORMALIZABLES 2116 2119	T4l
+#2	AnnotatorNotes T2	86211008
+T3	PROTEINAS 1102 1104	C4
+#3	AnnotatorNotes T3	300899005
+T4	PROTEINAS 1098 1100	C3
+#4	AnnotatorNotes T4	10473000
+T5	PROTEINAS 1349 1358	proteínas
+#5	AnnotatorNotes T5	88878007
+T7	PROTEINAS 379 399	antitransglutaminasa
+#7	AnnotatorNotes T7	703491009
+T8	PROTEINAS 2167 2183	antimicrosomales
+#8	AnnotatorNotes T8	116736006
+T9	PROTEINAS 2097 2100	TSH
+#9	AnnotatorNotes T9	65428006
+T10	NORMALIZABLES 1752 1760	losartán
+#10	AnnotatorNotes T10	373567002
+T11	NORMALIZABLES 1740 1749	enalapril
+#11	AnnotatorNotes T11	372658000
+T12	NORMALIZABLES 1707 1715	aspirina
+#12	AnnotatorNotes T12	387458008
+T13	NORMALIZABLES 1697 1705	estatina
+#13	AnnotatorNotes T13	96302009
+T14	UNCLEAR 1656 1662	gluten
+#14	AnnotatorNotes T14	89811004
+T15	PROTEINAS 1000 1017	proteínas totales
+#15	AnnotatorNotes T15	395835001
+T16	PROTEINAS 1160 1174	crioglobulinas
+#16	AnnotatorNotes T16	18819001
+T17	NORMALIZABLES 975 988	triglicéridos
+#17	AnnotatorNotes T17	85600001
+T18	PROTEINAS 1029 1037	albúmina
+#18	AnnotatorNotes T18	52454007
+T19	PROTEINAS 1091 1096	ANCAS
+#19	AnnotatorNotes T19	23318004
+T20	PROTEINAS 1076 1079	ANA
+#20	AnnotatorNotes T20	45530001
+T21	PROTEINAS 1081 1089	anti-DNA
+#21	AnnotatorNotes T21	6741004
+T22	PROTEINAS 1106 1134	anticuerpos anticardiolipina
+#22	AnnotatorNotes T22	45396006
+T23	PROTEINAS 1136 1157	anticoagulante lúpico
+#23	AnnotatorNotes T23	16923002
+T24	NORMALIZABLES 925 935	creatinina
+#24	AnnotatorNotes T24	15373003
+T29	PROTEINAS 1885 1917	anticuerpos antitransglutaminasa
+#29	AnnotatorNotes T29	703491009
+T25	PROTEINAS 1248 1292	anticuerpos antitransglutaminasa tisular IgA
+T6	NORMALIZABLES 947 957	colesterol
+#6	AnnotatorNotes T6	84698008

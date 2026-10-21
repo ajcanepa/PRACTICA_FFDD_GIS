@@ -1,0 +1,14 @@
+T1	NORMALIZABLES 2955 2964	linezolid
+#1	AnnotatorNotes T1	387056004
+T2	NORMALIZABLES 2943 2952	meropenem
+#2	AnnotatorNotes T2	387540000
+T3	NORMALIZABLES 2860 2870	meticilina
+#3	AnnotatorNotes T3	373515001
+T4	NORMALIZABLES 2453 2476	amoxicilina-clavulánico
+#4	AnnotatorNotes T4	708558004
+T5	PROTEINAS 1492 1511	proteína C-reactiva
+#5	AnnotatorNotes T5	61425002
+T6	PROTEINAS 1468 1479	fibrinógeno
+#6	AnnotatorNotes T6	23295004
+T7	PROTEINAS 1442 1466	reactantes de fase aguda
+#7	AnnotatorNotes T7	91309004

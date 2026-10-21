@@ -1,0 +1,20 @@
+T1	NORMALIZABLES 1708 1731	amoxicilina-clavulánico
+#1	AnnotatorNotes T1	708558004
+T2	NORMALIZABLES 1534 1544	cefotaxima
+#2	AnnotatorNotes T2	372704003
+T3	NORMALIZABLES 1483 1494	cloxacilina
+#3	AnnotatorNotes T3	373276005
+T4	PROTEINAS 1385 1401	inmunoglobulinas
+#4	AnnotatorNotes T4	112133008
+T5	NORMALIZABLES 1280 1290	cefotaxima
+#5	AnnotatorNotes T5	372704003
+T6	NORMALIZABLES 890 901	cloxacilina
+#6	AnnotatorNotes T6	373276005
+T7	NORMALIZABLES 865 875	cefotaxima
+#7	AnnotatorNotes T7	372704003
+T8	PROTEINAS 453 456	PCT
+#8	AnnotatorNotes T8	418752001
+T9	PROTEINAS 436 439	PCR
+#9	AnnotatorNotes T9	61425002
+T10	PROTEINAS 336 360	reactantes de fase aguda
+#10	AnnotatorNotes T10	91309004

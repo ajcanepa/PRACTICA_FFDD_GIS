@@ -1,0 +1,12 @@
+T2	PROTEINAS 2236 2247	hemoglobina
+#1	AnnotatorNotes T2	38082009
+T3	NORMALIZABLES 1398 1407	meropenem
+#2	AnnotatorNotes T3	387540000
+T4	NORMALIZABLES 1364 1376	clindamicina
+#3	AnnotatorNotes T4	372786004
+T5	NORMALIZABLES 1333 1344	vancomicina
+#4	AnnotatorNotes T5	372735009
+T7	PROTEINAS 721 732	hemoglobina
+#6	AnnotatorNotes T7	38082009
+T8	NORMALIZABLES 1844 1859	solución salina
+#8	AnnotatorNotes T8	373757009

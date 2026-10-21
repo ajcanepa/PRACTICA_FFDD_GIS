@@ -1,0 +1,28 @@
+T1	PROTEINAS 851 870	receptores opioides
+#1	AnnotatorNotes T1	<null>
+T2	PROTEINAS 883 888	kappa
+#2	AnnotatorNotes T2	64893005
+T3	PROTEINAS 875 880	delta
+#3	AnnotatorNotes T3	<null>
+T4	PROTEINAS 872 873	µ
+#4	AnnotatorNotes T4	<null>
+T5	PROTEINAS 493 514	receptores m opioides
+#5	AnnotatorNotes T5	<null>
+T6	NORMALIZABLES 3024 3036	dexametasona
+#6	AnnotatorNotes T6	372584003
+T8	NORMALIZABLES 2127 2141	agua oxigenada
+#7	AnnotatorNotes T8	129505000
+T9	NORMALIZABLES 902 927	Dexketoprofeno trometamol
+#8	AnnotatorNotes T9	427618005
+T10	NORMALIZABLES 777 785	Tramadol
+#9	AnnotatorNotes T10	386858008
+T11	NORMALIZABLES 688 700	Sevofluorano
+#10	AnnotatorNotes T11	386842005
+T12	NORMALIZABLES 587 608	Besilato de atracurio
+#11	AnnotatorNotes T12	72752006
+T13	NORMALIZABLES 555 564	fentanilo
+#12	AnnotatorNotes T13	373492002
+T14	NORMALIZABLES 462 475	Renifentanilo
+#13	AnnotatorNotes T14	386839004
+T15	NORMALIZABLES 435 443	Propofol
+#14	AnnotatorNotes T15	387423006

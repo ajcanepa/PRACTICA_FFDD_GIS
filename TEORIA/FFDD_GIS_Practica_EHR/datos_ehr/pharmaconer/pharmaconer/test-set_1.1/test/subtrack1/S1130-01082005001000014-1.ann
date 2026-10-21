@@ -1,0 +1,24 @@
+T1	PROTEINAS 3439 3442	PCR
+#1	AnnotatorNotes T1	61425002
+T3	NORMALIZABLES 2921 2938	metilprednisolona
+#2	AnnotatorNotes T3	116593003
+T4	NORMALIZABLES 2908 2919	corticoides
+#3	AnnotatorNotes T4	255877006
+T6	PROTEINAS 1262 1265	PSA
+#4	AnnotatorNotes T6	102687007
+T7	PROTEINAS 1222 1239	anti-músculo liso
+#5	AnnotatorNotes T7	121122009
+T8	PROTEINAS 1200 1219	anti-mitocondriales
+#6	AnnotatorNotes T8	51950007
+T9	PROTEINAS 1172 1198	anticuerpos anti-nucleares
+#7	AnnotatorNotes T9	45530001
+T10	PROTEINAS 1121 1142	enzimas de colestasis
+#8	AnnotatorNotes T10	<null>
+T11	PROTEINAS 1105 1118	Transaminasas
+#9	AnnotatorNotes T11	130093006
+T12	PROTEINAS 972 989	factor reumatoide
+#10	AnnotatorNotes T12	77089006
+T13	PROTEINAS 951 960	ferritina
+#11	AnnotatorNotes T13	32789000
+T14	PROTEINAS 935 938	PCR
+#12	AnnotatorNotes T14	61425002

@@ -1,0 +1,31 @@
+T1	PROTEINAS 1548 1575	antigangliósidos GM1 y GD1b
+#1	AnnotatorNotes T1	<null>
+T2	PROTEINAS 1456 1498	anticuerpos anti citoplasma del neutrófilo
+#2	AnnotatorNotes T2	23318004
+T3	PROTEINAS 1500 1504	ANCA
+#3	AnnotatorNotes T3	23318004
+T4	PROTEINAS 1423 1448	anticuerpos antinucleares
+#4	AnnotatorNotes T4	45530001
+T5	PROTEINAS 1450 1453	ANA
+#5	AnnotatorNotes T5	45530001
+T6	NORMALIZABLES 4008 4018	prednisona
+#6	AnnotatorNotes T6	116602009
+T7	NORMALIZABLES 3867 3877	prednisona
+#7	AnnotatorNotes T7	116602009
+T8	PROTEINAS 1577 1594	factor reumatoide
+#8	AnnotatorNotes T8	77089006
+T9	PROTEINAS 1536 1539	IgG
+#9	AnnotatorNotes T9	29246005
+T10	PROTEINAS 1542 1545	IgM
+#10	AnnotatorNotes T10	74889000
+T11	PROTEINAS 1507 1535	anticuerpos anticardiolipina
+#11	AnnotatorNotes T11	45396006
+T12	PROTEINAS 1407 1421	crioglobulinas
+#12	AnnotatorNotes T12	18819001
+T13	PROTEINAS 1382 1405	C3 y C4 del complemento
+T16	PROTEINAS 1353 1369	inmunoglobulinas
+#16	AnnotatorNotes T16	112133008
+T17	PROTEINAS 1325 1336	fibrinógeno
+#17	AnnotatorNotes T17	23295004
+T18	PROTEINAS 1272 1283	protrombina
+#18	AnnotatorNotes T18	7348004

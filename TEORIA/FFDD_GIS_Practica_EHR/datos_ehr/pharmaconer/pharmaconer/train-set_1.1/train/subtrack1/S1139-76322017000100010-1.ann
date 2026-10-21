@@ -1,0 +1,18 @@
+T1	PROTEINAS 1205 1228	human leukocyte antigen
+#1	AnnotatorNotes T1	47038001
+T2	PROTEINAS 1230 1233	HLA
+#2	AnnotatorNotes T2	725674007
+T3	PROTEINAS 1472 1481	ferritina
+#3	AnnotatorNotes T3	32789000
+T4	UNCLEAR 1367 1373	gluten
+#4	AnnotatorNotes T4	89811004
+T5	PROTEINAS 1020 1023	IgA
+#5	AnnotatorNotes T5	46046006
+T6	PROTEINAS 968 1004	anticuerpos IgA antitransglutaminasa
+#6	AnnotatorNotes T6	703491009
+T7	NORMALIZABLES 714 720	hierro
+#7	AnnotatorNotes T7	3829006
+T8	PROTEINAS 600 609	ferritina
+#8	AnnotatorNotes T8	32789000
+T9	PROTEINAS 1282 1285	DQ2
+#9	AnnotatorNotes T9	117164003

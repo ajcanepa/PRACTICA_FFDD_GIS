@@ -1,0 +1,18 @@
+T1	NO_NORMALIZABLES 1267 1282	alfaadrenérgico
+#1	AnnotatorNotes T1	<null>
+T2	NORMALIZABLES 1608 1620	suero salino
+#2	AnnotatorNotes T2	373757009
+T3	NORMALIZABLES 1287 1299	suero salino
+#3	AnnotatorNotes T3	373757009
+T4	NORMALIZABLES 1587 1598	fenilefrina
+#4	AnnotatorNotes T4	372771005
+T5	NORMALIZABLES 1555 1566	fenilefrina
+#5	AnnotatorNotes T5	372771005
+T6	NORMALIZABLES 1245 1256	fenilefrina
+#6	AnnotatorNotes T6	372771005
+T7	PROTEINAS 2288 2291	HLA
+#7	AnnotatorNotes T7	725674007
+T8	NORMALIZABLES 694 698	HCO3
+#8	AnnotatorNotes T8	68615006
+T9	UNCLEAR 402 408	drogas
+#9	AnnotatorNotes T9	<null>

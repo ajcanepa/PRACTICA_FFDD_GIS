@@ -1,0 +1,16 @@
+T1	NORMALIZABLES 899 911	cotrimoxazol
+#1	AnnotatorNotes T1	703745000
+T2	NORMALIZABLES 831 840	colistina
+#2	AnnotatorNotes T2	387412007
+T3	NORMALIZABLES 770 782	clindamicina
+#3	AnnotatorNotes T3	372786004
+T4	NORMALIZABLES 729 741	cotrimoxazol
+#4	AnnotatorNotes T4	703745000
+T5	NORMALIZABLES 684 693	amikacina
+#5	AnnotatorNotes T5	387266001
+T6	NORMALIZABLES 649 658	colistina
+#6	AnnotatorNotes T6	387412007
+T7	NORMALIZABLES 568 578	meticilina
+#7	AnnotatorNotes T7	373515001
+T8	PROTEINAS 172 187	insulina rápida
+#8	AnnotatorNotes T8	88319002

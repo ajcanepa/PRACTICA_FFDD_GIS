@@ -1,0 +1,20 @@
+T1	PROTEINAS 942 983	anticuerpos anticitoplasma de neutrófilos
+#1	AnnotatorNotes T1	23318004
+T2	PROTEINAS 985 989	ANCA
+#2	AnnotatorNotes T2	23318004
+T3	PROTEINAS 901 934	anticuerpos extraíbles del núcleo
+#3	AnnotatorNotes T3	116761009
+T4	PROTEINAS 936 939	ENA
+#4	AnnotatorNotes T4	116761009
+T5	PROTEINAS 868 893	anticuerpos antinucleares
+#5	AnnotatorNotes T5	45530001
+T6	PROTEINAS 895 898	ANA
+#6	AnnotatorNotes T6	45530001
+T7	NORMALIZABLES 1133 1143	prednisona
+#7	AnnotatorNotes T7	116602009
+T8	PROTEINAS 846 866	anticuerpos anti-ADN
+#8	AnnotatorNotes T8	6741004
+T9	PROTEINAS 821 844	hemoglobina glicosilada
+#9	AnnotatorNotes T9	733829007
+T10	PROTEINAS 800 819	proteína C reactiva
+#10	AnnotatorNotes T10	61425002

@@ -1,0 +1,22 @@
+T4	PROTEINAS 1633 1636	TSH
+#1	AnnotatorNotes T4	65428006
+T5	NORMALIZABLES 1609 1622	triglicéridos
+#2	AnnotatorNotes T5	85600001
+T6	PROTEINAS 1575 1600	gamma-glutamiltransferasa
+#3	AnnotatorNotes T6	60153001
+T7	PROTEINAS 1541 1567	aspartato-aminotransferasa
+#4	AnnotatorNotes T7	26091008
+T8	PROTEINAS 1509 1533	alanina-aminotransferasa
+#5	AnnotatorNotes T8	56935002
+T9	NORMALIZABLES 1485 1496	bilirrubina
+#6	AnnotatorNotes T9	79706000
+T10	PROTEINAS 1443 1452	ferritina
+#7	AnnotatorNotes T10	32789000
+T11	NORMALIZABLES 1414 1424	colesterol
+#8	AnnotatorNotes T11	84698008
+T12	NORMALIZABLES 1390 1400	creatinina
+#9	AnnotatorNotes T12	15373003
+T13	PROTEINAS 1358 1381	hemoglobina glicosilada
+#10	AnnotatorNotes T13	733829007
+T14	PROTEINAS 1103 1114	Hemoglobina
+#11	AnnotatorNotes T14	38082009

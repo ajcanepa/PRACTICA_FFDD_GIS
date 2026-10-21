@@ -1,0 +1,18 @@
+T1	PROTEINAS 1932 1936	CD1a
+#1	AnnotatorNotes T1	42732002
+T2	PROTEINAS 1924 1929	S-100
+#2	AnnotatorNotes T2	712718002
+T3	PROTEINAS 860 895	enzima convertidora de angiotensina
+#3	AnnotatorNotes T3	112049007
+T4	PROTEINAS 821 838	factor reumatoide
+#4	AnnotatorNotes T4	77089006
+T5	PROTEINAS 800 819	proteína C reactiva
+#5	AnnotatorNotes T5	61425002
+T6	PROTEINAS 787 798	complemento
+#6	AnnotatorNotes T6	20823009
+T7	PROTEINAS 768 784	inmunoglobulinas
+#7	AnnotatorNotes T7	112133008
+T8	NORMALIZABLES 714 724	creatinina
+#8	AnnotatorNotes T8	15373003
+T9	UNCLEAR 360 371	cigarrillos
+#9	AnnotatorNotes T9	722496004

@@ -1,0 +1,8 @@
+T1	PROTEINAS 1037 1056	amilasa pancreática
+#1	AnnotatorNotes T1	33019006
+T3	NORMALIZABLES 726 758	antiinflamatorios no esteroideos
+#2	AnnotatorNotes T3	372665008
+T5	PROTEINAS 1572 1579	amilasa
+#3	AnnotatorNotes T5	387031005
+T6	NORMALIZABLES 761 770	omeprazol
+#4	AnnotatorNotes T6	387137007

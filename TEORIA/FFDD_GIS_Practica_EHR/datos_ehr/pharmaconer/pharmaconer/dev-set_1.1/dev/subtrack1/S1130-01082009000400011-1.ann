@@ -1,0 +1,10 @@
+T1	PROTEINAS 595 619	reactantes de fase aguda
+#1	AnnotatorNotes T1	91309004
+T2	PROTEINAS 645 648	PCR
+#2	AnnotatorNotes T2	61425002
+T3	PROTEINAS 621 632	fibrinógeno
+#3	AnnotatorNotes T3	23295004
+T4	NORMALIZABLES 376 399	ácido acetil salicílico
+#4	AnnotatorNotes T4	387458008
+T5	NORMALIZABLES 364 373	enalapril
+#5	AnnotatorNotes T5	372658000

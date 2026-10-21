@@ -1,0 +1,10 @@
+T1	PROTEINAS 582 600	fosfatasa alcalina
+#1	AnnotatorNotes T1	57056007
+T2	NORMALIZABLES 559 570	bilirrubina
+#2	AnnotatorNotes T2	79706000
+T3	NORMALIZABLES 523 527	urea
+#3	AnnotatorNotes T3	387092000
+T4	NORMALIZABLES 539 549	creatinina
+#4	AnnotatorNotes T4	15373003
+T5	PROTEINAS 474 485	hemoglobina
+#5	AnnotatorNotes T5	38082009

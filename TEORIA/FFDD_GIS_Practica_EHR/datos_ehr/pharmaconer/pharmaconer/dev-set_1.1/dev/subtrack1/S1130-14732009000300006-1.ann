@@ -1,0 +1,18 @@
+T1	NORMALIZABLES 2458 2476	hormonas tiroideas
+#1	AnnotatorNotes T1	18220004
+T3	NORMALIZABLES 2867 2879	dexametasona
+#2	AnnotatorNotes T3	372584003
+T4	PROTEINAS 2541 2556	antifosfolípido
+#3	AnnotatorNotes T4	259916004
+T5	PROTEINAS 2522 2539	B2-microglobulina
+#4	AnnotatorNotes T5	90945000
+T6	PROTEINAS 2492 2520	anticuerpos anticardiolipina
+#5	AnnotatorNotes T6	45396006
+T7	NORMALIZABLES 2478 2490	homocisteina
+#6	AnnotatorNotes T7	102747008
+T8	NORMALIZABLES 2288 2310	ácido acetilsalicílico
+#7	AnnotatorNotes T8	387458008
+T9	NORMALIZABLES 1786 1795	gadolinio
+#8	AnnotatorNotes T9	58281002
+T10	NORMALIZABLES 1057 1069	dexametasona
+#9	AnnotatorNotes T10	372584003

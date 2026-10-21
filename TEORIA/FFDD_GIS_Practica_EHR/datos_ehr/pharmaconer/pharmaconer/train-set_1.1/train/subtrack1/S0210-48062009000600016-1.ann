@@ -1,0 +1,14 @@
+T1	NORMALIZABLES 1300 1307	lípidos
+#1	AnnotatorNotes T1	70106000
+T3	NORMALIZABLES 1336 1351	espironolactona
+#2	AnnotatorNotes T3	387078006
+T5	PROTEINAS 1144 1161	proteinas totales
+#3	AnnotatorNotes T5	395835001
+T6	PROTEINAS 1111 1119	albúmina
+#4	AnnotatorNotes T6	52454007
+T7	PROTEINAS 983 985	Hb
+#5	AnnotatorNotes T7	38082009
+T8	PROTEINAS 666 677	hemoglobina
+#6	AnnotatorNotes T8	38082009
+T10	PROTEINAS 1324 1333	proteinas
+#10	AnnotatorNotes T10	88878007

@@ -1,0 +1,884 @@
+---
+title: "Introducción a la minería de textos (*text mining*) en R"
+subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
+author: "Dr. Antonio Canepa-Oneto"
+date: |
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.align = "center", fig.width = 8, fig.height = 4.5)
+```
+
+# Antes de empezar
+
+Hasta ahora habéis trabajado con fuentes de datos **estructuradas** (tablas `.csv` y `.xlsx`) y **semiestructuradas** (JSON, XML, RDF). Sin embargo, buena parte de la información clínica que se genera cada día en un hospital español —informes de alta, notas de evolución, informes de radiología o de anatomía patológica— está escrita en **lenguaje natural**, es decir, es **texto no estructurado**. Se suele estimar que la mayor parte de la información de la historia clínica electrónica se encuentra en forma de texto libre, y por eso el procesamiento del lenguaje natural (PLN, en inglés *Natural Language Processing*, NLP) es hoy una disciplina central en informática médica.
+
+En esta práctica vais a dar los primeros pasos en **minería de textos**: transformar texto libre en datos tabulares que podáis contar, comparar y visualizar con las mismas herramientas `tidyverse` que ya conocéis.
+
+**Objetivos de aprendizaje.** Al terminar la práctica deberíais ser capaces de:
+
+1. Explicar qué es un corpus, un documento y un *token*.
+2. Tokenizar textos en español y eliminar palabras vacías (*stop words*).
+3. Calcular y visualizar frecuencias de términos.
+4. Normalizar palabras mediante *stemming* y entender en qué se diferencia de la lematización.
+5. Identificar los términos característicos de cada grupo de documentos con **tf-idf**.
+6. Trabajar con **n-gramas** para recuperar términos médicos compuestos.
+7. Extraer variables clínicas del texto con **expresiones regulares**.
+8. Representar el corpus como una **matriz documento-término**.
+9. Describir estadísticamente un corpus (riqueza léxica, longitud de palabras) y comunicarlo con **nubes de palabras**.
+10. Ordenar documentos por similitud léxica mediante **nMDS** y contrastar diferencias entre grupos con **PERMANOVA**.
+11. Realizar un **análisis de sentimiento** basado en léxico y discutir críticamente sus limitaciones en el dominio clínico.
+
+**Duración estimada:** 30 minutos para el bloque básico (secciones 1–10) y unos 25 minutos adicionales para el bloque de ampliación (secciones 11–14), que podéis terminar de forma autónoma.
+
+| Bloque | Contenido | Tiempo |
+|:---|:---|---:|
+| 1–2 | Paquetes y corpus | 4 min |
+| 3–4 | Tokenización y palabras vacías | 5 min |
+| 5 | Frecuencias | 4 min |
+| 6 | *Stemming* | 3 min |
+| 7 | tf-idf | 5 min |
+| 8 | Bigramas | 4 min |
+| 9 | Expresiones regulares | 3 min |
+| 10 | Matriz documento-término | 2 min |
+| 11 | *Ampliación:* estadística descriptiva del corpus | 5 min |
+| 12 | *Ampliación:* nubes de palabras | 6 min |
+| 13 | *Ampliación:* nMDS y PERMANOVA | 8 min |
+| 14 | *Ampliación:* análisis de sentimiento | 6 min |
+
+# El ecosistema de PLN en R
+
+CRAN mantiene una *Task View* específica, [Natural Language Processing](https://cran.r-project.org/web/views/NaturalLanguageProcessing.html), que recopila y organiza los paquetes de R para el análisis del lenguaje en distintos niveles: palabras, sintaxis, semántica y pragmática. No hace falta que los conozcáis todos; lo importante es que sepáis que existen **varios marcos de trabajo** con filosofías distintas:
+
+| Paquete | Filosofía | Estructura de datos central |
+|:---|:---|:---|
+| `tm` | Marco clásico, histórico en R | Objeto `Corpus` y `DocumentTermMatrix` |
+| `quanteda` | Análisis cuantitativo de textos, muy eficiente | `corpus`, `tokens`, `dfm` |
+| **`tidytext`** | **Principios *tidy* aplicados al texto** | **`tibble` con un *token* por fila** |
+| `udpipe` | Anotación lingüística (lemas, categorías gramaticales, dependencias) | `data.frame` en formato CoNLL-U |
+| `SnowballC` | *Stemming* (algoritmos de Porter/Snowball, incluido el español) | Vectores de caracteres |
+| `topicmodels`, `stm` | Modelos de temas (LDA, STM) | Matrices documento-término |
+
+En esta práctica usaremos **`tidytext`** (Silge y Robinson, 2016), porque encaja directamente con todo lo que ya sabéis de `dplyr`, `tidyr`, `stringr` y `ggplot2`. La idea clave es el **formato *tidy text***:
+
+> Una tabla con **un *token* por fila**.
+
+Un *token* es la unidad mínima de análisis: normalmente una palabra, pero también puede ser un n-grama (secuencia de *n* palabras), una oración o un carácter. Una vez que el texto está en este formato, contar palabras es simplemente hacer `count()`, quitar palabras vacías es hacer `anti_join()`, y así sucesivamente.
+
+## Instalación y carga de paquetes
+
+Si es la primera vez que usáis estos paquetes, instaladlos (solo una vez):
+
+```{r instalar, eval=FALSE}
+install.packages(c("tidyverse", "tidytext", "SnowballC", "stopwords",
+                   "ggwordcloud", "vegan", "syuzhet"))
+```
+
+Y cargadlos al principio de cada sesión:
+
+```{r paquetes}
+library(tidyverse)   # dplyr, tidyr, stringr, ggplot2, readr, tibble...
+library(tidytext)    # minería de textos en formato tidy
+library(SnowballC)   # stemming (incluye un algoritmo para el español)
+library(ggwordcloud) # nubes de palabras como geometría de ggplot2
+library(vegan)       # distancias, nMDS y PERMANOVA
+library(syuzhet)     # léxicos de sentimiento (incluye NRC en español)
+```
+
+Los tres últimos paquetes solo se usan en el bloque de ampliación. Un aviso: `vegan` y `syuzhet` exportan funciones con nombres comunes; si en algún momento una función de `dplyr` se comporta de forma extraña, llamadla de forma explícita (por ejemplo, `dplyr::filter()`).
+
+# El corpus: casos clínicos en español
+
+Un **corpus** es una colección de documentos de texto. En PLN clínico en español existen corpus de referencia de acceso abierto, construidos en gran parte a partir de casos clínicos publicados en revistas médicas españolas (SciELO España) por el *Plan de Impulso de las Tecnologías del Lenguaje* y el Barcelona Supercomputing Center, por ejemplo **SPACCC**, **CodiEsp** (codificación CIE-10), **PharmaCoNER** (fármacos) o **CANTEMIST** (oncología). Son corpus de varios cientos o miles de documentos, ideales para el seminario, pero demasiado grandes para una práctica de 30 minutos.
+
+Por eso hoy trabajaremos con un **corpus didáctico de 16 casos clínicos breves y ficticios**, redactados con el estilo de esos casos clínicos y repartidos entre cuatro especialidades. Al estar escritos directamente en el cuaderno, la práctica es **totalmente reproducible y no depende de conexión a internet**.
+
+> **Importante (protección de datos).** Nunca trabajéis con informes clínicos reales sin anonimizar. Los textos clínicos contienen datos de salud, que el Reglamento General de Protección de Datos (RGPD, art. 9) considera una **categoría especial de datos personales**. Los corpus públicos que acabamos de citar usan casos ya publicados o textos anonimizados precisamente por este motivo.
+
+```{r corpus}
+casos <- tribble(
+  ~id, ~especialidad, ~texto,
+  # ---- Cardiología ----
+  "C01", "Cardiología",
+  "Varón de 68 años con antecedentes de hipertensión arterial y dislipemia que acude a urgencias por dolor torácico opresivo irradiado al brazo izquierdo. La tensión arterial es de 165/95 mmHg. El electrocardiograma muestra elevación del segmento ST en cara inferior y se diagnostica infarto agudo de miocardio.",
+  "C02", "Cardiología",
+  "Mujer de 74 años con disnea de esfuerzo progresiva y edemas en miembros inferiores. Presenta fibrilación auricular con respuesta ventricular rápida y tensión arterial de 140/85 mmHg. El ecocardiograma revela fracción de eyección reducida compatible con insuficiencia cardiaca.",
+  "C03", "Cardiología",
+  "Varón de 59 años, fumador, con palpitaciones y mareo. La tensión arterial es de 130/80 mmHg. El holter confirma fibrilación auricular paroxística y se inicia anticoagulación oral.",
+  "C04", "Cardiología",
+  "Mujer de 81 años ingresada por insuficiencia cardiaca descompensada tras abandono del tratamiento diurético. Tensión arterial de 150/90 mmHg. Se ajusta el tratamiento con diuréticos y betabloqueantes con buena evolución.",
+  # ---- Neumología ----
+  "N01", "Neumología",
+  "Varón de 66 años, exfumador, con diagnóstico de enfermedad pulmonar obstructiva crónica que consulta por aumento de la disnea y de la expectoración purulenta. La saturación de oxígeno es del 88 %. Se trata la exacerbación con broncodilatadores y corticoides sistémicos.",
+  "N02", "Neumología",
+  "Mujer de 34 años con asma bronquial mal controlada, tos nocturna y sibilancias. La espirometría muestra obstrucción reversible tras broncodilatador. Se añaden corticoides inhalados al tratamiento.",
+  "N03", "Neumología",
+  "Varón de 72 años con fiebre, tos productiva y dolor pleurítico. La radiografía de tórax muestra una consolidación en el lóbulo inferior derecho y se diagnostica neumonía adquirida en la comunidad. La saturación de oxígeno es del 91 %.",
+  "N04", "Neumología",
+  "Mujer de 58 años con un nódulo pulmonar en la tomografía computarizada realizada por tos persistente. Se realiza broncoscopia con biopsia y el resultado es adenocarcinoma de pulmón.",
+  # ---- Endocrinología ----
+  "E01", "Endocrinología",
+  "Mujer de 52 años con diabetes mellitus tipo 2 de diez años de evolución y mal control glucémico. La hemoglobina glucosilada es de 8,9 %. Se intensifica el tratamiento con metformina y se añade insulina basal.",
+  "E02", "Endocrinología",
+  "Varón de 19 años con poliuria, polidipsia y pérdida de peso. La glucemia es de 420 mg/dl y presenta cetoacidosis diabética. Se diagnostica diabetes mellitus tipo 1 y se inicia insulina.",
+  "E03", "Endocrinología",
+  "Mujer de 45 años con nerviosismo, temblor, pérdida de peso y taquicardia. La TSH está suprimida y la tiroxina libre elevada. Se diagnostica hipertiroidismo por enfermedad de Graves.",
+  "E04", "Endocrinología",
+  "Varón de 63 años con obesidad, diabetes mellitus tipo 2 e hipertensión arterial. La hemoglobina glucosilada es de 7,4 % y la tensión arterial de 145/90 mmHg. Se añade un agonista del receptor de GLP-1 con pérdida de peso significativa.",
+  # ---- Neurología ----
+  "R01", "Neurología",
+  "Varón de 77 años con hemiparesia derecha y afasia de inicio brusco. La tomografía computarizada craneal descarta hemorragia y se diagnostica ictus isquémico. Se administra trombólisis intravenosa. Tensión arterial de 180/100 mmHg.",
+  "R02", "Neurología",
+  "Mujer de 29 años con episodios de visión borrosa y parestesias en miembros inferiores. La resonancia magnética muestra lesiones desmielinizantes y se diagnostica esclerosis múltiple.",
+  "R03", "Neurología",
+  "Varón de 71 años con temblor de reposo, rigidez y bradicinesia de evolución lenta. Se diagnostica enfermedad de Parkinson y se inicia tratamiento con levodopa.",
+  "R04", "Neurología",
+  "Mujer de 82 años con deterioro cognitivo progresivo y pérdida de memoria reciente. La resonancia magnética muestra atrofia hipocampal compatible con enfermedad de Alzheimer."
+)
+
+casos
+```
+
+Fijaos en que el corpus **ya es un `tibble`**: cada fila es un **documento**, y además de la columna de texto tenemos **metadatos** (`id`, `especialidad`). Conservar los metadatos es fundamental, porque nos permitirá comparar grupos de documentos más adelante.
+
+```{r longitud}
+casos %>%
+  mutate(n_caracteres = str_length(texto),
+         n_palabras   = str_count(texto, "\\S+")) %>%
+  group_by(especialidad) %>%
+  summarise(documentos = n(), palabras_media = mean(n_palabras))
+```
+
+# Tokenización
+
+**Tokenizar** es dividir el texto en *tokens*. La función `unnest_tokens()` hace tres cosas a la vez: (1) divide el texto en palabras, (2) lo pasa todo a **minúsculas** y (3) elimina la **puntuación**. Además, mantiene el resto de columnas, de modo que cada palabra "recuerda" de qué documento y especialidad procede.
+
+**Ejemplo sencillo.** Veamos qué ocurre con una única frase:
+
+```{r token_ejemplo}
+tibble(texto = "El paciente presenta Disnea, tos y fiebre de 38,5 ºC.") %>%
+  unnest_tokens(output = palabra, input = texto)
+```
+
+Observad tres detalles: "Disnea" se ha convertido en "disnea"; la coma y el punto han desaparecido; y el número decimal "38,5" se ha conservado como un único *token*, porque el tokenizador sigue las reglas de segmentación de palabras de Unicode.
+
+Ahora lo aplicamos a todo el corpus:
+
+```{r tokenizar}
+tokens <- casos %>%
+  unnest_tokens(output = palabra, input = texto)
+
+tokens
+nrow(tokens)   # número total de tokens del corpus
+```
+
+Hemos pasado de 16 filas (documentos) a varios cientos (*tokens*). Este es el formato *tidy text*.
+
+# Palabras vacías (*stop words*)
+
+Si contamos ahora las palabras más frecuentes, el resultado es decepcionante:
+
+```{r sin_filtrar}
+tokens %>% count(palabra, sort = TRUE) %>% head(10)
+```
+
+Las palabras más frecuentes son artículos, preposiciones y conjunciones ("de", "con", "la", "y"...). Se denominan **palabras vacías** (*stop words*): son imprescindibles para la gramática, pero aportan poca información sobre el **contenido** del documento. Este comportamiento no es casual: la frecuencia de las palabras en cualquier lengua sigue aproximadamente la **ley de Zipf**, según la cual la frecuencia de una palabra es inversamente proporcional a su posición en el ranking, $f(r) \propto 1/r$; unas pocas palabras funcionales acaparan una fracción enorme del texto.
+
+**Ejemplo sencillo.** `tidytext` incluye la función `get_stopwords()`, que devuelve listas de palabras vacías en varios idiomas (a través del paquete `stopwords`). Cuidado: el objeto `stop_words` que usasteis en la práctica de PubMed **solo contiene palabras en inglés**.
+
+```{r stopwords_es}
+vacias_es <- get_stopwords(language = "es", source = "snowball")
+vacias_es
+nrow(vacias_es)
+```
+
+Las listas genéricas no conocen el dominio clínico. En un caso clínico, palabras como "años", "varón" o "mujer" aparecen en casi todos los documentos y no ayudan a distinguirlos, así que añadimos una pequeña **lista específica del dominio**:
+
+```{r stopwords_dominio}
+vacias_clinicas <- tibble(
+  word = c("años", "varón", "mujer", "paciente", "presenta", "muestra",
+           "diagnostica", "inicia", "realiza", "compatible", "tras", "mmhg")
+)
+
+vacias <- bind_rows(vacias_es %>% select(word), vacias_clinicas)
+```
+
+Ahora eliminamos con `anti_join()` las palabras vacías y, con `filter()` y una expresión regular, los *tokens* que contienen dígitos:
+
+```{r limpiar}
+tokens_limpios <- tokens %>%
+  anti_join(vacias, by = join_by(palabra == word)) %>%
+  filter(!str_detect(palabra, "\\d"))
+
+nrow(tokens)           # antes
+nrow(tokens_limpios)   # después
+```
+
+Hemos eliminado aproximadamente la mitad de los *tokens*, quedándonos con las palabras que sí transmiten contenido clínico.
+
+> **Para pensar.** ¿Es siempre buena idea eliminar las palabras vacías? En textos clínicos, palabras como "no" o "sin" son esenciales: "*sin* dolor torácico" significa lo contrario que "dolor torácico". Volveremos sobre esto al final.
+
+# Frecuencia de términos
+
+Contar palabras es ahora trivial:
+
+```{r frecuencias}
+frecuencias <- tokens_limpios %>%
+  count(palabra, sort = TRUE)
+
+frecuencias %>% head(15)
+```
+
+Y visualizarlas con `ggplot2`:
+
+```{r frecuencias_plot}
+frecuencias %>%
+  slice_max(n, n = 15, with_ties = FALSE) %>%
+  ggplot(aes(x = n, y = fct_reorder(palabra, n))) +
+  geom_col(fill = "steelblue") +
+  labs(x = "Frecuencia absoluta", y = NULL,
+       title = "Términos más frecuentes en el corpus de casos clínicos") +
+  theme_minimal()
+```
+
+Ya aparece vocabulario clínico con sentido ("tensión", "arterial", "diabetes", "fibrilación"...). Como conservamos la especialidad, podemos repetir el análisis **por grupo**:
+
+```{r frecuencias_especialidad, fig.height=6}
+tokens_limpios %>%
+  count(especialidad, palabra, sort = TRUE) %>%
+  group_by(especialidad) %>%
+  slice_max(n, n = 6, with_ties = FALSE) %>%
+  ungroup() %>%
+  ggplot(aes(x = n,
+             y = reorder_within(palabra, n, especialidad),
+             fill = especialidad)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ especialidad, scales = "free_y") +
+  scale_y_reordered() +   # elimina el sufijo interno que añade reorder_within()
+  labs(x = "Frecuencia", y = NULL,
+       title = "Términos más frecuentes por especialidad") +
+  theme_minimal()
+```
+
+Las funciones `reorder_within()` y `scale_y_reordered()` de `tidytext` permiten ordenar las barras **dentro de cada panel**, algo que `fct_reorder()` no hace por sí solo.
+
+# Normalización: *stemming*
+
+En español, una misma idea aparece con muchas formas flexivas: "diabetes", "diabética", "diabético"; "diagnóstico", "diagnostica", "diagnosticado". Para el ordenador son palabras distintas. Hay dos estrategias para agruparlas:
+
+- **Stemming (truncado):** recorta sufijos mediante reglas heurísticas, sin consultar ningún diccionario. Es rápido, pero el resultado (la **raíz**, *stem*) no tiene por qué ser una palabra real. El algoritmo para el español disponible en `SnowballC` deriva del trabajo de Porter (1980) sobre el algoritmo de Porter y su lenguaje Snowball.
+- **Lematización:** sustituye cada palabra por su **lema** (forma de diccionario: infinitivo para verbos, masculino singular para adjetivos) usando un modelo lingüístico. Es más precisa, pero más costosa. En R se puede hacer con `udpipe`, que descarga un modelo entrenado sobre el corpus *AnCora* del español.
+
+**Ejemplo sencillo:**
+
+```{r stem_ejemplo}
+ejemplo <- c("diabetes", "diabética", "diabético", "diagnóstico",
+             "diagnostica", "diagnosticado", "tratamiento", "tratado")
+
+tibble(palabra = ejemplo,
+       raiz    = wordStem(ejemplo, language = "spanish"))
+```
+
+Observad que el algoritmo agrupa bien algunas familias, pero no todas (por ejemplo, "tratamiento" y "tratado" pueden no compartir raíz). Esto ilustra el compromiso entre sencillez y precisión del *stemming*.
+
+Aplicado al corpus:
+
+```{r stem_corpus}
+tokens_raiz <- tokens_limpios %>%
+  mutate(raiz = wordStem(palabra, language = "spanish"))
+
+# ¿Cuántos términos distintos (tamaño del vocabulario) antes y después?
+n_distinct(tokens_raiz$palabra)
+n_distinct(tokens_raiz$raiz)
+```
+
+El *stemming* **reduce el tamaño del vocabulario**, lo que es útil en modelos estadísticos porque disminuye la dimensión del problema. A cambio, el resultado es menos legible, por lo que en los gráficos de esta práctica seguiremos usando las palabras originales.
+
+# tf-idf: ¿qué palabras caracterizan a cada grupo?
+
+La frecuencia absoluta tiene un problema: premia a las palabras que son frecuentes **en todas partes**. Lo que realmente nos interesa es qué palabras son **características** de cada grupo de documentos. Para eso se usa la ponderación **tf-idf** (*term frequency–inverse document frequency*), uno de los esquemas clásicos de la recuperación de información (Salton y Buckley, 1988).
+
+Para un término $t$ y un documento $d$ de una colección de $N$ documentos:
+
+$$
+\text{tf}(t,d) = \frac{n_{t,d}}{\sum_{t'} n_{t',d}}, \qquad
+\text{idf}(t) = \ln\!\left(\frac{N}{n_t}\right), \qquad
+\text{tf-idf}(t,d) = \text{tf}(t,d)\cdot\text{idf}(t)
+$$
+
+donde $n_{t,d}$ es el número de veces que aparece $t$ en $d$ y $n_t$ el número de documentos que contienen $t$.
+
+**Ejemplo sencillo, calculado a mano.** Supongamos que nuestros "documentos" son las 4 especialidades ($N = 4$):
+
+- "arterial" aparece en 3 de las 4 especialidades: $\text{idf} = \ln(4/3) \approx 0{,}29$, un peso bajo.
+- "insulina" aparece solo en Endocrinología: $\text{idf} = \ln(4/1) \approx 1{,}39$, un peso alto.
+- Una palabra presente en las 4 especialidades tendría $\text{idf} = \ln(4/4) = 0$: **su tf-idf sería cero**, por muy frecuente que fuera.
+
+```{r idf_ejemplo}
+log(4/3); log(4/1); log(4/4)
+```
+
+Así, tf-idf actúa como un filtro automático de palabras vacías "del dominio". En `tidytext` se calcula con `bind_tf_idf()`, tomando aquí cada **especialidad** como documento:
+
+```{r tfidf}
+tfidf <- tokens_limpios %>%
+  count(especialidad, palabra) %>%
+  bind_tf_idf(term = palabra, document = especialidad, n = n) %>%
+  arrange(desc(tf_idf))
+
+tfidf
+```
+
+```{r tfidf_plot, fig.height=6}
+tfidf %>%
+  group_by(especialidad) %>%
+  slice_max(tf_idf, n = 6, with_ties = FALSE) %>%
+  ungroup() %>%
+  ggplot(aes(x = tf_idf,
+             y = reorder_within(palabra, tf_idf, especialidad),
+             fill = especialidad)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ especialidad, scales = "free_y") +
+  scale_y_reordered() +
+  labs(x = "tf-idf", y = NULL,
+       title = "Términos característicos de cada especialidad (tf-idf)") +
+  theme_minimal()
+```
+
+Comparad este gráfico con el de frecuencias por especialidad: términos compartidos como "arterial" pierden peso, y emergen términos específicos de cada especialidad. Con un corpus tan pequeño muchos términos empatan (aparecen una sola vez), así que no sobreinterpretéis el orden exacto; con un corpus real como CodiEsp el patrón es mucho más nítido.
+
+# n-gramas: términos médicos compuestos
+
+Muchos conceptos médicos no son palabras sueltas sino **expresiones multipalabra**: "insuficiencia cardiaca", "diabetes mellitus", "fibrilación auricular", "tensión arterial". Al tokenizar por palabras perdemos esa unidad. Los **n-gramas** son secuencias de *n* *tokens* consecutivos; con $n = 2$ hablamos de **bigramas**.
+
+**Ejemplo sencillo:**
+
+```{r bigrama_ejemplo}
+tibble(texto = "insuficiencia cardiaca descompensada") %>%
+  unnest_tokens(bigrama, texto, token = "ngrams", n = 2)
+```
+
+Sobre el corpus completo, separamos cada bigrama en sus dos palabras con `separate_wider_delim()` para poder descartar los bigramas que contienen palabras vacías o números:
+
+```{r bigramas}
+bigramas <- casos %>%
+  unnest_tokens(bigrama, texto, token = "ngrams", n = 2) %>%
+  separate_wider_delim(bigrama, delim = " ", names = c("p1", "p2")) %>%
+  filter(!p1 %in% vacias$word, !p2 %in% vacias$word,
+         !str_detect(p1, "\\d"), !str_detect(p2, "\\d")) %>%
+  unite(bigrama, p1, p2, sep = " ") %>%
+  count(bigrama, sort = TRUE)
+
+bigramas %>% head(12)
+```
+
+```{r bigramas_plot}
+bigramas %>%
+  filter(n > 1) %>%
+  ggplot(aes(x = n, y = fct_reorder(bigrama, n))) +
+  geom_col(fill = "darkorange") +
+  labs(x = "Frecuencia", y = NULL,
+       title = "Bigramas que aparecen más de una vez") +
+  theme_minimal()
+```
+
+Los bigramas más frecuentes son, casi sin excepción, **términos clínicos reales**. Esta es la base de técnicas de extracción de terminología que, en un paso posterior, permiten mapear expresiones del texto a vocabularios controlados como **SNOMED CT** o la **CIE-10**, conectando así con lo que visteis en el bloque de Web Semántica.
+
+# Extracción de información con expresiones regulares
+
+A veces no queremos contar palabras, sino **extraer valores concretos** del texto para convertirlos en variables estructuradas. Las **expresiones regulares** (que ya conocéis de `stringr`) son la herramienta más sencilla para ello.
+
+**Ejemplo sencillo.** La tensión arterial aparece con el patrón "número/número mmHg":
+
+```{r regex_ejemplo}
+str_extract("La tensión arterial es de 165/95 mmHg.", "\\d{2,3}/\\d{2,3}(?= mmHg)")
+```
+
+El patrón `\\d{2,3}` significa "de 2 a 3 dígitos", y `(?= mmHg)` es una **búsqueda anticipada** (*lookahead*): exige que detrás venga " mmHg", pero no lo incluye en el resultado.
+
+Apliquémoslo al corpus y clasifiquemos a cada paciente con el umbral clásico de hipertensión en consulta de las guías europeas (sistólica ≥ 140 mmHg o diastólica ≥ 90 mmHg):
+
+```{r regex_ta}
+tension <- casos %>%
+  mutate(ta = str_extract(texto, "\\d{2,3}/\\d{2,3}(?= mmHg)")) %>%
+  filter(!is.na(ta)) %>%
+  separate_wider_delim(ta, delim = "/", names = c("sistolica", "diastolica")) %>%
+  mutate(across(c(sistolica, diastolica), as.integer),
+         hta = sistolica >= 140 | diastolica >= 90) %>%
+  select(id, especialidad, sistolica, diastolica, hta)
+
+tension
+```
+
+Lo mismo con la hemoglobina glucosilada (HbA1c). Ojo: en español el separador decimal es la **coma**, así que hay que indicárselo a `parse_number()` mediante `locale()`:
+
+```{r regex_hba1c}
+casos %>%
+  mutate(hba1c = str_extract(texto, "(?<=glucosilada es de )\\d+,\\d+") %>%
+           parse_number(locale = locale(decimal_mark = ","))) %>%
+  filter(!is.na(hba1c)) %>%
+  select(id, hba1c)
+```
+
+Acabáis de convertir texto libre en una **tabla estructurada** con variables numéricas, lista para cualquier análisis estadístico.
+
+# Del formato *tidy* a la matriz documento-término
+
+Muchos métodos de aprendizaje automático (clasificadores, modelos de temas como LDA, *clustering*) no trabajan con tablas *tidy*, sino con una **matriz documento-término** (DTM): una fila por documento, una columna por término y, en cada celda, la frecuencia de ese término en ese documento. Es la representación clásica de **bolsa de palabras** (*bag of words*).
+
+`tidytext` permite pasar de un formato a otro con las funciones `cast_*()`. Aquí usamos `cast_sparse()`, que genera una matriz dispersa del paquete `Matrix` (incluido con R):
+
+```{r dtm}
+dtm <- tokens_limpios %>%
+  count(id, palabra) %>%
+  cast_sparse(row = id, column = palabra, value = n)
+
+dim(dtm)                                   # documentos x términos
+dtm[1:5, 1:8]                              # un vistazo
+1 - length(dtm@x) / prod(dim(dtm))         # proporción de celdas vacías
+```
+
+La última cifra es la **dispersión** de la matriz: la inmensa mayoría de las celdas son ceros, porque cada documento usa una fracción minúscula del vocabulario. Por eso estas matrices se almacenan en formato disperso. Si quisierais ajustar un modelo de temas con `topicmodels`, usaríais `cast_dtm()` en lugar de `cast_sparse()`.
+
+# Ampliación I: estadística descriptiva del corpus
+
+Antes de aplicar técnicas multivariantes conviene **describir** el corpus, igual que haríais con cualquier otro conjunto de datos. En lingüística cuantitativa se distinguen dos conceptos:
+
+- **Tokens** ($N$): número total de palabras del documento.
+- **Tipos** ($V$): número de palabras **distintas** (el vocabulario del documento).
+
+Su cociente es la **razón tipo/token** (*type-token ratio*, TTR), una medida sencilla de **riqueza o diversidad léxica**:
+
+$$
+\text{TTR} = \frac{V}{N}, \qquad 0 < \text{TTR} \le 1
+$$
+
+**Ejemplo sencillo.** En la frase "tos y fiebre, tos y disnea" hay $N = 6$ *tokens* pero solo $V = 4$ tipos ("tos", "y", "fiebre", "disnea"), así que $\text{TTR} = 4/6 \approx 0{,}67$:
+
+```{r ttr_ejemplo}
+tibble(texto = "tos y fiebre, tos y disnea") %>%
+  unnest_tokens(palabra, texto) %>%
+  summarise(tokens = n(), tipos = n_distinct(palabra), ttr = tipos / tokens)
+```
+
+Calculamos ahora estos descriptores para cada caso clínico (sobre los *tokens* sin filtrar, porque nos interesa el texto tal como fue escrito):
+
+```{r descriptivos}
+descriptivos <- tokens %>%
+  group_by(id, especialidad) %>%
+  summarise(tokens      = n(),
+            tipos       = n_distinct(palabra),
+            ttr         = tipos / tokens,
+            long_media  = mean(str_length(palabra)),
+            .groups = "drop")
+
+descriptivos %>%
+  group_by(especialidad) %>%
+  summarise(across(c(tokens, tipos, ttr, long_media),
+                   list(media = mean, de = sd),
+                   .names = "{.col}_{.fn}")) %>%
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+```{r descriptivos_plot}
+descriptivos %>%
+  pivot_longer(c(tokens, ttr, long_media),
+               names_to = "medida", values_to = "valor") %>%
+  mutate(medida = recode(medida,
+                         tokens     = "Longitud (tokens)",
+                         ttr        = "Razón tipo/token",
+                         long_media = "Longitud media de palabra")) %>%
+  ggplot(aes(x = especialidad, y = valor, fill = especialidad)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA, show.legend = FALSE) +
+  geom_jitter(aes(colour = especialidad), width = 0.15, size = 2,
+              show.legend = FALSE) +
+  facet_wrap(~ medida, scales = "free_y") +
+  labs(x = NULL, y = NULL, title = "Descriptores léxicos por especialidad") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+> **Cuidado al interpretar la TTR.** La TTR **depende de la longitud del texto**: cuanto más largo es un documento, más se repiten las palabras y más baja la TTR. Por eso solo es comparable entre textos de longitud parecida, como los nuestros. Para corpus heterogéneos se usan variantes corregidas, como la TTR media en ventana móvil (MATTR) o el índice MTLD (disponibles en `quanteda.textstats`).
+
+La longitud media de palabra es también informativa: el lenguaje médico, rico en términos de origen grecolatino ("bradicinesia", "desmielinizantes", "hipertiroidismo"), tiende a tener palabras más largas que el lenguaje general.
+
+# Ampliación II: nubes de palabras
+
+Como ya visteis en la práctica de PubMed, una **nube de palabras** representa cada término con un tamaño proporcional a su peso (frecuencia o tf-idf). Recordad que es una herramienta de **comunicación**, no de inferencia: el ojo humano compara mal áreas y longitudes de texto, y las palabras largas parecen más importantes de lo que son. Para analizar, usad los diagramas de barras; para comunicar de un vistazo, las nubes.
+
+Usaremos `ggwordcloud`, que implementa la nube como una geometría más de `ggplot2` (`geom_text_wordcloud_area()`), de modo que podéis aplicar escalas, facetas y temas como en cualquier otro gráfico. El algoritmo coloca las palabras en espiral desde el centro evitando solapamientos; como tiene una componente aleatoria, **fijad siempre una semilla** con `set.seed()` para que la figura sea reproducible.
+
+**Ejemplo sencillo:**
+
+```{r nube_ejemplo, fig.height=3}
+set.seed(2026)
+tibble(palabra = c("disnea", "tos", "fiebre", "dolor", "edema"),
+       n       = c(10, 7, 5, 3, 2)) %>%
+  ggplot(aes(label = palabra, size = n)) +
+  geom_text_wordcloud_area() +
+  scale_size_area(max_size = 20) +
+  theme_void()
+```
+
+## Nube global del corpus
+
+Añadimos color en función de la frecuencia, giramos aleatoriamente un 30 % de las palabras y usamos una paleta perceptualmente uniforme (`viridis`):
+
+```{r nube_global, fig.height=6}
+set.seed(2026)
+frecuencias %>%
+  slice_max(n, n = 70, with_ties = FALSE) %>%
+  mutate(angulo = 90 * sample(c(0, 1), n(), replace = TRUE, prob = c(0.7, 0.3))) %>%
+  ggplot(aes(label = palabra, size = n, colour = n, angle = angulo)) +
+  geom_text_wordcloud_area(eccentricity = 1, shape = "circle", rm_outside = TRUE) +
+  scale_size_area(max_size = 16) +
+  scale_colour_viridis_c(option = "plasma", end = 0.85) +
+  labs(title = "Vocabulario del corpus de casos clínicos") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+## Nubes comparativas por especialidad (tf-idf)
+
+Si el tamaño representa el **tf-idf** en lugar de la frecuencia, cada nube muestra lo que **distingue** a su especialidad. Con `facet_wrap()` obtenemos una nube por grupo:
+
+```{r nube_tfidf, fig.height=7}
+set.seed(2026)
+tfidf %>%
+  group_by(especialidad) %>%
+  slice_max(tf_idf, n = 20, with_ties = FALSE) %>%
+  ungroup() %>%
+  ggplot(aes(label = palabra, size = tf_idf, colour = especialidad)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size_area(max_size = 11) +
+  scale_colour_brewer(palette = "Dark2", guide = "none") +
+  facet_wrap(~ especialidad) +
+  labs(title = "Términos característicos de cada especialidad (tamaño = tf-idf)") +
+  theme_void() +
+  theme(strip.text = element_text(face = "bold", size = 12),
+        plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+## Una nube con forma: cardiología en un corazón
+
+`ggwordcloud` permite elegir la forma de la nube (`"circle"`, `"cardioid"`, `"diamond"`, `"star"`, `"pentagon"`...). La forma cardioide es la elección obvia para Cardiología. Esta vez usamos **palabras y bigramas** juntos, para que aparezcan términos compuestos como "fibrilación auricular":
+
+```{r nube_corazon, fig.height=6}
+terminos_cardio <- bind_rows(
+  tokens_limpios %>%
+    filter(especialidad == "Cardiología") %>%
+    count(termino = palabra),
+  casos %>%
+    filter(especialidad == "Cardiología") %>%
+    unnest_tokens(bigrama, texto, token = "ngrams", n = 2) %>%
+    separate_wider_delim(bigrama, delim = " ", names = c("p1", "p2")) %>%
+    filter(!p1 %in% vacias$word, !p2 %in% vacias$word,
+           !str_detect(p1, "\\d"), !str_detect(p2, "\\d")) %>%
+    unite(termino, p1, p2, sep = " ") %>%
+    count(termino) %>%
+    mutate(n = n * 1.5)   # damos algo más de peso a los términos compuestos
+)
+
+set.seed(2026)
+ggplot(terminos_cardio, aes(label = termino, size = n, colour = n)) +
+  geom_text_wordcloud_area(shape = "cardioid", eccentricity = 0.8,
+                           rm_outside = TRUE) +
+  scale_size_area(max_size = 12) +
+  scale_colour_gradient(low = "#F4A6A6", high = "#8B0000") +
+  labs(title = "Cardiología") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", colour = "#8B0000"))
+```
+
+> Si alguna palabra no cabe en la forma elegida, `rm_outside = TRUE` la elimina en lugar de dibujarla fuera del lienzo; si echáis en falta términos, reducid `max_size`.
+
+# Ampliación III: ordenación nMDS de los documentos
+
+Hasta ahora hemos comparado **palabras**. Ahora vamos a comparar **documentos**: ¿se parecen más entre sí los casos de una misma especialidad que los de especialidades distintas? Para responder necesitamos tres ingredientes: (1) una **representación** de cada documento (la matriz documento-término), (2) una **medida de disimilitud** entre documentos y (3) un método para **visualizar** esas disimilitudes en dos dimensiones.
+
+## Una analogía ecológica
+
+Las herramientas que vamos a usar proceden de la **ecología de comunidades**, y la analogía es muy directa:
+
+| Ecología | Minería de textos |
+|:---|:---|
+| Muestra o parcela (*site*) | Documento |
+| Especie | Término |
+| Abundancia de la especie | Frecuencia del término |
+| Matriz sitios × especies | Matriz documento-término |
+
+En ambos casos tenemos matrices de **conteos, dispersas y con muchos ceros**, y en ambos casos la ausencia compartida de un elemento (dos documentos que no mencionan "insulina") no debería aumentar su parecido. Por eso usaremos el paquete de ecología `vegan` y la **disimilitud de Bray-Curtis**, que ignora los dobles ceros.
+
+## Disimilitud de Bray-Curtis
+
+Para dos documentos $j$ y $k$ con frecuencias $x_{ij}$ y $x_{ik}$ del término $i$:
+
+$$
+d_{BC}(j,k) = 1 - \frac{2\sum_i \min(x_{ij}, x_{ik})}{\sum_i x_{ij} + \sum_i x_{ik}}, \qquad 0 \le d_{BC} \le 1
+$$
+
+Vale 0 si los documentos tienen exactamente el mismo perfil de términos y 1 si no comparten ninguno.
+
+**Ejemplo sencillo, calculado a mano.** Documento A: "tos" 2 veces, "fiebre" 1 vez. Documento B: "tos" 1 vez, "disnea" 2 veces. Lo compartido es $\min(2,1) + \min(1,0) + \min(0,2) = 1$, y cada documento suma 3 términos, así que $d_{BC} = 1 - 2\cdot 1/(3+3) = 0{,}667$. Lo comprobamos con `vegdist()`:
+
+```{r bray_ejemplo}
+ejemplo_bc <- rbind(A = c(tos = 2, fiebre = 1, disnea = 0),
+                    B = c(tos = 1, fiebre = 0, disnea = 2))
+vegdist(ejemplo_bc, method = "bray")
+```
+
+## Matriz y transformación
+
+Construimos la matriz documento-término a partir de las **raíces** (el *stemming* aumenta el solapamiento entre documentos, porque "diabetes" y "diabética" pasan a contar como el mismo término). Después transformamos los conteos en **frecuencias relativas** por documento con `decostand(method = "total")`, para que la disimilitud refleje el *perfil* de vocabulario y no la longitud del texto:
+
+```{r matriz_nmds}
+matriz <- tokens_raiz %>%
+  count(id, raiz) %>%
+  cast_sparse(row = id, column = raiz, value = n) %>%
+  as.matrix()
+
+matriz_rel <- decostand(matriz, method = "total")
+rowSums(matriz_rel)   # cada documento suma 1
+```
+
+## El nMDS
+
+El **escalado multidimensional no métrico** (nMDS; Kruskal, 1964) busca una configuración de puntos en $k$ dimensiones (aquí, $k = 2$) cuyas distancias euclídeas respeten lo mejor posible el **orden** (los rangos) de las disimilitudes originales, no sus valores exactos. Esa es su principal ventaja frente al PCoA o al PCA: no presupone relaciones lineales y funciona con cualquier medida de disimilitud.
+
+La calidad del ajuste se mide con el **estrés** (*stress-1* de Kruskal):
+
+$$
+\text{stress} = \sqrt{\frac{\sum_{j<k}\left(d_{jk} - \hat d_{jk}\right)^2}{\sum_{j<k} d_{jk}^2}}
+$$
+
+donde $d_{jk}$ son las distancias en el plano y $\hat d_{jk}$ los valores ajustados por regresión monótona a partir de las disimilitudes. Una guía orientativa habitual (Clarke, 1993) es: estrés < 0,05, representación excelente; < 0,10, buena; < 0,20, utilizable con cautela; > 0,20, poco fiable.
+
+Como el algoritmo es iterativo y puede quedar atrapado en mínimos locales, `metaMDS()` lo repite desde varias configuraciones iniciales aleatorias (`trymax`) y se queda con la mejor. Desactivamos `autotransform` porque ya hemos transformado nosotros los datos:
+
+```{r nmds}
+set.seed(2026)
+nmds <- metaMDS(matriz_rel, distance = "bray", k = 2, trymax = 200,
+                autotransform = FALSE, trace = FALSE)
+nmds
+nmds$stress
+```
+
+El **diagrama de Shepard** muestra la relación entre disimilitudes originales y distancias en el plano; cuanto más se ajusten los puntos a la línea escalonada (regresión monótona), mejor representa el mapa las disimilitudes:
+
+```{r shepard, fig.width=5, fig.height=4.5}
+stressplot(nmds, main = "Diagrama de Shepard")
+```
+
+## Visualización con ggplot2
+
+Extraemos las coordenadas de los documentos con `scores()`, las unimos a los metadatos y dibujamos la envolvente convexa de cada especialidad (calculada con `chull()`):
+
+```{r nmds_plot, fig.height=6}
+puntos_nmds <- scores(nmds, display = "sites") %>%
+  as_tibble(rownames = "id") %>%
+  left_join(casos %>% select(id, especialidad), by = "id")
+
+envolventes <- puntos_nmds %>%
+  group_by(especialidad) %>%
+  slice(chull(NMDS1, NMDS2))
+
+ggplot(puntos_nmds, aes(NMDS1, NMDS2, colour = especialidad)) +
+  geom_polygon(data = envolventes, aes(fill = especialidad),
+               alpha = 0.15, linewidth = 0.4) +
+  geom_point(size = 3.5) +
+  geom_text(aes(label = id), vjust = -1.1, size = 3.2, show.legend = FALSE) +
+  scale_colour_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  coord_equal() +
+  labs(title = "nMDS de los casos clínicos (Bray-Curtis sobre raíces)",
+       subtitle = sprintf("Estrés = %.3f", nmds$stress),
+       colour = "Especialidad", fill = "Especialidad") +
+  theme_minimal()
+```
+
+Al interpretar un nMDS recordad que **los ejes no tienen unidades ni significado intrínseco**, que la orientación y el signo son arbitrarios, y que lo único interpretable es la **proximidad relativa** entre puntos: dos casos cercanos usan un vocabulario parecido.
+
+## ¿Son diferencias reales? PERMANOVA
+
+El nMDS es una técnica **descriptiva**. Para contrastar formalmente si el vocabulario difiere entre especialidades usamos el **análisis de la varianza multivariante por permutaciones** (PERMANOVA; Anderson, 2001), implementado en `adonis2()`. La hipótesis nula es que los centroides de los grupos, en el espacio definido por la disimilitud, son iguales. El estadístico es un pseudo-$F$ análogo al del ANOVA,
+
+$$
+F = \frac{SS_{\text{entre}}/(g-1)}{SS_{\text{dentro}}/(n-g)},
+$$
+
+y su distribución bajo $H_0$ se obtiene **permutando** las etiquetas de grupo, de modo que no se asume normalidad:
+
+```{r permanova}
+dist_bc <- vegdist(matriz_rel, method = "bray")
+
+metadatos <- tibble(id = rownames(matriz_rel)) %>%
+  left_join(casos %>% select(id, especialidad), by = "id")
+
+set.seed(2026)
+adonis2(dist_bc ~ especialidad, data = metadatos, permutations = 999)
+```
+
+El $R^2$ indica la proporción de la variabilidad total (en términos de Bray-Curtis) explicada por la especialidad.
+
+PERMANOVA es sensible no solo a diferencias de **posición** (centroides) sino también de **dispersión** entre grupos. Por eso es buena práctica comprobar la homogeneidad de las dispersiones multivariantes con `betadisper()` (Anderson, 2006), el análogo multivariante del test de Levene:
+
+```{r betadisper}
+dispersion <- betadisper(dist_bc, metadatos$especialidad)
+set.seed(2026)
+permutest(dispersion, permutations = 999)
+```
+
+Si este segundo test **no** es significativo, podemos atribuir el resultado de la PERMANOVA a diferencias de posición. Y una advertencia honesta: con solo 4 documentos por grupo la potencia es baja y los resultados son ilustrativos; con un corpus real como CodiEsp estas herramientas ganan todo su sentido.
+
+# Ampliación IV: análisis de sentimiento
+
+El **análisis de sentimiento** trata de cuantificar la carga afectiva u opinativa de un texto. La aproximación más sencilla, y la que encaja con el formato *tidy*, es la **basada en léxico**: se dispone de un diccionario que asigna a cada palabra una polaridad (positiva/negativa) o unas emociones, y se hace un `inner_join()` con los *tokens*.
+
+Usaremos el léxico **NRC Emotion Lexicon** (Mohammad y Turney, 2013), que asocia palabras a dos polaridades (*positive*, *negative*) y a ocho emociones básicas de Plutchik (*anger*, *anticipation*, *disgust*, *fear*, *joy*, *sadness*, *surprise*, *trust*). El paquete `syuzhet` incluye su **versión en español**:
+
+```{r nrc}
+nrc_es <- get_sentiment_dictionary(dictionary = "nrc", language = "spanish") %>%
+  as_tibble() %>%
+  distinct(word, sentiment)
+
+nrc_es
+nrc_es %>% count(sentiment, sort = TRUE)
+```
+
+> **Conoced vuestro léxico.** La versión española de NRC se obtuvo por **traducción automática** del original inglés, de modo que hereda errores de traducción y no recoge la flexión del español (puede contener "grave" pero no "graves"). Es un buen recurso docente, pero no un instrumento validado.
+
+**Ejemplo sencillo.** Comparemos dos frases de evolución clínica con tono opuesto:
+
+```{r sentimiento_ejemplo}
+tibble(nota  = c("favorable", "desfavorable"),
+       texto = c("El paciente mejora y se recupera con buena evolución, alta a domicilio.",
+                 "Empeoramiento grave con dolor intenso, riesgo de muerte y pronóstico malo.")) %>%
+  unnest_tokens(palabra, texto) %>%
+  inner_join(nrc_es, by = join_by(palabra == word), relationship = "many-to-many") %>%
+  filter(sentiment %in% c("positive", "negative")) %>%
+  count(nota, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0)
+```
+
+## Sentimiento del corpus
+
+Calculamos para cada caso una **polaridad neta normalizada**, (positivas − negativas) / (positivas + negativas), que varía entre −1 y 1:
+
+```{r sentimiento_casos}
+sentimiento <- tokens_limpios %>%
+  inner_join(nrc_es, by = join_by(palabra == word), relationship = "many-to-many")
+
+polaridad <- sentimiento %>%
+  filter(sentiment %in% c("positive", "negative")) %>%
+  count(id, especialidad, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>%
+  mutate(polaridad = (positive - negative) / (positive + negative))
+
+ggplot(polaridad, aes(x = polaridad, y = fct_reorder(id, polaridad),
+                      colour = especialidad)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_segment(aes(x = 0, xend = polaridad, yend = id), linewidth = 0.8) +
+  geom_point(size = 3.5) +
+  scale_colour_brewer(palette = "Dark2") +
+  scale_x_continuous(limits = c(-1, 1)) +
+  labs(x = "Polaridad neta (−1 = negativa, +1 = positiva)", y = NULL,
+       colour = "Especialidad",
+       title = "Polaridad de cada caso clínico según el léxico NRC") +
+  theme_minimal()
+```
+
+(Los casos sin ninguna palabra del léxico no aparecen en el gráfico.)
+
+Y el perfil de **emociones** por especialidad, en proporción sobre el total de asociaciones emocionales de cada grupo:
+
+```{r emociones, fig.height=5}
+sentimiento %>%
+  filter(!sentiment %in% c("positive", "negative")) %>%
+  count(especialidad, sentiment) %>%
+  group_by(especialidad) %>%
+  mutate(proporcion = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(x = proporcion, y = sentiment, fill = especialidad)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ especialidad, nrow = 1) +
+  scale_x_continuous(labels = scales::label_percent()) +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(x = "Proporción de asociaciones emocionales", y = NULL,
+       title = "Perfil emocional (NRC) por especialidad") +
+  theme_minimal()
+```
+
+## Qué palabras generan el sentimiento: nube comparativa
+
+Lo más instructivo de esta sección es mirar **qué palabras** han sido clasificadas como positivas o negativas. Una nube con color por polaridad lo muestra de un vistazo:
+
+```{r nube_sentimiento, fig.height=5}
+set.seed(2026)
+sentimiento %>%
+  filter(sentiment %in% c("positive", "negative")) %>%
+  count(palabra, sentiment) %>%
+  mutate(sentiment = recode(sentiment, positive = "Positiva", negative = "Negativa")) %>%
+  ggplot(aes(label = palabra, size = n, colour = sentiment)) +
+  geom_text_wordcloud_area(rm_outside = TRUE) +
+  scale_size_area(max_size = 14) +
+  scale_colour_manual(values = c(Positiva = "#1B9E77", Negativa = "#D95F02")) +
+  facet_wrap(~ sentiment) +
+  labs(title = "Palabras del corpus con polaridad en el léxico NRC") +
+  theme_void() +
+  theme(strip.text = element_text(face = "bold", size = 12),
+        plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+> **Discusión crítica (la parte más importante de esta sección).** Observad qué palabras han resultado "negativas": casi con seguridad aparecen términos como "dolor", "insuficiencia", "hemorragia" o "fiebre". El léxico no está midiendo la **actitud del autor** (un informe clínico es, por diseño, neutro y descriptivo), sino la **connotación de los términos clínicos en el lenguaje general**: en un informe médico, "enfermedad" es simplemente un sustantivo técnico. Además, "descarta hemorragia" sigue contando como negativo porque el método ignora la negación. Esto es un ejemplo de **desajuste de dominio**: un léxico construido para lenguaje general aplicado a un lenguaje de especialidad. El análisis de sentimiento tiene aplicaciones sanitarias legítimas (opiniones de pacientes sobre servicios de salud, encuestas de satisfacción, foros de pacientes, redes sociales en farmacovigilancia), pero siempre con léxicos o modelos adaptados al dominio y validados.
+
+# Limitaciones y siguientes pasos
+
+Lo que habéis hecho hoy es un análisis de **bolsa de palabras**, que ignora el orden y el contexto. En texto clínico esto tiene consecuencias importantes:
+
+- **Negación.** En el caso R01, "descarta hemorragia" ha contado la palabra "hemorragia" igual que si el paciente la tuviera. Algoritmos como **NegEx** (Chapman et al., 2001) detectan expresiones de negación ("niega", "sin", "descarta", "no se observa") y su alcance.
+- **Abreviaturas y siglas.** Los informes reales están llenos de siglas ambiguas ("IC" puede ser insuficiencia cardiaca o intervalo de confianza).
+- **Semántica.** Los modelos modernos (*word embeddings*, modelos de lenguaje basados en *transformers*) representan las palabras según su contexto. Para el español biomédico existen modelos específicos entrenados por el Barcelona Supercomputing Center.
+
+# Ejercicios propuestos
+
+1. **Palabras vacías.** Añadid "no" y "sin" a una frase de prueba y comprobad si sobreviven al `anti_join()` con `vacias_es`. ¿Qué implicaciones tiene para un texto clínico?
+2. **tf-idf por documento.** Repetid el análisis de tf-idf tomando como documento cada caso (`id`) en lugar de cada especialidad. ¿Qué término es el más característico de cada caso?
+3. **Trigramas.** Modificad el bloque de n-gramas para obtener trigramas ($n = 3$). ¿Aparece "diabetes mellitus tipo"? ¿Por qué el filtro de dígitos os impide recuperar "diabetes mellitus tipo 2" completo?
+4. **Expresiones regulares.** Escribid una expresión regular que extraiga la **saturación de oxígeno** (por ejemplo, "88 %") y la **edad** de cada paciente ("de 68 años"). Calculad la edad media por especialidad.
+5. **Sensibilidad del nMDS.** Repetid el nMDS (a) con palabras en lugar de raíces y (b) con la disimilitud de Jaccard (`distance = "jaccard"`, que solo considera presencia/ausencia). ¿Cambia el estrés? ¿Se separan mejor o peor las especialidades?
+6. **Agrupamiento jerárquico.** Aplicad `hclust()` a `dist_bc` con el método de Ward (`method = "ward.D2"`) y dibujad el dendrograma. ¿Coinciden los grupos con las especialidades y con lo que veis en el nMDS?
+7. **Sentimiento con otro léxico.** Repetid el análisis con `get_sentiment_dictionary("nrc", language = "spanish")` pero conservando las palabras vacías, y después eliminando del léxico los términos clínicos que consideréis falsos negativos. ¿Cómo cambia la polaridad?
+8. **Para el seminario.** Buscad en Zenodo el corpus **CodiEsp**, importad los casos clínicos (son ficheros `.txt`, que podéis leer con `readr::read_file()` dentro de un `map()`) y repetid la práctica con datos reales.
+
+# Referencias
+
+- Anderson, M. J. (2001). A new method for non-parametric multivariate analysis of variance. *Austral Ecology, 26*(1), 32–46.
+- Anderson, M. J. (2006). Distance-based tests for homogeneity of multivariate dispersions. *Biometrics, 62*(1), 245–253.
+- Chapman, W. W., Bridewell, W., Hanbury, P., Cooper, G. F., y Buchanan, B. G. (2001). A simple algorithm for identifying negated findings and diseases in discharge summaries. *Journal of Biomedical Informatics, 34*(5), 301–310.
+- Clarke, K. R. (1993). Non-parametric multivariate analyses of changes in community structure. *Australian Journal of Ecology, 18*(1), 117–143.
+- Jockers, M. L. (2015). *Syuzhet: Extract sentiment and plot arcs from text* [Paquete de R]. <https://github.com/mjockers/syuzhet>.
+- Jurafsky, D., y Martin, J. H. (2008). *Speech and Language Processing* (2.ª ed.). Pearson Prentice Hall.
+- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27.
+- Le Pennec, E., y Slowikowski, K. (2023). *ggwordcloud: A word cloud geom for ggplot2* [Paquete de R]. <https://CRAN.R-project.org/package=ggwordcloud>.
+- Mohammad, S. M., y Turney, P. D. (2013). Crowdsourcing a word–emotion association lexicon. *Computational Intelligence, 29*(3), 436–465.
+- Miranda-Escalada, A., Gonzalez-Agirre, A., Armengol-Estapé, J., y Krallinger, M. (2020). Overview of automatic clinical coding: Annotations, guidelines, and solutions for non-English clinical cases at CodiEsp track of CLEF eHealth 2020. *CEUR Workshop Proceedings*.
+- Porter, M. F. (1980). An algorithm for suffix stripping. *Program, 14*(3), 130–137.
+- Salton, G., y Buckley, C. (1988). Term-weighting approaches in automatic text retrieval. *Information Processing & Management, 24*(5), 513–523.
+- Silge, J., y Robinson, D. (2016). tidytext: Text mining and analysis using tidy data principles in R. *Journal of Open Source Software, 1*(3), 37.
+- Silge, J., y Robinson, D. (2017). *Text Mining with R: A Tidy Approach*. O'Reilly. Disponible en <https://www.tidytextmining.com>.
+- Oksanen, J., Simpson, G. L., Blanchet, F. G., Kindt, R., Legendre, P., Minchin, P. R., et al. (2025). *vegan: Community Ecology Package* [Paquete de R]. <https://CRAN.R-project.org/package=vegan>.
+- Wild, F. (mantenedor). *CRAN Task View: Natural Language Processing*. <https://cran.r-project.org/web/views/NaturalLanguageProcessing.html>.
+
+```{r sesion}
+sessionInfo()
+```

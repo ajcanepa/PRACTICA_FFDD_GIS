@@ -1,0 +1,58 @@
+T1	PROTEINAS 3286 3288	pS
+#1	AnnotatorNotes T1	56898001
+T2	PROTEINAS 3274 3284	proteína S
+#2	AnnotatorNotes T2	56898001
+T3	PROTEINAS 3627 3636	factor II
+#5	AnnotatorNotes T3	7348004
+T6	NORMALIZABLES 3822 3834	acenocumarol
+#3	AnnotatorNotes T6	387457003
+T7	NORMALIZABLES 3648 3660	homocisteína
+#4	AnnotatorNotes T7	102747008
+T9	PROTEINAS 3610 3618	factor V
+#6	AnnotatorNotes T9	60208008
+T10	PROTEINAS 3589 3608	proteína C activada
+#7	AnnotatorNotes T10	130626008
+T11	PROTEINAS 3542 3570	anticuerpos anticardiolipina
+#8	AnnotatorNotes T11	45396006
+T12	PROTEINAS 3530 3540	proteína C
+#9	AnnotatorNotes T12	25525005
+T13	PROTEINAS 3516 3528	antitrombina
+#10	AnnotatorNotes T13	259742007
+T14	PROTEINAS 3503 3514	fibrinógeno
+#11	AnnotatorNotes T14	23295004
+T15	PROTEINAS 3427 3437	proteína S
+#12	AnnotatorNotes T15	56898001
+T16	PROTEINAS 3330 3332	pS
+#13	AnnotatorNotes T16	56898001
+T17	PROTEINAS 3308 3310	pS
+#14	AnnotatorNotes T17	56898001
+T18	NORMALIZABLES 2024 2034	porfirinas
+#15	AnnotatorNotes T18	15730005
+T19	PROTEINAS 2012 2021	ferritina
+#16	AnnotatorNotes T19	32789000
+T20	PROTEINAS 1996 2010	ceruloplasmina
+#17	AnnotatorNotes T20	76269006
+T21	PROTEINAS 1232 1239	fibrina
+#18	AnnotatorNotes T21	113361004
+T22	PROTEINAS 926 955	gamma-glutamil transpeptidasa
+#19	AnnotatorNotes T22	60153001
+T23	PROTEINAS 890 914	alanina aminotransferasa
+#20	AnnotatorNotes T23	56935002
+T24	PROTEINAS 853 879	aspartato aminotransferasa
+#21	AnnotatorNotes T24	26091008
+T25	PROTEINAS 823 841	fosfatasa alcalina
+#22	AnnotatorNotes T25	57056007
+T26	NORMALIZABLES 799 810	bilirrubina
+#23	AnnotatorNotes T26	79706000
+T27	PROTEINAS 721 732	hemoglobina
+#24	AnnotatorNotes T27	38082009
+T28	UNCLEAR 385 392	alcohol
+#25	AnnotatorNotes T28	53041004
+T29	NORMALIZABLES 379 383	AINE
+#26	AnnotatorNotes T29	372665008
+T30	NORMALIZABLES 327 338	lovastatina
+#27	AnnotatorNotes T30	96303004
+T31	NORMALIZABLES 277 294	hidroclorotiazida
+#28	AnnotatorNotes T31	387525002
+T32	NORMALIZABLES 267 276	amiloride
+#29	AnnotatorNotes T32	387503008
