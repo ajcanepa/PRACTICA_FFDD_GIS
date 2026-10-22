@@ -27,41 +27,41 @@ En esta práctica vais a dar los primeros pasos en **minería de textos**: trans
 
 **Objetivos de aprendizaje.** Al terminar la práctica deberíais ser capaces de:
 
-1. Explicar qué es un corpus, un documento y un *token*.
-2. Tokenizar textos en español y eliminar palabras vacías (*stop words*).
-3. Calcular y visualizar frecuencias de términos.
-4. Normalizar palabras mediante *stemming* y entender en qué se diferencia de la lematización.
-5. Identificar los términos característicos de cada grupo de documentos con **tf-idf**.
-6. Trabajar con **n-gramas** para recuperar términos médicos compuestos.
-7. Extraer variables clínicas del texto con **expresiones regulares**.
-8. Representar el corpus como una **matriz documento-término**.
-9. Describir estadísticamente un corpus (riqueza léxica, longitud de palabras) y comunicarlo con **nubes de palabras**.
+1.  Explicar qué es un corpus, un documento y un *token*.
+2.  Tokenizar textos en español y eliminar palabras vacías (*stop words*).
+3.  Calcular y visualizar frecuencias de términos.
+4.  Normalizar palabras mediante *stemming* y entender en qué se diferencia de la lematización.
+5.  Identificar los términos característicos de cada grupo de documentos con **tf-idf**.
+6.  Trabajar con **n-gramas** para recuperar términos médicos compuestos.
+7.  Extraer variables clínicas del texto con **expresiones regulares**.
+8.  Representar el corpus como una **matriz documento-término**.
+9.  Describir estadísticamente un corpus (riqueza léxica, longitud de palabras) y comunicarlo con **nubes de palabras**.
 10. Ordenar documentos por similitud léxica mediante **nMDS** y contrastar diferencias entre grupos con **PERMANOVA**.
 11. Realizar un **análisis de sentimiento** basado en léxico y discutir críticamente sus limitaciones en el dominio clínico.
 
 **Duración estimada:** 30 minutos para el bloque básico (secciones 1–10) y unos 25 minutos adicionales para el bloque de ampliación (secciones 11–14), que podéis terminar de forma autónoma.
 
-| Bloque | Contenido | Tiempo |
-|:---|:---|---:|
-| 1–2 | Paquetes y corpus | 4 min |
-| 3–4 | Tokenización y palabras vacías | 5 min |
-| 5 | Frecuencias | 4 min |
-| 6 | *Stemming* | 3 min |
-| 7 | tf-idf | 5 min |
-| 8 | Bigramas | 4 min |
-| 9 | Expresiones regulares | 3 min |
-| 10 | Matriz documento-término | 2 min |
-| 11 | *Ampliación:* estadística descriptiva del corpus | 5 min |
-| 12 | *Ampliación:* nubes de palabras | 6 min |
-| 13 | *Ampliación:* nMDS y PERMANOVA | 8 min |
-| 14 | *Ampliación:* análisis de sentimiento | 6 min |
+| Bloque | Contenido                                        | Tiempo |
+|:-------|:-------------------------------------------------|-------:|
+| 1–2    | Paquetes y corpus                                |  4 min |
+| 3–4    | Tokenización y palabras vacías                   |  5 min |
+| 5      | Frecuencias                                      |  4 min |
+| 6      | *Stemming*                                       |  3 min |
+| 7      | tf-idf                                           |  5 min |
+| 8      | Bigramas                                         |  4 min |
+| 9      | Expresiones regulares                            |  3 min |
+| 10     | Matriz documento-término                         |  2 min |
+| 11     | *Ampliación:* estadística descriptiva del corpus |  5 min |
+| 12     | *Ampliación:* nubes de palabras                  |  6 min |
+| 13     | *Ampliación:* nMDS y PERMANOVA                   |  8 min |
+| 14     | *Ampliación:* análisis de sentimiento            |  6 min |
 
 # El ecosistema de PLN en R
 
 CRAN mantiene una *Task View* específica, [Natural Language Processing](https://cran.r-project.org/web/views/NaturalLanguageProcessing.html), que recopila y organiza los paquetes de R para el análisis del lenguaje en distintos niveles: palabras, sintaxis, semántica y pragmática. No hace falta que los conozcáis todos; lo importante es que sepáis que existen **varios marcos de trabajo** con filosofías distintas:
 
 | Paquete | Filosofía | Estructura de datos central |
-|:---|:---|:---|
+|:-----------------------|:-----------------------|:-----------------------|
 | `tm` | Marco clásico, histórico en R | Objeto `Corpus` y `DocumentTermMatrix` |
 | `quanteda` | Análisis cuantitativo de textos, muy eficiente | `corpus`, `tokens`, `dfm` |
 | **`tidytext`** | **Principios *tidy* aplicados al texto** | **`tibble` con un *token* por fila** |
@@ -91,6 +91,7 @@ library(tidyverse)   # dplyr, tidyr, stringr, ggplot2, readr, tibble...
 library(tidytext)    # minería de textos en formato tidy
 library(SnowballC)   # stemming (incluye un algoritmo para el español)
 library(ggwordcloud) # nubes de palabras como geometría de ggplot2
+library(stopwords)   # remueve las palabras vacías (stop-words)
 library(vegan)       # distancias, nMDS y PERMANOVA
 library(syuzhet)     # léxicos de sentimiento (incluye NRC en español)
 ```
@@ -420,7 +421,7 @@ tension <- casos %>%
 tension
 ```
 
-Lo mismo con la hemoglobina glucosilada (HbA1c). Ojo: en español el separador decimal es la **coma**, así que hay que indicárselo a `parse_number()` mediante `locale()`:
+Lo mismo con la hemoglobina glicosilada (HbA1c). Ojo: en español el separador decimal es la **coma**, así que hay que indicárselo a `parse_number()` mediante `locale()`:
 
 ```{r regex_hba1c}
 casos %>%
@@ -573,7 +574,7 @@ tfidf %>%
 
 `ggwordcloud` permite elegir la forma de la nube (`"circle"`, `"cardioid"`, `"diamond"`, `"star"`, `"pentagon"`...). La forma cardioide es la elección obvia para Cardiología. Esta vez usamos **palabras y bigramas** juntos, para que aparezcan términos compuestos como "fibrilación auricular":
 
-```{r nube_corazon, fig.height=6}
+```{r nube_corazon_data, fig.height=6}
 terminos_cardio <- bind_rows(
   tokens_limpios %>%
     filter(especialidad == "Cardiología") %>%
@@ -589,9 +590,14 @@ terminos_cardio <- bind_rows(
     mutate(n = n * 1.5)   # damos algo más de peso a los términos compuestos
 )
 
+terminos_cardio |> arrange(desc(n)) |> slice_head(n = 6)
+```
+
+
+```{r nube_corazon, fig.height=6}
 set.seed(2026)
 ggplot(terminos_cardio, aes(label = termino, size = n, colour = n)) +
-  geom_text_wordcloud_area(shape = "cardioid", eccentricity = 0.8,
+  geom_text_wordcloud_area(shape = "cardioid", eccentricity = 1,
                            rm_outside = TRUE) +
   scale_size_area(max_size = 12) +
   scale_colour_gradient(low = "#F4A6A6", high = "#8B0000") +
@@ -610,12 +616,12 @@ Hasta ahora hemos comparado **palabras**. Ahora vamos a comparar **documentos**:
 
 Las herramientas que vamos a usar proceden de la **ecología de comunidades**, y la analogía es muy directa:
 
-| Ecología | Minería de textos |
-|:---|:---|
-| Muestra o parcela (*site*) | Documento |
-| Especie | Término |
-| Abundancia de la especie | Frecuencia del término |
-| Matriz sitios × especies | Matriz documento-término |
+| Ecología                   | Minería de textos        |
+|:---------------------------|:-------------------------|
+| Muestra o parcela (*site*) | Documento                |
+| Especie                    | Término                  |
+| Abundancia de la especie   | Frecuencia del término   |
+| Matriz sitios × especies   | Matriz documento-término |
 
 En ambos casos tenemos matrices de **conteos, dispersas y con muchos ceros**, y en ambos casos la ausencia compartida de un elemento (dos documentos que no mencionan "insulina") no debería aumentar su parecido. Por eso usaremos el paquete de ecología `vegan` y la **disimilitud de Bray-Curtis**, que ignora los dobles ceros.
 
@@ -661,7 +667,7 @@ $$
 \text{stress} = \sqrt{\frac{\sum_{j<k}\left(d_{jk} - \hat d_{jk}\right)^2}{\sum_{j<k} d_{jk}^2}}
 $$
 
-donde $d_{jk}$ son las distancias en el plano y $\hat d_{jk}$ los valores ajustados por regresión monótona a partir de las disimilitudes. Una guía orientativa habitual (Clarke, 1993) es: estrés < 0,05, representación excelente; < 0,10, buena; < 0,20, utilizable con cautela; > 0,20, poco fiable.
+donde $d_{jk}$ son las distancias en el plano y $\hat d_{jk}$ los valores ajustados por regresión monótona a partir de las disimilitudes. Una guía orientativa habitual (Clarke, 1993) es: estrés \< 0,05, representación excelente; \< 0,10, buena; \< 0,20, utilizable con cautela; \> 0,20, poco fiable.
 
 Como el algoritmo es iterativo y puede quedar atrapado en mínimos locales, `metaMDS()` lo repite desde varias configuraciones iniciales aleatorias (`trymax`) y se queda con la mejor. Desactivamos `autotransform` porque ya hemos transformado nosotros los datos:
 
@@ -851,14 +857,14 @@ Lo que habéis hecho hoy es un análisis de **bolsa de palabras**, que ignora el
 
 # Ejercicios propuestos
 
-1. **Palabras vacías.** Añadid "no" y "sin" a una frase de prueba y comprobad si sobreviven al `anti_join()` con `vacias_es`. ¿Qué implicaciones tiene para un texto clínico?
-2. **tf-idf por documento.** Repetid el análisis de tf-idf tomando como documento cada caso (`id`) en lugar de cada especialidad. ¿Qué término es el más característico de cada caso?
-3. **Trigramas.** Modificad el bloque de n-gramas para obtener trigramas ($n = 3$). ¿Aparece "diabetes mellitus tipo"? ¿Por qué el filtro de dígitos os impide recuperar "diabetes mellitus tipo 2" completo?
-4. **Expresiones regulares.** Escribid una expresión regular que extraiga la **saturación de oxígeno** (por ejemplo, "88 %") y la **edad** de cada paciente ("de 68 años"). Calculad la edad media por especialidad.
-5. **Sensibilidad del nMDS.** Repetid el nMDS (a) con palabras en lugar de raíces y (b) con la disimilitud de Jaccard (`distance = "jaccard"`, que solo considera presencia/ausencia). ¿Cambia el estrés? ¿Se separan mejor o peor las especialidades?
-6. **Agrupamiento jerárquico.** Aplicad `hclust()` a `dist_bc` con el método de Ward (`method = "ward.D2"`) y dibujad el dendrograma. ¿Coinciden los grupos con las especialidades y con lo que veis en el nMDS?
-7. **Sentimiento con otro léxico.** Repetid el análisis con `get_sentiment_dictionary("nrc", language = "spanish")` pero conservando las palabras vacías, y después eliminando del léxico los términos clínicos que consideréis falsos negativos. ¿Cómo cambia la polaridad?
-8. **Para el seminario.** Buscad en Zenodo el corpus **CodiEsp**, importad los casos clínicos (son ficheros `.txt`, que podéis leer con `readr::read_file()` dentro de un `map()`) y repetid la práctica con datos reales.
+1.  **Palabras vacías.** Añadid "no" y "sin" a una frase de prueba y comprobad si sobreviven al `anti_join()` con `vacias_es`. ¿Qué implicaciones tiene para un texto clínico?
+2.  **tf-idf por documento.** Repetid el análisis de tf-idf tomando como documento cada caso (`id`) en lugar de cada especialidad. ¿Qué término es el más característico de cada caso?
+3.  **Trigramas.** Modificad el bloque de n-gramas para obtener trigramas ($n = 3$). ¿Aparece "diabetes mellitus tipo"? ¿Por qué el filtro de dígitos os impide recuperar "diabetes mellitus tipo 2" completo?
+4.  **Expresiones regulares.** Escribid una expresión regular que extraiga la **saturación de oxígeno** (por ejemplo, "88 %") y la **edad** de cada paciente ("de 68 años"). Calculad la edad media por especialidad.
+5.  **Sensibilidad del nMDS.** Repetid el nMDS (a) con palabras en lugar de raíces y (b) con la disimilitud de Jaccard (`distance = "jaccard"`, que solo considera presencia/ausencia). ¿Cambia el estrés? ¿Se separan mejor o peor las especialidades?
+6.  **Agrupamiento jerárquico.** Aplicad `hclust()` a `dist_bc` con el método de Ward (`method = "ward.D2"`) y dibujad el dendrograma. ¿Coinciden los grupos con las especialidades y con lo que veis en el nMDS?
+7.  **Sentimiento con otro léxico.** Repetid el análisis con `get_sentiment_dictionary("nrc", language = "spanish")` pero conservando las palabras vacías, y después eliminando del léxico los términos clínicos que consideréis falsos negativos. ¿Cómo cambia la polaridad?
+8.  **Para el seminario.** Buscad en Zenodo el corpus **CodiEsp**, importad los casos clínicos (son ficheros `.txt`, que podéis leer con `readr::read_file()` dentro de un `map()`) y repetid la práctica con datos reales.
 
 # Referencias
 
