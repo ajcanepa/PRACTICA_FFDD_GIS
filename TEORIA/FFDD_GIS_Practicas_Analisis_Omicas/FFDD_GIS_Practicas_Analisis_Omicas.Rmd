@@ -1,0 +1,619 @@
+---
+title: "Introducción al análisis de datos ómicos con R"
+subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
+author: "Dr. Antonio Canepa-Oneto"
+date: |
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+lang: es
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.align = "center", fig.width = 9, fig.height = 5, dpi = 120
+)
+```
+
+# Objetivos y organización de la sesión
+
+En esta práctica vamos a dar nuestros primeros pasos en el análisis de datos **ómicos**. No pretendemos convertiros en bioinformáticos en media hora, sino que entendáis la lógica común a cualquier análisis ómico (genómica, transcriptómica, proteómica, metabolómica…) y la apliquéis con las herramientas que ya conocéis: `httr2` y `jsonlite` para obtener datos de una API (como hicimos con SPARQL y PubMed), y `dplyr`, `tidyr` y `ggplot2` para transformarlos y visualizarlos.
+
+Al finalizar esta práctica seréis capaces de:
+
+1. Situar los distintos niveles ómicos y los formatos de datos más habituales de cada uno.
+2. Orientaros en el ecosistema de R para ómicas (CRAN Task View *Omics* y Bioconductor).
+3. Descargar de forma programática datos genómicos reales de la **población ibérica muestreada en España** (IBS) del Proyecto 1000 Genomas a través de la API REST de Ensembl.
+4. Ejecutar los pasos básicos de cualquier análisis ómico: control de calidad, descripción, exploración multivariante, contraste de hipótesis con corrección por pruebas múltiples e interpretación biológica.
+
+| Bloque | Contenido | Tiempo orientativo |
+|:--|:--|:--:|
+| 1–2 | Conceptos: niveles ómicos, formatos y ecosistema R | 7 min |
+| 3 | Obtención de los datos (Ensembl REST) | 5 min |
+| 4 | Control de calidad | 4 min |
+| 5 | Descripción y equilibrio de Hardy-Weinberg | 5 min |
+| 6 | Exploración multivariante (PCA) | 4 min |
+| 7 | Contraste IBS frente a otras poblaciones y FDR | 5 min |
+| 8 | Ejercicios | fuera de clase |
+
+Antes de empezar, instalad (una sola vez) los paquetes que vamos a usar:
+
+```{r instalacion, eval = FALSE}
+install.packages(c("tidyverse", "httr2", "knitr", "HardyWeinberg"))
+```
+
+```{r paquetes}
+library(tidyverse)  # dplyr, tidyr, ggplot2, purrr, readr, stringr, forcats, tibble
+library(httr2)      # peticiones HTTP a la API de Ensembl
+library(knitr)      # tablas con kable()
+```
+
+# ¿Qué son las ómicas?
+
+## Del dogma central a los niveles ómicos
+
+El sufijo *-oma* designa la **totalidad** de un tipo de molécula en un sistema biológico, y *-ómica* la disciplina que la estudia de forma masiva (*high-throughput*). Siguiendo el flujo de información del dogma central, cada nivel aporta una fotografía distinta del mismo organismo:
+
+| Nivel | Qué mide | Tecnología típica | Formatos habituales | Objeto típico en R |
+|:--|:--|:--|:--|:--|
+| Genómica | Secuencia del ADN y su variación (SNV, indels, CNV) | Secuenciación masiva (NGS), arrays de genotipado | FASTQ, BAM/CRAM, **VCF** | `VCF`, `GRanges`, *tibble* de genotipos |
+| Epigenómica | Metilación, accesibilidad de cromatina | Bisulfito-seq, ChIP-seq, ATAC-seq | BED, bigWig | `GRanges`, matrices de señal |
+| Transcriptómica | Expresión génica (ARNm, ARNnc) | RNA-seq, scRNA-seq, microarrays | FASTQ, matriz de recuentos | `SummarizedExperiment`, `Seurat` |
+| Proteómica | Identidad y abundancia de proteínas | Espectrometría de masas (LC-MS/MS) | mzML, mzIdentML | matrices de intensidad |
+| Metabolómica | Metabolitos de bajo peso molecular | LC-MS, GC-MS, RMN | mzML, nmrML | matrices de intensidad |
+
+Aunque las tecnologías difieren, **todos los datos ómicos procesados acaban teniendo la misma estructura**: una matriz de $p$ características (genes, variantes, proteínas, metabolitos) por $n$ muestras, normalmente con $p \gg n$, acompañada de dos tablas de metadatos (una que describe las características y otra que describe las muestras). Este régimen de *alta dimensionalidad* es lo que justifica que en ómicas sean imprescindibles la corrección por pruebas múltiples, la regularización y las técnicas de reducción de dimensión.
+
+**Ejemplo sencillo.** Un estudio de RNA-seq con 20 pacientes que cuantifica 20 000 genes produce una matriz de $20\,000 \times 20$. Si contrastáis cada gen con $\alpha = 0{,}05$ y en realidad ningún gen cambia, esperaréis aproximadamente $20\,000 \times 0{,}05 = 1\,000$ «descubrimientos» falsos. Lo comprobaremos por simulación en el apartado 7.
+
+## El flujo de trabajo general
+
+Con independencia de la ómica, un análisis sigue casi siempre estos pasos:
+
+1. **Diseño y obtención** de los datos (experimentales o de repositorios públicos).
+2. **Control de calidad** (QC): muestras y características anómalas, valores faltantes, coherencia interna.
+3. **Preprocesado**: filtrado, normalización, corrección de efectos de lote.
+4. **Análisis exploratorio**: descriptivos, reducción de dimensión (PCA), agrupamiento.
+5. **Inferencia**: contrastes por característica con control de la tasa de falsos descubrimientos (FDR).
+6. **Anotación e interpretación biológica**: genes, rutas, bases de conocimiento.
+7. **Reproducibilidad**: código versionado (Git), versiones de bases de datos, `sessionInfo()`.
+
+En esta práctica recorreremos los pasos 1, 2, 4, 5 y 6 con datos genómicos.
+
+## Un vistazo a los formatos: el VCF
+
+El formato **VCF** (*Variant Call Format*) es el estándar para almacenar variantes genómicas. Cada fila es una posición del genoma; las columnas fijas describen la variante (cromosoma, posición, alelo de referencia `REF` y alternativo `ALT`) y, a continuación, hay una columna por individuo con su genotipo codificado: `0` es el alelo de referencia, `1` el alternativo, y el separador `|` indica que el genotipo está *faseado* (sabemos qué alelo viene de cada progenitor) mientras que `/` indica que no lo está.
+
+```text
+##fileformat=VCFv4.2
+#CHROM  POS   ID         REF  ALT  QUAL  FILTER  INFO  FORMAT  IND1  IND2  IND3  IND4  IND5
+1       1000  rsEJEMPLO  G    A    .     PASS    .     GT      0|0   0|1   1|1   0|1   0|0
+```
+
+**Ejemplo sencillo en R.** Representamos esa variante como un *tibble*, la pasamos a formato largo (un individuo por fila, filosofía *tidy*) y calculamos la **frecuencia alélica** del alelo alternativo, $\hat p = \frac{\text{n.º de copias de ALT}}{2N}$:
+
+```{r vcf-juguete}
+vcf_juguete <- tribble(
+  ~CHROM, ~POS, ~ID,         ~REF, ~ALT, ~IND1, ~IND2, ~IND3, ~IND4, ~IND5,
+  "1",    1000, "rsEJEMPLO", "G",  "A",  "0|0", "0|1", "1|1", "0|1", "0|0"
+)
+
+vcf_juguete |>
+  pivot_longer(starts_with("IND"), names_to = "individuo", values_to = "GT") |>
+  separate_wider_delim(GT, delim = "|", names = c("a1", "a2")) |>
+  mutate(dosis_ALT = as.integer(a1) + as.integer(a2)) |>   # 0, 1 o 2 copias
+  summarise(N = n(), copias_ALT = sum(dosis_ALT), frec_ALT = copias_ALT / (2 * N))
+```
+
+Hay 4 copias del alelo `A` entre 10 cromosomas, luego $\hat p = 0{,}4$. Exactamente este cálculo, repetido para miles de individuos y millones de posiciones, es la base de la genómica de poblaciones.
+
+# El ecosistema de R para ómicas
+
+## CRAN Task View *Omics*
+
+Las *Task Views* de CRAN son guías curadas por expertos que agrupan los paquetes relevantes para un área. La vista [*Genomics, Proteomics, Metabolomics, Transcriptomics, and Other Omics*](https://cran.r-project.org/web/views/Omics.html), mantenida por Julie Aubert, Toby Dylan Hocking y Nathalie Vialaneix, organiza los paquetes en bloques temáticos: anotación y bases de datos; datos de expresión de microarrays; RNA-seq y *single-cell* RNA-seq; otras ómicas e integración multiómica; y tareas específicas como control de calidad y normalización, *peak calling* (ChIP-seq, ATAC-seq), **pruebas múltiples**, regularización en alta dimensión y valores faltantes.
+
+Algunos de sus paquetes **núcleo** (*core*) son `biomartr` (acceso a bases de datos genómicas), `WGCNA` (redes de coexpresión), `Seurat` (*single-cell* RNA-seq), `GeneNet` (redes génicas), `WebGestaltR` (análisis de enriquecimiento), `ChemoSpec` (espectroscopía en metabolómica) o `wrProteo` (proteómica); entre los regulares encontraréis, por ejemplo, `seqinr` (análisis de secuencias) o `msigdbr` (conjuntos de genes). Podéis instalar todos los paquetes núcleo con:
+
+```{r ctv, eval = FALSE}
+install.packages("ctv")
+ctv::install.views("Omics", coreOnly = TRUE)
+```
+
+Dos matices importantes que conviene que tengáis claros:
+
+- **La vista *Omics* excluye explícitamente la genética estadística** (datos de ADN, estimación de haplotipos, estructura poblacional, epidemiología genética), que tiene su propia vista: [*StatisticalGenetics*](https://cran.r-project.org/web/views/StatisticalGenetics.html). El paquete `HardyWeinberg` que usaremos hoy está en esta última.
+- Gran parte del software ómico no está en CRAN sino en **Bioconductor** (`DESeq2`, `limma`, `edgeR`, `GenomicRanges`, `VariantAnnotation`, `SummarizedExperiment`…), un repositorio con su propio ciclo de versiones y clases de datos compartidas (Huber et al., 2015). La propia *Task View* remite a él para las tareas que CRAN no cubre bien.
+
+**Ejemplo sencillo.** Instalar un paquete de Bioconductor requiere su gestor, `BiocManager` (no lo ejecutaremos hoy):
+
+```{r bioc, eval = FALSE}
+install.packages("BiocManager")
+BiocManager::install("VariantAnnotation")
+```
+
+## Fuentes de datos ómicos relevantes en España
+
+| Recurso | Qué ofrece | Acceso |
+|:--|:--|:--|
+| **1000 Genomas – población IBS** | Genomas de 107 individuos de la *Iberian Population in Spain* | Abierto (consentimiento para uso público) |
+| **EGA** (*European Genome-phenome Archive*) | Datos genómicos y fenotípicos de estudios clínicos; operado por EMBL-EBI y el CRG (Barcelona) | Controlado (comité de acceso) |
+| **CSVS** (*Collaborative Spanish Variability Server*) | Frecuencias de variantes en población española (Sevilla, CIBERER) | Registro gratuito |
+| **IMPaCT-Genómica** (ISCIII) | Infraestructura nacional de medicina genómica de precisión | Institucional |
+| **GEO / ArrayExpress** | Datos de expresión de numerosos grupos españoles | Abierto |
+
+No olvidéis el **marco legal**: los datos genéticos son una *categoría especial* de datos personales según el artículo 9 del RGPD (Reglamento (UE) 2016/679) y la LOPDGDD (Ley Orgánica 3/2018), y su uso en investigación está regulado en España por la Ley 14/2007 de Investigación Biomédica. Por eso hoy trabajaremos con **frecuencias agregadas** de una muestra con consentimiento para difusión abierta, y no con datos individuales identificables.
+
+# Obtención de los datos: la API REST de Ensembl
+
+## Las variantes que vamos a estudiar
+
+Hemos seleccionado 15 polimorfismos de un solo nucleótido (SNP) con interés biomédico o antropológico bien documentado. Fijaos en que cada uno se identifica por su código **rsID** de dbSNP, que es un identificador persistente y resoluble: exactamente la idea de URI que vimos en web semántica.
+
+```{r snps}
+snps <- tribble(
+  ~rsid,         ~gen,      ~relevancia,
+  "rs4988235",   "MCM6/LCT", "Persistencia de la lactasa en europeos",
+  "rs1426654",   "SLC24A5",  "Pigmentación de la piel (A111T)",
+  "rs16891982",  "SLC45A2",  "Pigmentación de la piel (L374F)",
+  "rs1042602",   "TYR",      "Pigmentación (S192Y)",
+  "rs12913832",  "HERC2",    "Color de ojos (regulación de OCA2)",
+  "rs429358",    "APOE",     "Alelo ε4: riesgo de Alzheimer",
+  "rs7412",      "APOE",     "Alelo ε2: metabolismo lipídico",
+  "rs1801133",   "MTHFR",    "C677T: metabolismo del folato",
+  "rs1800562",   "HFE",      "C282Y: hemocromatosis hereditaria",
+  "rs6025",      "F5",       "Factor V Leiden: trombofilia",
+  "rs1229984",   "ADH1B",    "Metabolismo del alcohol",
+  "rs671",       "ALDH2",    "Intolerancia al alcohol (Asia oriental)",
+  "rs3827760",   "EDAR",     "V370A: morfología del cabello y dientes",
+  "rs2814778",   "ACKR1",    "Fenotipo Duffy nulo: resistencia a P. vivax",
+  "rs73885319",  "APOL1",    "Variante G1: riesgo de nefropatía"
+) |>
+  mutate(etiqueta = str_glue("{gen} ({rsid})"))
+
+kable(snps |> select(-etiqueta), caption = "Variantes analizadas")
+```
+
+## Las 26 poblaciones del Proyecto 1000 Genomas
+
+La fase 3 del Proyecto 1000 Genomas (The 1000 Genomes Project Consortium, 2015) secuenció 2 504 individuos de 26 poblaciones agrupadas en 5 superpoblaciones continentales. La nuestra es **IBS**.
+
+```{r poblaciones}
+poblaciones <- tribble(
+  ~poblacion, ~superpob, ~descripcion,
+  "YRI", "AFR", "Yoruba (Nigeria)",           "LWK", "AFR", "Luhya (Kenia)",
+  "GWD", "AFR", "Gambianos",                  "MSL", "AFR", "Mende (Sierra Leona)",
+  "ESN", "AFR", "Esan (Nigeria)",             "ASW", "AFR", "Afroamericanos (EE. UU.)",
+  "ACB", "AFR", "Afrocaribeños (Barbados)",   "MXL", "AMR", "Mexicanos (Los Ángeles)",
+  "PUR", "AMR", "Puertorriqueños",            "CLM", "AMR", "Colombianos (Medellín)",
+  "PEL", "AMR", "Peruanos (Lima)",            "CHB", "EAS", "Han (Pekín)",
+  "JPT", "EAS", "Japoneses (Tokio)",          "CHS", "EAS", "Han del sur (China)",
+  "CDX", "EAS", "Dai (Xishuangbanna)",        "KHV", "EAS", "Kinh (Vietnam)",
+  "CEU", "EUR", "Utah, ascendencia europea",  "TSI", "EUR", "Toscanos (Italia)",
+  "FIN", "EUR", "Finlandeses",                "GBR", "EUR", "Británicos",
+  "IBS", "EUR", "Ibéricos (España)",          "GIH", "SAS", "Guyaratíes (Houston)",
+  "PJL", "SAS", "Panyabíes (Pakistán)",       "BEB", "SAS", "Bengalíes (Bangladés)",
+  "STU", "SAS", "Tamiles (Sri Lanka)",        "ITU", "SAS", "Telugus (Reino Unido)"
+)
+count(poblaciones, superpob, name = "n_poblaciones")
+```
+
+## Petición a la API
+
+Seguimos el mismo patrón que en las prácticas de SPARQL y PubMed: construimos la petición con `httr2`, la ejecutamos y convertimos la respuesta JSON en estructuras de R. El *endpoint* `GET /variation/human/{rsid}` de Ensembl (Yates et al., 2015) devuelve la anotación de la variante; con `pops = 1` añade las **frecuencias alélicas** por población y con `population_genotypes = 1` los **recuentos de genotipos**.
+
+**Ejemplo sencillo.** Antes de descargar las 15 variantes, inspeccionad la respuesta para una sola. Esta exploración previa de la estructura es el primer paso con cualquier API:
+
+```{r ejemplo-api, eval = FALSE}
+ejemplo <- request("https://rest.ensembl.org") |>
+  req_url_path_append("variation", "human", "rs4988235") |>
+  req_url_query(pops = 1) |>
+  req_headers(Accept = "application/json") |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE)
+
+names(ejemplo)                  # campos de primer nivel
+head(ejemplo$populations)       # una fila por (población, alelo)
+```
+
+Ahora encapsulamos la petición en una función. Observad tres buenas prácticas: identificarnos con un *user agent*, **limitar la tasa** de peticiones (Ensembl admite un máximo de 15 por segundo) y **reintentar** si hay un fallo transitorio.
+
+```{r funcion-descarga}
+descargar_snp <- function(rsid) {
+  request("https://rest.ensembl.org") |>
+    req_url_path_append("variation", "human", rsid) |>
+    req_url_query(pops = 1, population_genotypes = 1) |>
+    req_headers(Accept = "application/json") |>
+    req_user_agent("UBU-8235 practica omicas (docencia)") |>
+    req_throttle(rate = 10) |>          # máx. 10 peticiones por segundo
+    req_retry(max_tries = 3) |>
+    req_perform() |>
+    resp_body_json(simplifyVector = TRUE)
+}
+```
+
+Guardamos una **copia local** (*caché*) con la fecha de descarga. Así el documento se puede volver a compilar sin conexión y, sobre todo, queda registrado de qué versión de la base de datos proceden los resultados, lo cual es un requisito de reproducibilidad: Ensembl publica nuevas versiones varias veces al año. Si la red del aula falla, copiad en la carpeta `datos/` el archivo `.rds` que os proporcionaré.
+
+```{r descarga}
+ruta_cache <- "datos/ensembl_1000G_snps.rds"
+
+if (file.exists(ruta_cache)) {
+  descarga <- read_rds(ruta_cache)
+} else {
+  dir.create("datos", showWarnings = FALSE)
+  descarga <- list(
+    fecha      = Sys.time(),
+    respuestas = map(snps$rsid, descargar_snp, .progress = TRUE) |> set_names(snps$rsid)
+  )
+  write_rds(descarga, ruta_cache)
+}
+
+respuestas <- descarga$respuestas
+cat("Datos descargados de Ensembl el", format(descarga$fecha, "%d/%m/%Y a las %H:%M"), "\n")
+```
+
+## De listas JSON a tablas *tidy*
+
+La respuesta de cada SNP es una lista anidada. Extraemos tres tablas *tidy*, una por tipo de información: **anotación** (una fila por SNP), **frecuencias alélicas** (una fila por SNP × población × alelo) y **recuentos genotípicos** (una fila por SNP × población × genotipo). Ensembl agrega frecuencias de muchos proyectos (gnomAD, ALFA, TOPMed…), por lo que nos quedamos solo con las de 1000 Genomas fase 3 y, mediante el `inner_join`, solo con las 26 poblaciones (descartando los agregados por superpoblación).
+
+```{r tablas-tidy}
+prefijo_1kg <- "^1000GENOMES:phase_3:"
+
+anotacion <- respuestas |>
+  map(\(x) tibble(
+    cromosoma    = x$mappings$seq_region_name[1],
+    posicion     = x$mappings$start[1],
+    alelos       = x$mappings$allele_string[1],
+    consecuencia = x$most_severe_consequence %||% NA_character_,
+    menor_ensembl = x$minor_allele %||% NA_character_,
+    maf_ensembl  = x$MAF %||% NA_real_
+  )) |>
+  list_rbind(names_to = "rsid")
+
+extraer <- function(campo) {
+  respuestas |>
+    map(\(x) as_tibble(x[[campo]])) |>
+    list_rbind(names_to = "rsid") |>
+    filter(str_detect(population, prefijo_1kg)) |>
+    mutate(poblacion = str_remove(population, prefijo_1kg)) |>
+    inner_join(poblaciones, by = "poblacion")
+}
+
+frec_alelicas <- extraer("populations") |>
+  select(rsid, poblacion, superpob, alelo = allele, frecuencia = frequency)
+
+genotipos <- extraer("population_genotypes") |>
+  select(rsid, poblacion, superpob, genotipo = genotype, n = count)
+
+glimpse(genotipos)
+```
+
+# Control de calidad
+
+En ómicas **nunca** se analiza nada sin comprobar antes la integridad de los datos. Con datos descargados de una base pública, el control de calidad consiste sobre todo en verificar su coherencia interna.
+
+## Completitud y tamaño muestral
+
+```{r qc-completitud}
+tamanos <- genotipos |>
+  summarise(n_individuos = sum(n), .by = c(rsid, poblacion, superpob))
+
+# ¿Tiene cada SNP las 26 poblaciones?
+tamanos |> count(rsid, name = "n_poblaciones") |> filter(n_poblaciones != 26)
+
+# Tamaño muestral de IBS por SNP (debería ser 107 en todos)
+tamanos |> filter(poblacion == "IBS") |> distinct(n_individuos)
+```
+
+Si la primera tabla aparece vacía, ningún SNP ha perdido poblaciones. La segunda confirma el tamaño de la muestra ibérica.
+
+## Variantes bialélicas
+
+Los métodos que aplicaremos suponen dos alelos por posición. Nos quedamos solo con las variantes bialélicas y comprobamos cuántas descartamos:
+
+```{r qc-bialelicos}
+recuentos_alelicos <- genotipos |>
+  separate_wider_delim(genotipo, delim = regex("[|/]"), names = c("a1", "a2")) |>
+  pivot_longer(c(a1, a2), values_to = "alelo") |>
+  count(rsid, poblacion, superpob, alelo, wt = n, name = "n_alelo")
+
+bialelicos <- recuentos_alelicos |>
+  summarise(n_alelos = n_distinct(alelo), .by = rsid) |>
+  filter(n_alelos == 2) |>
+  pull(rsid)
+
+setdiff(snps$rsid, bialelicos)   # SNP descartados (idealmente, ninguno)
+recuentos_alelicos <- filter(recuentos_alelicos, rsid %in% bialelicos)
+```
+
+## Definición del alelo menor y coherencia de las frecuencias
+
+Definimos el **alelo menor** de cada SNP como el menos frecuente en el conjunto de las 26 poblaciones y comprobamos dos cosas: que coincide con el que publica Ensembl y que la frecuencia que calculamos a partir de los genotipos reproduce la frecuencia alélica que la base de datos publica directamente. Dos vías independientes que llegan al mismo resultado son una buena señal de que el procesamiento es correcto.
+
+```{r qc-coherencia}
+alelo_menor <- recuentos_alelicos |>
+  summarise(n = sum(n_alelo), .by = c(rsid, alelo)) |>
+  slice_min(n, n = 1, by = rsid, with_ties = FALSE) |>
+  select(rsid, alelo_menor = alelo)
+
+frec_menor <- recuentos_alelicos |>
+  inner_join(alelo_menor, by = "rsid") |>
+  summarise(
+    n_menor = sum(n_alelo[alelo == alelo_menor]),
+    n_total = sum(n_alelo),
+    .by = c(rsid, poblacion, superpob)
+  ) |>
+  mutate(frec_menor = n_menor / n_total)
+
+# 1) ¿Coincide nuestro alelo menor con el de Ensembl?
+alelo_menor |>
+  left_join(anotacion, by = "rsid") |>
+  summarise(coincidencias = sum(alelo_menor == menor_ensembl, na.rm = TRUE), total = n())
+
+# 2) Discrepancia máxima entre frecuencia calculada y publicada
+frec_menor |>
+  inner_join(alelo_menor, by = "rsid") |>
+  inner_join(frec_alelicas, by = c("rsid", "poblacion", "superpob", "alelo_menor" = "alelo")) |>
+  summarise(max_diferencia = max(abs(frec_menor - frecuencia)))
+```
+
+Una discrepancia máxima del orden de $10^{-3}$ o inferior se debe solo al redondeo de las frecuencias publicadas.
+
+# Descripción de la población ibérica
+
+## Anotación y frecuencias en IBS
+
+El estimador de la frecuencia alélica en una muestra de $N$ individuos diploides es $\hat p = x / 2N$, con error estándar $\text{EE}(\hat p) = \sqrt{\hat p(1-\hat p)/2N}$. Con $N = 107$ y $\hat p = 0{,}5$, el EE es de 0,034: una diferencia de un 5 % entre dos poblaciones de este tamaño **no** es, por sí sola, evidencia sólida de diferenciación.
+
+```{r descriptivo-ibs}
+frec_menor |>
+  filter(poblacion == "IBS") |>
+  left_join(alelo_menor, by = "rsid") |>
+  left_join(anotacion, by = "rsid") |>
+  left_join(snps, by = "rsid") |>
+  mutate(ee = sqrt(frec_menor * (1 - frec_menor) / n_total)) |>
+  arrange(desc(frec_menor)) |>
+  transmute(
+    SNP = etiqueta, Cromosoma = cromosoma, Consecuencia = consecuencia,
+    `Alelo menor` = alelo_menor,
+    `Frecuencia IBS` = round(frec_menor, 3), EE = round(ee, 3)
+  ) |>
+  kable(caption = "Frecuencia del alelo menor (global) en la población ibérica")
+```
+
+Observad que la columna *Consecuencia* procede de la anotación funcional de Ensembl (variante de cambio de sentido o *missense*, intrónica, etc.): este es el paso de **anotación** del flujo de trabajo.
+
+## Mapa de calor de frecuencias
+
+```{r heatmap, fig.height = 6}
+frec_menor |>
+  left_join(snps, by = "rsid") |>
+  mutate(
+    poblacion = fct_relevel(poblacion, "IBS", after = Inf),
+    etiqueta  = fct_reorder(etiqueta, frec_menor)
+  ) |>
+  ggplot(aes(x = poblacion, y = etiqueta, fill = frec_menor)) +
+  geom_tile(colour = "white") +
+  facet_grid(~ superpob, scales = "free_x", space = "free_x") +
+  scale_fill_viridis_c(name = "Frecuencia\nalelo menor", limits = c(0, 1)) +
+  labs(x = NULL, y = NULL,
+       title = "Frecuencia del alelo menor en las 26 poblaciones de 1000 Genomas",
+       subtitle = "IBS: Iberian Population in Spain") +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5), panel.grid = element_blank())
+```
+
+Antes de seguir, dedicad un minuto a interpretar el gráfico. ¿Qué variantes son casi exclusivas de una superpoblación? ¿Se distingue la columna IBS del resto de poblaciones europeas?
+
+## Equilibrio de Hardy-Weinberg
+
+En una población grande con apareamiento aleatorio y sin selección, migración ni mutación, las frecuencias genotípicas esperadas a partir de las alélicas ($p$ y $q = 1-p$) son $p^2$, $2pq$ y $q^2$: es el **equilibrio de Hardy-Weinberg** (HWE). En control de calidad genómico, una desviación fuerte del HWE en controles suele delatar **errores de genotipado** más que fenómenos biológicos.
+
+**Ejemplo sencillo.** Supongamos 100 individuos con genotipos AA = 50, AB = 20 y BB = 30. Entonces $\hat p = (2 \cdot 50 + 20)/200 = 0{,}6$ y los esperados son 36, 48 y 16. El déficit de heterocigotos es enorme:
+
+```{r hwe-juguete}
+prueba_hwe <- function(n_AA, n_AB, n_BB) {
+  n <- n_AA + n_AB + n_BB
+  p <- (2 * n_AA + n_AB) / (2 * n)
+  esperado  <- n * c(p^2, 2 * p * (1 - p), (1 - p)^2)
+  observado <- c(n_AA, n_AB, n_BB)
+  chi2 <- sum((observado - esperado)^2 / esperado)
+  tibble(p = p, chi2 = chi2, p_valor = pchisq(chi2, df = 1, lower.tail = FALSE))
+}
+
+prueba_hwe(50, 20, 30)
+```
+
+El estadístico tiene **1 grado de libertad** (3 clases − 1 − 1 parámetro estimado, $p$). Con frecuencias alélicas bajas, la aproximación $\chi^2$ falla y se prefiere la prueba **exacta** (Wigginton et al., 2005), implementada en `HardyWeinberg` (Graffelman, 2015).
+
+Lo aplicamos ahora a IBS. Contamos para cada individuo cuántas copias porta del alelo menor (0, 1 o 2) y **excluimos los SNP monomórficos** en IBS, que no aportan información (otro criterio típico de QC):
+
+```{r hwe-ibs}
+genotipos_ibs <- genotipos |>
+  filter(poblacion == "IBS", rsid %in% bialelicos) |>
+  separate_wider_delim(genotipo, delim = regex("[|/]"), names = c("a1", "a2")) |>
+  left_join(alelo_menor, by = "rsid") |>
+  mutate(dosis = (a1 == alelo_menor) + (a2 == alelo_menor)) |>
+  count(rsid, dosis, wt = n) |>
+  complete(rsid, dosis = 0:2, fill = list(n = 0)) |>   # dosis ausentes = 0 individuos
+  pivot_wider(names_from = dosis, values_from = n, names_prefix = "d") |>
+  rename(n_AA = d0, n_AB = d1, n_BB = d2) |>   # A = alelo mayor, B = alelo menor
+  filter(n_AB + n_BB > 0)
+
+hwe_ibs <- genotipos_ibs |>
+  mutate(chi2_res = pmap(list(n_AA, n_AB, n_BB), prueba_hwe)) |>
+  unnest(chi2_res)
+
+if (requireNamespace("HardyWeinberg", quietly = TRUE)) {
+  hwe_ibs <- hwe_ibs |>
+    mutate(p_exacto = pmap_dbl(list(n_AA, n_AB, n_BB), \(a, b, c)
+      HardyWeinberg::HWExact(c(AA = a, AB = b, BB = c), verbose = FALSE)$pval))
+}
+
+hwe_ibs |>
+  left_join(snps, by = "rsid") |>
+  select(SNP = etiqueta, n_AA, n_AB, n_BB, p_valor, any_of("p_exacto")) |>
+  mutate(across(where(is.double), \(x) signif(x, 3))) |>
+  kable(caption = "Equilibrio de Hardy-Weinberg en IBS (B = alelo menor)")
+```
+
+Comparad las columnas `p_valor` (aproximación $\chi^2$) y `p_exacto` en los SNP con pocos portadores del alelo menor: allí es donde la aproximación asintótica es menos fiable.
+
+# Exploración multivariante: análisis de componentes principales
+
+Cada población es ahora un punto en un espacio de 15 dimensiones (una por SNP). El **análisis de componentes principales** (PCA) busca las combinaciones lineales ortogonales de las variables que maximizan la varianza, y permite proyectar ese espacio en dos dimensiones. En genética de poblaciones, el PCA de datos genómicos tiende a reproducir la geografía (Novembre et al., 2008), y en cualquier ómica es la herramienta estándar para detectar estructura, *outliers* y efectos de lote.
+
+Construimos la matriz poblaciones × SNP (formato ancho) y estandarizamos cada SNP (`scale. = TRUE`) para que todas las variantes pesen lo mismo:
+
+```{r pca}
+matriz_frec <- frec_menor |>
+  select(poblacion, rsid, frec_menor) |>
+  pivot_wider(names_from = rsid, values_from = frec_menor) |>
+  column_to_rownames("poblacion") |>
+  as.matrix()
+
+pca <- prcomp(matriz_frec, center = TRUE, scale. = TRUE)
+var_explicada <- pca$sdev^2 / sum(pca$sdev^2)
+
+as_tibble(pca$x, rownames = "poblacion") |>
+  left_join(poblaciones, by = "poblacion") |>
+  ggplot(aes(PC1, PC2, colour = superpob)) +
+  geom_point(size = 3) +
+  geom_text(aes(label = poblacion), vjust = -0.9, size = 3, show.legend = FALSE) +
+  labs(
+    x = str_glue("CP1 ({scales::percent(var_explicada[1], 0.1)} de la varianza)"),
+    y = str_glue("CP2 ({scales::percent(var_explicada[2], 0.1)} de la varianza)"),
+    colour = "Superpoblación",
+    title = "PCA de las frecuencias alélicas de 15 SNP en 1000 Genomas"
+  ) +
+  theme_minimal()
+```
+
+**Advertencia metodológica.** Estos 15 SNP **no** son una muestra aleatoria del genoma: los hemos escogido precisamente porque se sabe que sus frecuencias difieren entre continentes (*sesgo de selección de marcadores* o *ascertainment bias*). El PCA real de la estructura genética de la península ibérica usa cientos de miles de SNP de individuos y revela una diferenciación fina a lo largo del eje este-oeste (Bycroft et al., 2019), que con nuestros datos agregados sería imposible detectar.
+
+# Contraste de hipótesis: IBS frente al resto de poblaciones
+
+## El problema de las pruebas múltiples
+
+Si realizamos $m$ contrastes con nivel $\alpha$ y todas las hipótesis nulas son ciertas, esperamos $m\alpha$ falsos positivos. Dos estrategias de corrección:
+
+- **Bonferroni** controla la tasa de error de familia (FWER), $P(V \ge 1) \le \alpha$, rechazando si $p_i \le \alpha/m$. Es muy conservadora con $m$ grande.
+- **Benjamini-Hochberg** (BH; Benjamini y Hochberg, 1995) controla la **tasa de falsos descubrimientos**, $\text{FDR} = E[V/\max(R,1)]$, donde $V$ son los falsos positivos y $R$ el total de rechazos. Se ordenan los $p$-valores $p_{(1)} \le \dots \le p_{(m)}$ y se rechazan las $k$ primeras hipótesis, con $k = \max\{i : p_{(i)} \le i\alpha/m\}$. Es el estándar en ómicas.
+
+**Ejemplo sencillo.** Simulamos 1 000 contrastes en los que la hipótesis nula es siempre cierta (bajo $H_0$, los $p$-valores siguen una distribución uniforme):
+
+```{r multiples-juguete}
+set.seed(8235)
+p_nulos <- runif(1000)
+
+tibble(
+  metodo = c("Sin corrección", "Bonferroni", "Benjamini-Hochberg"),
+  falsos_positivos = c(
+    sum(p_nulos < 0.05),
+    sum(p.adjust(p_nulos, method = "bonferroni") < 0.05),
+    sum(p.adjust(p_nulos, method = "BH") < 0.05)
+  )
+)
+```
+
+Sin corrección aparecen unos 50 «descubrimientos», todos falsos; con cualquiera de las dos correcciones desaparecen.
+
+## Aplicación: ¿en qué se diferencia la población ibérica?
+
+Para cada SNP comparamos las frecuencias alélicas de IBS con las de cada una de las otras 25 poblaciones mediante la **prueba exacta de Fisher** sobre la tabla 2 × 2 de recuentos alélicos (alelo menor / mayor × IBS / otra población). Son $15 \times 25 = 375$ contrastes, así que la corrección es obligatoria.
+
+```{r fisher}
+ibs <- frec_menor |>
+  filter(poblacion == "IBS") |>
+  select(rsid, n_menor_ibs = n_menor, n_total_ibs = n_total)
+
+comparaciones <- frec_menor |>
+  filter(poblacion != "IBS") |>
+  left_join(ibs, by = "rsid") |>
+  mutate(
+    prueba = pmap(list(n_menor_ibs, n_total_ibs, n_menor, n_total), \(a, na, b, nb)
+      fisher.test(matrix(c(a, na - a, b, nb - b), nrow = 2))),
+    p_valor = map_dbl(prueba, "p.value")
+  ) |>
+  select(-prueba) |>
+  mutate(p_BH = p.adjust(p_valor, method = "BH"))
+
+comparaciones |>
+  summarise(
+    contrastes = n(),
+    `p < 0,05 sin corregir` = sum(p_valor < 0.05),
+    `FDR < 5 % (BH)` = sum(p_BH < 0.05),
+    .by = superpob
+  ) |>
+  kable(caption = "SNP con frecuencia significativamente distinta de IBS, por superpoblación")
+```
+
+```{r fisher-grafico, fig.height = 5}
+comparaciones |>
+  left_join(snps, by = "rsid") |>
+  ggplot(aes(x = poblacion, y = -log10(p_BH), colour = superpob)) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.7) +
+  facet_grid(~ superpob, scales = "free_x", space = "free_x") +
+  labs(x = NULL, y = expression(-log[10]~"(p ajustado BH)"),
+       title = "Diferencias de frecuencia alélica entre IBS y cada población",
+       subtitle = "Cada punto es un SNP; línea discontinua: FDR = 5 %") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+Por último, centrémonos en lo más cercano: ¿qué variantes diferencian a IBS de las demás poblaciones europeas?
+
+```{r fisher-europa}
+comparaciones |>
+  filter(superpob == "EUR", p_BH < 0.05) |>
+  left_join(snps, by = "rsid") |>
+  left_join(frec_menor |> filter(poblacion == "IBS") |> select(rsid, frec_IBS = frec_menor),
+            by = "rsid") |>
+  transmute(SNP = etiqueta, Poblacion = poblacion,
+            `Frec. IBS` = round(frec_IBS, 3), `Frec. otra` = round(frec_menor, 3),
+            `p BH` = signif(p_BH, 3)) |>
+  arrange(`p BH`) |>
+  kable(caption = "Diferencias significativas (FDR < 5 %) entre IBS y otras poblaciones europeas")
+```
+
+## Interpretación
+
+Cuando analicéis vuestros resultados, tened presentes estas ideas:
+
+1. **Significación estadística no es relevancia biológica.** Una diferencia de frecuencias puede ser significativa y tener un efecto fenotípico mínimo a escala poblacional.
+2. **Diferencias de frecuencia no implican selección natural.** La deriva genética, los cuellos de botella y la historia demográfica generan diferencias sin necesidad de selección; para atribuirlas a la selección se requieren pruebas específicas sobre datos genómicos completos.
+3. **Frecuencia poblacional no es riesgo individual.** Que el alelo ε4 de *APOE* tenga cierta frecuencia en IBS no dice nada sobre el riesgo de un individuo concreto sin conocer su genotipo y otros factores.
+4. **La muestra no es toda España.** IBS son 107 personas; la variabilidad genética regional dentro de la península (Bycroft et al., 2019) no queda representada.
+
+# Ejercicios propuestos
+
+1. **Otra variante.** Añadid a la tabla `snps` el SNP `rs1815739` (*ACTN3* R577X, relacionado con el rendimiento deportivo), volved a ejecutar el cuaderno (borrad antes la caché) y describid su frecuencia en IBS frente al resto de superpoblaciones.
+2. **Prueba de Hardy-Weinberg global.** Repetid el análisis de HWE para las 26 poblaciones, aplicad la corrección de Benjamini-Hochberg y explicad si alguna desviación podría deberse a la estructura de la muestra (pista: pensad en poblaciones mezcladas como ASW, ACB o las de AMR y en el *efecto Wahlund*).
+3. **Diferenciación genética.** Calculad la $F_{ST}$ de Hudson entre IBS y cada población, combinando los SNP mediante el cociente de medias de numerador y denominador (Bhatia et al., 2013), y representadla en un diagrama de barras ordenado. ¿Qué poblaciones son las más cercanas a IBS según estos 15 SNP? ¿Por qué no debéis extrapolar este resultado al genoma completo?
+
+# Referencias
+
+- Benjamini, Y. y Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society: Series B*, 57(1), 289–300.
+- Bhatia, G., Patterson, N., Sankararaman, S. y Price, A. L. (2013). Estimating and interpreting F~ST~: the impact of rare variants. *Genome Research*, 23(9), 1514–1521.
+- Bycroft, C. et al. (2019). Patterns of genetic differentiation and the footprints of historical migrations in the Iberian Peninsula. *Nature Communications*, 10, 551.
+- Graffelman, J. (2015). Exploring diallelic genetic markers: the HardyWeinberg package. *Journal of Statistical Software*, 64(3), 1–23.
+- Huber, W. et al. (2015). Orchestrating high-throughput genomic analysis with Bioconductor. *Nature Methods*, 12(2), 115–121.
+- Novembre, J. et al. (2008). Genes mirror geography within Europe. *Nature*, 456, 98–101.
+- The 1000 Genomes Project Consortium (2015). A global reference for human genetic variation. *Nature*, 526, 68–74.
+- Wickham, H. et al. (2019). Welcome to the tidyverse. *Journal of Open Source Software*, 4(43), 1686.
+- Wigginton, J. E., Cutler, D. J. y Abecasis, G. R. (2005). A note on exact tests of Hardy-Weinberg equilibrium. *American Journal of Human Genetics*, 76(5), 887–893.
+- Yates, A. et al. (2015). The Ensembl REST API: Ensembl data for any language. *Bioinformatics*, 31(1), 143–145.
+- Aubert, J., Hocking, T. D. y Vialaneix, N. (2023). *CRAN Task View: Genomics, Proteomics, Metabolomics, Transcriptomics, and Other Omics*. https://cran.r-project.org/web/views/Omics.html
+
+# Información de la sesión
+
+```{r session}
+sessionInfo()
+```
