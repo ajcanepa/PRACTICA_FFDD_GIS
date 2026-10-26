@@ -69,10 +69,11 @@ library(jsonlite)
 
 # jsonlite::fromJSON() acepta una ruta local, una URL o una cadena de texto y,
 # por defecto, simplifica el resultado a data.frame si el JSON representa una tabla
-Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json")
+#Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json", simplifyVector = FALSE)
+Acc_Car_Json_flat <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json", simplifyVector = TRUE)
 
-Acc_Car_Json
-head(Acc_Car_Json)
+Acc_Car_Json_flat
+head(Acc_Car_Json_flat)
 
 # ** Uso de tidyjson ------------------------------------------------------
 # devtools::install_github("colearendt/tidyjson")
@@ -94,16 +95,16 @@ worldbank %>%
 # Aproximación Tidy para los accidentes en carretera
 # tidyjson trabaja sobre el JSON "en crudo" (texto), no sobre el data.frame de jsonlite:
 # leemos el fichero como una cadena de texto para pasárselo a las funciones de tidyjson
-Acc_Car_Json_raw <- paste(readLines("INPUT/DATA/accidentalidad-por-carreteras.json"), collapse = "")
+Acc_Car_Json <- fromJSON("INPUT/DATA/accidentalidad-por-carreteras.json", simplifyVector = FALSE)
 
-spread_all(Acc_Car_Json_raw)
+spread_all(Acc_Car_Json)
 
 Acc_Car_Json_raw %>%
   spread_all()
 # %>% View()   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
 # Guardamos el objeto
-Acc_Car_TJson <- spread_all(Acc_Car_Json_raw)
+Acc_Car_TJson <- spread_all(Acc_Car_Json)
 
 # comparando
 Acc_Car_TJson
@@ -114,10 +115,10 @@ lobstr::obj_size(Acc_Car)
 
 
 # Revisando que no existan arrays --> sino: https://github.com/colearendt/tidyjson#examples
-spread_all(Acc_Car_Json_raw)
+spread_all(Acc_Car_Json)
 # %>% View()   # (comentado: View() abre el visor y no es reproducible al ejecutar el script)
 
-Acc_Car_Json_raw %>%
+Acc_Car_Json %>%
   gather_object %>%
   json_types %>%
   count(name, type)
