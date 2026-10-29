@@ -1,0 +1,259 @@
+@base <localhost://> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex: <http://example.org/fdbws#> .
+@prefix schema: <https://schema.org/> .
+@prefix dbsnp: <https://identifiers.org/dbsnp:> .
+@prefix hgnc: <https://identifiers.org/hgnc:> .
+
+ex:P01
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Burgos" ;
+    a schema:Patient .
+
+ex:P02
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Burgos" ;
+    a schema:Patient .
+
+ex:P03
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ] ;
+    ex:provincia "Burgos" ;
+    a schema:Patient .
+
+ex:P04
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Huelva" ;
+    a schema:Patient .
+
+ex:P05
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Huelva" ;
+    a schema:Patient .
+
+ex:P06
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Illes Balears" ;
+    a schema:Patient .
+
+ex:P07
+    ex:genotipo [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Illes Balears" ;
+    a schema:Patient .
+
+ex:P08
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 2 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Madrid" ;
+    a schema:Patient .
+
+ex:P09
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Madrid" ;
+    a schema:Patient .
+
+ex:P10
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Asturias" ;
+    a schema:Patient .
+
+ex:P11
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 1 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "Sevilla" ;
+    a schema:Patient .
+
+ex:P12
+    ex:genotipo [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs113993960
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs1800562
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs17580
+    ], [
+        ex:copiasAlt 0 ;
+        ex:variante dbsnp:rs28933979
+    ] ;
+    ex:provincia "León" ;
+    a schema:Patient .
+
+dbsnp:rs113993960
+    ex:cambioProteina "p.Phe508del" ;
+    ex:enGen <https://identifiers.org/hgnc:1884> ;
+    ex:enfermedadAsociada "Fibrosis quística" ;
+    a ex:Variante ;
+    schema:name "F508del" .
+
+dbsnp:rs17580
+    ex:cambioProteina "p.Glu288Val" ;
+    ex:enGen <https://identifiers.org/hgnc:8941> ;
+    ex:enfermedadAsociada "Déficit de alfa-1 antitripsina" ;
+    a ex:Variante ;
+    schema:name "PI*S" .
+
+dbsnp:rs1800562
+    ex:cambioProteina "p.Cys282Tyr" ;
+    ex:enGen <https://identifiers.org/hgnc:4886> ;
+    ex:enfermedadAsociada "Hemocromatosis hereditaria" ;
+    a ex:Variante ;
+    schema:name "C282Y" .
+
+dbsnp:rs28933979
+    ex:cambioProteina "p.Val50Met" ;
+    ex:enGen <https://identifiers.org/hgnc:12405> ;
+    ex:enfermedadAsociada "Amiloidosis hereditaria por transtiretina" ;
+    a ex:Variante ;
+    schema:name "V30M" .
+
+<https://identifiers.org/hgnc:12405>
+    ex:cromosoma "18" ;
+    a schema:Gene ;
+    schema:name "TTR" .
+
+<https://identifiers.org/hgnc:1884>
+    ex:cromosoma "7" ;
+    a schema:Gene ;
+    schema:name "CFTR" .
+
+<https://identifiers.org/hgnc:4886>
+    ex:cromosoma "6" ;
+    a schema:Gene ;
+    schema:name "HFE" .
+
+<https://identifiers.org/hgnc:8941>
+    ex:cromosoma "14" ;
+    a schema:Gene ;
+    schema:name "SERPINA1" .
+

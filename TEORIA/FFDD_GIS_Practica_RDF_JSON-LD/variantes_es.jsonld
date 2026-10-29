@@ -1,0 +1,78 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "xsd":    "http://www.w3.org/2001/XMLSchema#",
+    "hgnc":   "https://identifiers.org/hgnc:",
+    "dbsnp":  "https://identifiers.org/dbsnp:",
+    "ex":     "http://example.org/fdbws#",
+
+    "Gen":        "schema:Gene",
+    "Variante":   "ex:Variante",
+    "Paciente":   "schema:Patient",
+    "nombre":     "schema:name",
+    "cromosoma":  "ex:cromosoma",
+    "cambio":     "ex:cambioProteina",
+    "enfermedad": "ex:enfermedadAsociada",
+    "provincia":  "ex:provincia",
+    "enGen":      {"@id": "ex:enGen",     "@type": "@id"},
+    "genotipo":   {"@id": "ex:genotipo"},
+    "variante":   {"@id": "ex:variante",  "@type": "@id"},
+    "copiasAlt":  {"@id": "ex:copiasAlt", "@type": "xsd:integer"}
+  },
+  "@graph": [
+    {"@id": "hgnc:1884",  "@type": "Gen", "nombre": "CFTR",     "cromosoma": "7"},
+    {"@id": "hgnc:4886",  "@type": "Gen", "nombre": "HFE",      "cromosoma": "6"},
+    {"@id": "hgnc:8941",  "@type": "Gen", "nombre": "SERPINA1", "cromosoma": "14"},
+    {"@id": "hgnc:12405", "@type": "Gen", "nombre": "TTR",      "cromosoma": "18"},
+
+    {"@id": "dbsnp:rs113993960", "@type": "Variante", "nombre": "F508del",
+     "enGen": "hgnc:1884",  "cambio": "p.Phe508del",
+     "enfermedad": "Fibrosis quística"},
+    {"@id": "dbsnp:rs1800562",   "@type": "Variante", "nombre": "C282Y",
+     "enGen": "hgnc:4886",  "cambio": "p.Cys282Tyr",
+     "enfermedad": "Hemocromatosis hereditaria"},
+    {"@id": "dbsnp:rs17580",     "@type": "Variante", "nombre": "PI*S",
+     "enGen": "hgnc:8941",  "cambio": "p.Glu288Val",
+     "enfermedad": "Déficit de alfa-1 antitripsina"},
+    {"@id": "dbsnp:rs28933979",  "@type": "Variante", "nombre": "V30M",
+     "enGen": "hgnc:12405", "cambio": "p.Val50Met",
+     "enfermedad": "Amiloidosis hereditaria por transtiretina"},
+
+    {"@id": "ex:P01", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P02", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 1},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P03", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P04", "@type": "Paciente", "provincia": "Huelva", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P05", "@type": "Paciente", "provincia": "Huelva", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P06", "@type": "Paciente", "provincia": "Illes Balears", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P07", "@type": "Paciente", "provincia": "Illes Balears", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 1}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P08", "@type": "Paciente", "provincia": "Madrid", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 2}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P09", "@type": "Paciente", "provincia": "Madrid", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P10", "@type": "Paciente", "provincia": "Asturias", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 1},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P11", "@type": "Paciente", "provincia": "Sevilla", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P12", "@type": "Paciente", "provincia": "León", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]}
+  ]
+}

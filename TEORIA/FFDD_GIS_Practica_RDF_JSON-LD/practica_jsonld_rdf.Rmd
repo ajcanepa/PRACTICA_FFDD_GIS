@@ -1,0 +1,756 @@
+---
+title: "Datos vinculados en la Web: de JSON a JSON-LD y RDF"
+subtitle: "Fuentes de Datos Biomédicos y Web Semántica (#8235) · Grado en Ingeniería de la Salud"
+author: "Dr. Antonio Canepa-Oneto"
+date: |
+  | "`r paste0("5º Semestre / Curso ", format(Sys.Date(), "%Y"), "-", as.integer(format(Sys.Date(), "%Y")) + 1)`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+lang: es
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      comment = "#>")
+```
+
+# Antes de empezar {-}
+
+En esta práctica vais a trabajar con un mismo conjunto de datos a **tres niveles**
+distintos de interpretación. Es la idea central de la sesión, así que os la
+adelanto:
+
+| Nivel | Cómo ve los datos | Paquetes de R |
+|---|---|---|
+| **JSON** | Un árbol de claves y valores, sin significado | `jsonlite`, `tidyjson` |
+| **JSON-LD** | Un documento cuyas claves se traducen a URIs globales mediante un `@context` | `jsonld` |
+| **RDF** | Un grafo de tripletas sujeto–predicado–objeto, consultable con SPARQL | `rdflib` |
+
+Al final usaréis el grafo para hacer los **pasos más básicos de un análisis
+genético**: contar genotipos, calcular frecuencias alélicas y comprobar el
+equilibrio de Hardy-Weinberg.
+
+
+> **Sobre los datos.** Los genes y las variantes son **reales**: identificadores
+> oficiales de HGNC y dbSNP, resueltos a través de identifiers.org. Los
+> **pacientes y sus genotipos son ficticios** y se han construido solo para esta
+> práctica. No representan ninguna población real, así que no saquéis
+> conclusiones epidemiológicas de ellos.
+
+## Preparación {-}
+
+Si no tenéis los paquetes instalados, ejecutad una sola vez el siguiente bloque.
+El paquete `jsonld` necesita a su vez `V8`, un motor de JavaScript, porque
+envuelve la implementación de referencia de JSON-LD escrita en ese lenguaje.
+
+```{r instalar, eval = FALSE}
+install.packages(c("tidyverse", "jsonlite", "tidyjson", "jsonld", "rdflib",
+                   "listviewer", "tidygraph", "ggraph", "visNetwork"))
+```
+
+```{r paquetes}
+library(tidyverse)
+library(jsonlite)
+library(tidyjson)
+library(jsonld)
+library(rdflib)
+
+# Visualización
+library(listviewer)   # árbol JSON interactivo
+library(tidygraph)    # grafos con filosofía tidy
+library(ggraph)       # gramática de gráficos para grafos (extiende ggplot2)
+library(visNetwork)   # redes interactivas
+```
+
+Observaréis que `jsonlite` y `tidyjson` exportan funciones con el mismo nombre,
+como `read_json()`. Cuando haya ambigüedad, escribiré el paquete de forma
+explícita (`jsonlite::fromJSON()`).
+
+# JSON-LD 
+
+## El problema que resuelve
+
+Imaginad que dos hospitales os envían un JSON con el mismo dato:
+
+```json
+{ "gen": "CFTR" }
+```
+
+```json
+{ "gene_symbol": "CFTR" }
+```
+
+Para una persona es evidente que significan lo mismo. Para un programa son dos
+claves distintas, y alguien tendría que escribir a mano la correspondencia entre
+ambas. Multiplicad eso por cientos de fuentes y tendréis el problema clásico de
+la integración de datos biomédicos.
+
+JSON-LD (*JSON for Linking Data*, recomendación del W3C desde 2014; versión 1.1
+de 2020) lo resuelve sin cambiar la sintaxis de JSON. Añade unas pocas **claves
+reservadas**, que empiezan por `@`:
+
+- `@context` traduce cada clave local a una **URI global**. Si ambos hospitales
+  declaran que su clave equivale a `https://schema.org/name`, un procesador
+  JSON-LD sabrá que hablan de la misma propiedad.
+- `@id` da a cada entidad una URI propia, su "nombre global".
+- `@type` indica la clase de la entidad.
+- `@graph` agrupa varios nodos en un mismo documento.
+
+## Nuestro documento
+
+Vamos a describir **cuatro variantes genéticas con especial interés clínico en
+España**:
+
+- **F508del** (gen *CFTR*): la variante más frecuente en la fibrosis quística,
+  también en nuestro país.
+- **C282Y** (gen *HFE*): la principal causa de hemocromatosis hereditaria. Su
+  frecuencia disminuye de norte a sur de Europa.
+- **PI\*S** (gen *SERPINA1*): asociada al déficit de alfa-1 antitripsina. La
+  península ibérica tiene una de las frecuencias de PI\*S más altas del mundo.
+- **V30M** (gen *TTR*): causa la amiloidosis hereditaria por transtiretina. En
+  España existen focos endémicos en Mallorca y en Valverde del Camino (Huelva).
+
+A estas variantes añadimos doce pacientes ficticios de una consulta de genética
+clínica, con su genotipo para cada variante. El genotipo se expresa como número
+de copias del alelo alternativo: 0 (homocigoto de referencia), 1 (heterocigoto)
+o 2 (homocigoto alternativo).
+
+Leed el documento con calma antes de ejecutarlo. Fijaos en tres cosas:
+
+1. el `@context` y cómo asocia cada clave en español a una URI;
+2. los identificadores compactos, como `hgnc:1884`, que se expanden con los
+   prefijos del contexto;
+3. que cada genotipo es un **objeto sin `@id`**. En RDF esto se convertirá en
+   un *nodo en blanco* (*blank node*).
+
+```{r documento}
+doc <- r"({
+  "@context": {
+    "schema": "https://schema.org/",
+    "xsd":    "http://www.w3.org/2001/XMLSchema#",
+    "hgnc":   "https://identifiers.org/hgnc:",
+    "dbsnp":  "https://identifiers.org/dbsnp:",
+    "ex":     "http://example.org/fdbws#",
+
+    "Gen":        "schema:Gene",
+    "Variante":   "ex:Variante",
+    "Paciente":   "schema:Patient",
+    "nombre":     "schema:name",
+    "cromosoma":  "ex:cromosoma",
+    "cambio":     "ex:cambioProteina",
+    "enfermedad": "ex:enfermedadAsociada",
+    "provincia":  "ex:provincia",
+    "enGen":      {"@id": "ex:enGen",     "@type": "@id"},
+    "genotipo":   {"@id": "ex:genotipo"},
+    "variante":   {"@id": "ex:variante",  "@type": "@id"},
+    "copiasAlt":  {"@id": "ex:copiasAlt", "@type": "xsd:integer"}
+  },
+  "@graph": [
+    {"@id": "hgnc:1884",  "@type": "Gen", "nombre": "CFTR",     "cromosoma": "7"},
+    {"@id": "hgnc:4886",  "@type": "Gen", "nombre": "HFE",      "cromosoma": "6"},
+    {"@id": "hgnc:8941",  "@type": "Gen", "nombre": "SERPINA1", "cromosoma": "14"},
+    {"@id": "hgnc:12405", "@type": "Gen", "nombre": "TTR",      "cromosoma": "18"},
+
+    {"@id": "dbsnp:rs113993960", "@type": "Variante", "nombre": "F508del",
+     "enGen": "hgnc:1884",  "cambio": "p.Phe508del",
+     "enfermedad": "Fibrosis quística"},
+    {"@id": "dbsnp:rs1800562",   "@type": "Variante", "nombre": "C282Y",
+     "enGen": "hgnc:4886",  "cambio": "p.Cys282Tyr",
+     "enfermedad": "Hemocromatosis hereditaria"},
+    {"@id": "dbsnp:rs17580",     "@type": "Variante", "nombre": "PI*S",
+     "enGen": "hgnc:8941",  "cambio": "p.Glu288Val",
+     "enfermedad": "Déficit de alfa-1 antitripsina"},
+    {"@id": "dbsnp:rs28933979",  "@type": "Variante", "nombre": "V30M",
+     "enGen": "hgnc:12405", "cambio": "p.Val50Met",
+     "enfermedad": "Amiloidosis hereditaria por transtiretina"},
+
+    {"@id": "ex:P01", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P02", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 1},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P03", "@type": "Paciente", "provincia": "Burgos", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P04", "@type": "Paciente", "provincia": "Huelva", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P05", "@type": "Paciente", "provincia": "Huelva", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P06", "@type": "Paciente", "provincia": "Illes Balears", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 1}]},
+    {"@id": "ex:P07", "@type": "Paciente", "provincia": "Illes Balears", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 1}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P08", "@type": "Paciente", "provincia": "Madrid", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 2}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P09", "@type": "Paciente", "provincia": "Madrid", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P10", "@type": "Paciente", "provincia": "Asturias", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 1},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P11", "@type": "Paciente", "provincia": "Sevilla", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 1}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]},
+    {"@id": "ex:P12", "@type": "Paciente", "provincia": "León", "genotipo": [
+      {"variante": "dbsnp:rs113993960", "copiasAlt": 0}, {"variante": "dbsnp:rs1800562", "copiasAlt": 0},
+      {"variante": "dbsnp:rs17580",     "copiasAlt": 0}, {"variante": "dbsnp:rs28933979", "copiasAlt": 0}]}
+  ]
+})"
+
+write_file(doc, "variantes_es.jsonld")
+```
+
+Un detalle de nomenclatura: las variantes aparecen con su nombre clásico (V30M,
+PI\*S), pero el cambio en la proteína sigue la nomenclatura HGVS actual
+(p.Val50Met, p.Glu288Val). La diferencia de numeración se debe a que la
+nomenclatura clásica no contaba el péptido señal de la proteína.
+
+# Nivel 1. JSON "a secas": `jsonlite` y `tidyjson` 
+
+## Ver el árbol
+
+Antes de procesar un JSON conviene **mirarlo**. `listviewer::jsonedit()` lo
+muestra como un árbol desplegable. Abrid `@context`, luego `@graph` y por último
+el nodo de un paciente hasta llegar a sus genotipos. Fijaos en que el árbol
+refleja solo el **anidamiento** del fichero: los genes y las variantes aparecen
+como ramas sueltas, sin ninguna conexión visible con los pacientes.
+
+```{r arbol-json}
+jsonlite::fromJSON(doc, simplifyVector = FALSE) |>
+  jsonedit(mode = "view", modes = c("view", "code"), height = "420px")
+```
+
+## `jsonlite`: rápido, pero ciego a la semántica
+
+Un documento JSON-LD **es JSON válido**, así que cualquier analizador JSON lo
+lee sin problemas:
+
+```{r jsonlite}
+crudo <- jsonlite::fromJSON("variantes_es.jsonld")
+
+names(crudo)
+
+crudo$`@graph` |>
+  as_tibble() |>
+  select(`@id`, `@type`, nombre, enGen, provincia)
+```
+
+Observad tres cosas:
+
+- `@context` es para `jsonlite` **una clave más**: la lee, pero no la aplica.
+- Los identificadores siguen siendo cadenas abreviadas (`hgnc:1884`), no URIs.
+- Genes, variantes y pacientes quedan mezclados en una sola tabla llena de `NA`.
+  Es la típica tabla "no *tidy*", porque cada fila es un tipo de entidad
+  distinto.
+
+La columna `genotipo` es una **columna-lista**: cada paciente contiene un
+pequeño `data.frame` con sus cuatro genotipos.
+
+```{r jsonlite-genotipo}
+crudo$`@graph`$genotipo[[9]]   # genotipos del primer paciente (fila 9)
+```
+
+## `tidyjson`: aplanar con control
+
+`tidyjson` permite recorrer el árbol paso a paso, de forma declarativa:
+
+1. `enter_object()` entra en una clave;
+2. `gather_array()` convierte un array en filas;
+3. `spread_values()` extrae los campos que nos interesan.
+
+```{r tidyjson}
+genotipos_json <- read_file("variantes_es.jsonld") |>
+  as.tbl_json() |>
+  enter_object("@graph") |>
+  gather_array("nodo") |>
+  spread_values(id        = jstring("@id"),
+                tipo      = jstring("@type"),
+                provincia = jstring("provincia")) |>
+  filter(tipo == "Paciente") |>
+  enter_object("genotipo") |>
+  gather_array("k") |>
+  spread_values(variante = jstring("variante"),
+                copias   = jnumber("copiasAlt")) |>
+  as_tibble() |>
+  select(id, provincia, variante, copias)
+
+genotipos_json
+```
+
+Ya tenemos una tabla *tidy*: una fila por paciente y variante. Pero fijaos en el
+límite de este nivel: `variante` vale `"dbsnp:rs17580"`, una cadena que solo
+tiene sentido **dentro de este fichero**. Si mañana otro hospital usara
+`"rs17580"` o `"SERPINA1_PiS"`, no habría forma automática de saber que es la
+misma variante.
+
+# Nivel 2. JSON-LD de verdad: el paquete `jsonld`
+
+Ahora usaremos un **procesador JSON-LD**, que sí aplica el `@context`.
+
+## Expandir: eliminar toda ambigüedad
+
+La **forma expandida** sustituye cada clave y cada identificador por su URI
+completa y elimina el contexto. Es la representación canónica: dos documentos
+con contextos distintos que expresen lo mismo producen la misma forma expandida.
+
+```{r expandir}
+expandido <- jsonld_expand(doc)
+
+# Mostramos solo el nodo de la variante PI*S
+jsonlite::fromJSON(expandido, simplifyVector = FALSE)[[7]] |>
+  jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
+```
+
+`dbsnp:rs17580` se ha convertido en `https://identifiers.org/dbsnp:rs17580`, una
+URI que cualquiera en el mundo puede usar y resolver. Probad a abrirla en el
+navegador.
+
+## Compactar: el mismo grafo con otro vocabulario
+
+La operación inversa, **compactar**, aplica un contexto cualquiera, no
+necesariamente el original. Imaginad que un colaborador extranjero prefiere usar
+directamente el vocabulario de schema.org con nombres en inglés:
+
+```{r compactar}
+contexto_ingles <- '{"@vocab": "https://schema.org/",
+                     "ex": "http://example.org/fdbws#"}'
+
+jsonld_compact(expandido, contexto_ingles) |>
+  jsonlite::fromJSON() |>
+  pluck("@graph") |>
+  as_tibble() |>
+  select(`@id`, `@type`, name) |>
+  head(8)
+```
+
+Donde nosotros escribíamos `nombre` y `Gen`, él ve `name` y `Gene`. Las claves
+cambian, pero **las URIs y por tanto el significado son idénticos**. Este es el
+mecanismo que resuelve el problema de los dos hospitales del principio.
+
+## Aplanar: los nodos en blanco salen a la luz
+
+Al **aplanar**, el procesador saca todos los nodos al primer nivel y da un
+identificador a los que no lo tenían. Los genotipos reciben nombres del tipo
+`_:b0`, `_:b1`…, que son los **nodos en blanco** de RDF.
+
+```{r aplanar}
+jsonld_flatten(doc) |>
+  jsonlite::fromJSON(simplifyVector = FALSE) |>
+  pluck(1) |>                                   # primer nodo
+  jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
+```
+
+## De JSON-LD a RDF
+
+Finalmente, `jsonld_to_rdf()` produce las **tripletas** en formato N-Quads. Cada
+línea es un hecho atómico: sujeto, predicado, objeto y un punto final.
+
+```{r a-rdf}
+tripletas <- jsonld_to_rdf(doc) |>
+  str_split("\n") |>
+  pluck(1)
+
+length(tripletas)
+tripletas[str_detect(tripletas, "rs17580")]
+```
+
+Nuestro documento de unas 60 líneas equivale a unas 200 tripletas.
+JSON-LD es una forma cómoda de escribir un grafo RDF; el grafo es lo que
+realmente importa.
+
+# Nivel 3. El grafo RDF: el paquete `rdflib`
+
+## Cargar y serializar
+
+`rdflib` lee el JSON-LD como una **serialización más** de un grafo RDF. Lo
+cargamos y lo escribimos en Turtle, el formato pensado para leerse con
+facilidad:
+
+```{r rdflib-cargar}
+grafo <- rdf_parse("variantes_es.jsonld", format = "jsonld")
+grafo
+
+prefijos <- c(ex     = "http://example.org/fdbws#",
+              schema = "https://schema.org/",
+              dbsnp  = "https://identifiers.org/dbsnp:",
+              hgnc   = "https://identifiers.org/hgnc:")
+
+rdf_serialize(grafo, "variantes_es.ttl", format = "turtle",
+              namespace = prefijos)
+
+read_lines("variantes_es.ttl") |> head(22) |> cat(sep = "\n")
+```
+
+Los corchetes `[ ... ]` de Turtle son los nodos en blanco, es decir, nuestros
+genotipos.
+
+## Ver el grafo
+
+En el árbol JSON los pacientes y las variantes estaban en ramas separadas. En
+RDF, en cambio, todo es un único **grafo**: los nodos son recursos (URIs), nodos
+en blanco y literales, y las aristas son los predicados. Vamos a dibujarlo.
+
+Primero extraemos todas las tripletas como una tabla y definimos una pequeña
+función que sustituye las URIs largas por sus prefijos, para que las etiquetas
+sean legibles:
+
+```{r tripletas-tabla}
+acortar <- function(x) {
+  prefijos_todos <- c(prefijos,
+                      rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+  for (i in seq_along(prefijos_todos)) {
+    x <- str_replace(x, fixed(prefijos_todos[[i]]),
+                     str_c(names(prefijos_todos)[i], ":"))
+  }
+  x
+}
+
+todas <- rdf_query(grafo, "SELECT ?s ?p ?o WHERE { ?s ?p ?o }") |>
+  as_tibble() |>
+  mutate(tipo_o = case_when(str_detect(o, "^https?://") ~ "URI",
+                            str_detect(o, "^_:")        ~ "blanco",
+                            TRUE                        ~ "literal"))
+
+todas |> mutate(across(c(s, p, o), acortar)) |> head(8)
+```
+
+### Vista estática: el subgrafo de un paciente
+
+El grafo completo tiene 200 tripletas y sería ilegible. Seleccionamos el
+**vecindario** de la paciente P04 (Huelva): sus genotipos, las variantes a las
+que apuntan y los genes de esas variantes. Así se ve con claridad cómo un único
+paciente queda conectado con el conocimiento sobre genes y enfermedades.
+
+```{r subgrafo-p04, fig.width = 10, fig.height = 7}
+paciente  <- "http://example.org/fdbws#P04"
+blancos   <- todas |> filter(s == paciente, tipo_o == "blanco") |> pull(o)
+variantes <- todas |> filter(s %in% blancos, tipo_o == "URI") |> pull(o)
+genes     <- todas |> filter(s %in% variantes, str_detect(p, "enGen")) |> pull(o)
+
+clases <- todas |>
+  filter(str_detect(p, "type")) |>
+  transmute(name = s, clase = acortar(o))
+
+aristas <- todas |>
+  filter(s %in% c(paciente, blancos, variantes, genes),
+         !str_detect(p, "type|cambioProteina|cromosoma")) |>
+  # cada literal es un nodo propio: si no, todos los "0" se fundirían en uno
+  mutate(to = if_else(tipo_o == "literal", str_c(s, p, o, sep = "|"), o)) |>
+  transmute(from = s, to, predicado = acortar(p))
+
+nodos <- tibble(name = unique(c(aristas$from, aristas$to))) |>
+  left_join(clases, by = "name") |>
+  mutate(clase = case_when(str_detect(name, "\\|")      ~ "Literal",
+                           str_detect(name, "^_:")       ~ "Nodo en blanco",
+                           clase == "schema:Patient"     ~ "Paciente",
+                           clase == "ex:Variante"        ~ "Variante",
+                           clase == "schema:Gene"        ~ "Gen"),
+         etiqueta = case_when(clase == "Literal"        ~ str_extract(name, "[^|]+$"),
+                              clase == "Nodo en blanco" ~ "",
+                              TRUE                      ~ acortar(name)))
+
+set.seed(2026)
+tbl_graph(nodes = nodos, edges = aristas, node_key = "name") |>
+  ggraph(layout = "stress") +
+  geom_edge_link(aes(label = predicado), colour = "grey65",
+                 label_colour = "grey30", label_size = 2.3,
+                 angle_calc = "along", label_dodge = unit(2, "mm"),
+                 arrow = arrow(length = unit(2, "mm")),
+                 end_cap = circle(3, "mm")) +
+  geom_node_point(aes(colour = clase, shape = clase == "Literal"), size = 4) +
+  geom_node_text(aes(label = etiqueta), size = 2.7, repel = TRUE) +
+  scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 15), guide = "none") +
+  scale_colour_manual(values = c(Paciente = "#1f78b4", Variante = "#6a3d9a",
+                                 Gen = "#e31a1c", "Nodo en blanco" = "grey55",
+                                 Literal = "#fdbf6f")) +
+  labs(colour = NULL, title = "Subgrafo RDF de la paciente P04") +
+  theme_graph(base_family = "sans")
+```
+
+Leed el grafo siguiendo las flechas desde `ex:P04`: cada arista es una
+tripleta. Los círculos grises son los genotipos (nodos en blanco), que **solo
+existen para unir** un paciente con una variante y su número de copias. Los
+cuadrados son literales: valores sin identidad propia, que nunca pueden ser
+sujeto de otra tripleta.
+
+### Vista interactiva: toda la cohorte
+
+Para el grafo completo usamos `visNetwork`, que permite mover nodos, hacer zoom
+y ver información al pasar el ratón. Esta vez no dibujamos los literales como
+nodos, sino como información emergente, y coloreamos cada genotipo según el
+número de copias del alelo alternativo. Así el grafo se convierte también en
+una visualización genética: los nodos naranjas y rojos son los portadores.
+
+```{r red-interactiva}
+red <- rdf_query(grafo, '
+PREFIX ex:     <http://example.org/fdbws#>
+PREFIX schema: <https://schema.org/>
+SELECT ?pac ?provincia ?gt ?copias ?var ?variante ?enfermedad ?gen ?simbolo
+WHERE {
+  ?pac ex:provincia ?provincia ; ex:genotipo ?gt .
+  ?gt  ex:variante  ?var ; ex:copiasAlt ?copias .
+  ?var schema:name  ?variante ; ex:enfermedadAsociada ?enfermedad ;
+       ex:enGen     ?gen .
+  ?gen schema:name  ?simbolo .
+}') |>
+  as_tibble()
+
+nodos_red <- bind_rows(
+  red |> distinct(id = pac, provincia) |>
+    transmute(id, label = str_remove(id, ".*#"), group = "Paciente",
+              title = str_c("Provincia: ", provincia)),
+  red |> distinct(id = gt, copias) |>
+    transmute(id, label = "",
+              group = c("0 copias", "1 copia", "2 copias")[copias + 1],
+              title = str_c("Genotipo: ", copias, " copia(s) del alelo alternativo")),
+  red |> distinct(id = var, variante, enfermedad) |>
+    transmute(id, label = variante, group = "Variante", title = enfermedad),
+  red |> distinct(id = gen, simbolo) |>
+    transmute(id, label = simbolo, group = "Gen", title = acortar(id))
+)
+
+aristas_red <- bind_rows(
+  red |> distinct(from = pac, to = gt)  |> mutate(title = "ex:genotipo"),
+  red |> distinct(from = gt,  to = var) |> mutate(title = "ex:variante"),
+  red |> distinct(from = var, to = gen) |> mutate(title = "ex:enGen")
+)
+
+visNetwork(nodos_red, aristas_red, height = "550px", width = "100%") |>
+  visGroups(groupname = "Paciente", color = "#1f78b4", shape = "dot") |>
+  visGroups(groupname = "Variante", color = "#6a3d9a", shape = "diamond") |>
+  visGroups(groupname = "Gen",      color = "#e31a1c", shape = "square") |>
+  visGroups(groupname = "0 copias", color = "#d9d9d9", size = 6) |>
+  visGroups(groupname = "1 copia",  color = "#ff7f00", size = 10) |>
+  visGroups(groupname = "2 copias", color = "#b2182b", size = 14) |>
+  visNodes(font = list(size = 22)) |>
+  visEdges(arrows = "to", color = list(color = "#8c8c8c")) |>
+  visOptions(highlightNearest = list(enabled = TRUE, degree = 2),
+             nodesIdSelection = list(main = "Seleccionad un nodo")) |>
+  visLegend(width = 0.15, position = "right") |>
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 2026)
+```
+
+Probad a seleccionar la variante V30M en el desplegable: se resaltarán sus
+genotipos y, a dos saltos, los pacientes que los tienen. Buscad cuáles son
+portadores y comprobad su provincia pasando el ratón por encima.
+
+## Consultar con SPARQL
+
+Ahora viene la ventaja del grafo. Con una única consulta SPARQL **recorremos
+cuatro saltos**: paciente → genotipo → variante → gen. El resultado es una
+tabla con todo lo necesario para el análisis.
+
+```{r sparql}
+consulta <- '
+PREFIX ex:     <http://example.org/fdbws#>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?paciente ?provincia ?variante ?gen ?enfermedad ?copias
+WHERE {
+  ?p   a schema:Patient ;
+       ex:provincia ?provincia ;
+       ex:genotipo  ?gt .
+  ?gt  ex:variante  ?v ;
+       ex:copiasAlt ?copias .
+  ?v   schema:name  ?variante ;
+       ex:enGen     ?g ;
+       ex:enfermedadAsociada ?enfermedad .
+  ?g   schema:name  ?gen .
+  BIND(STRAFTER(STR(?p), "#") AS ?paciente)
+}'
+
+genotipos <- rdf_query(grafo, consulta) |>
+  as_tibble() |>
+  mutate(copias = as.integer(copias)) |>
+  arrange(paciente, gen)
+
+genotipos
+```
+
+Comparad esta tabla con `genotipos_json` del nivel 1. Para obtener el nombre del
+gen y la enfermedad con `tidyjson`, tendríamos que haber hecho a mano varios
+`left_join()` entre partes del árbol. En el grafo basta con **seguir los
+enlaces**.
+
+# Análisis genético básico
+
+A partir de aquí volvemos al terreno del tidyverse, que ya conocéis.
+
+## Recuento de genotipos
+
+```{r recuento}
+genotipos |>
+  mutate(genotipo = factor(copias, levels = 0:2,
+                           labels = c("Ref/Ref", "Ref/Alt", "Alt/Alt"))) |>
+  count(gen, variante, genotipo) |>
+  pivot_wider(names_from = genotipo, values_from = n, values_fill = 0)
+```
+
+## Frecuencia alélica
+
+Cada persona tiene dos copias de cada cromosoma autosómico. Con *N* individuos
+hay, por tanto, *2N* alelos. La **frecuencia del alelo alternativo** es:
+
+$$
+q = \frac{\text{n.º de alelos alternativos}}{2N} = \frac{n_{\text{Ref/Alt}} + 2\,n_{\text{Alt/Alt}}}{2N}
+$$
+
+```{r frecuencia}
+frecuencias <- genotipos |>
+  group_by(gen, variante, enfermedad) |>
+  summarise(N          = n(),
+            portadores = sum(copias > 0),
+            alelos_alt = sum(copias),
+            q          = alelos_alt / (2 * N),
+            .groups    = "drop") |>
+  arrange(desc(q))
+
+frecuencias
+```
+
+```{r grafico-frecuencia, fig.width = 7, fig.height = 3.5}
+frecuencias |>
+  mutate(etiqueta = str_c(gen, " (", variante, ")"),
+         etiqueta = fct_reorder(etiqueta, q)) |>
+  ggplot(aes(x = q, y = etiqueta)) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = scales::percent(q, accuracy = 0.1)),
+            hjust = -0.15, size = 3.5) +
+  scale_x_continuous(labels = scales::percent,
+                     expand = expansion(mult = c(0, 0.15))) +
+  labs(x = "Frecuencia del alelo alternativo", y = NULL,
+       title = "Frecuencia alélica en la cohorte ficticia (N = 12)") +
+  theme_minimal()
+```
+
+## Portadores por provincia
+
+El alelo V30M de *TTR* tiene focos endémicos conocidos en España. Veamos dónde
+aparecen los portadores en nuestra cohorte:
+
+```{r provincias}
+genotipos |>
+  filter(gen == "TTR") |>
+  group_by(provincia) |>
+  summarise(pacientes = n(), portadores_V30M = sum(copias > 0)) |>
+  arrange(desc(portadores_V30M))
+```
+
+Con datos reales, este tipo de agregación geográfica es la base de los estudios
+de efecto fundador.
+
+## Equilibrio de Hardy-Weinberg
+
+Si una población se aparea al azar y no hay selección, migración ni mutación,
+las frecuencias genotípicas esperadas a partir de las alélicas son *p²*, *2pq* y
+*q²*, con *p = 1 − q*. Comprobémoslo para PI\*S:
+
+```{r hardy-weinberg}
+pis <- genotipos |> filter(variante == "PI*S")
+
+N <- nrow(pis)
+q <- sum(pis$copias) / (2 * N)
+p <- 1 - q
+
+tibble(genotipo  = c("Ref/Ref", "Ref/Alt", "Alt/Alt"),
+       observado = tabulate(pis$copias + 1, nbins = 3),
+       esperado  = round(N * c(p^2, 2 * p * q, q^2), 2))
+```
+
+Las cifras observadas y esperadas son muy parecidas. Con solo 12 individuos,
+sin embargo, **ningún contraste estadístico tendría potencia** para detectar
+una desviación. Tomadlo como un ejercicio de cálculo, no como una conclusión.
+
+## Cerrar el círculo: devolver el resultado al grafo
+
+Un resultado analítico también es un dato que merece publicarse de forma
+vinculada. Añadimos la frecuencia alélica calculada como nuevas tripletas y
+exportamos de nuevo a JSON-LD, con nuestro contexto original:
+
+```{r devolver}
+# Correspondencia nombre de variante -> URI, obtenida del propio grafo
+uris <- rdf_query(grafo, '
+  PREFIX schema: <https://schema.org/>
+  PREFIX ex:     <http://example.org/fdbws#>
+  SELECT ?uri ?variante WHERE { ?uri a ex:Variante ; schema:name ?variante }')
+
+frecuencias |>
+  left_join(uris, by = "variante") |>
+  select(uri, q) |>
+  pwalk(\(uri, q) rdf_add(grafo, subject = uri,
+                          predicate = "http://example.org/fdbws#frecuenciaAlelica",
+                          object = round(q, 4)))
+
+rdf_serialize(grafo, "variantes_es_con_frecuencias.jsonld", format = "jsonld")
+
+contexto_original <- jsonlite::fromJSON("variantes_es.jsonld",
+                                        simplifyVector = FALSE)["@context"] |>
+  jsonlite::toJSON(auto_unbox = TRUE)
+
+read_file("variantes_es_con_frecuencias.jsonld") |>
+  jsonld_compact(contexto_original) |>
+  jsonlite::fromJSON(simplifyVector = FALSE) |>
+  pluck("@graph") |>
+  keep(\(nodo) identical(nodo$`@id`, "dbsnp:rs17580")) |>
+  jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
+```
+
+El nodo de PI\*S incluye ahora la propiedad `ex:frecuenciaAlelica`, que no
+estaba en el documento original. El ciclo completo ha sido: JSON-LD → grafo RDF
+→ tabla *tidy* → análisis → grafo RDF → JSON-LD.
+
+# Para pensar y practicar {-}
+
+## Preguntas de reflexión
+
+1. ¿Por qué hemos usado `https://identifiers.org/dbsnp:rs17580` como
+   identificador de la variante, en lugar de una URI de nuestra universidad?
+   ¿Qué ganaríamos si otro grupo de investigación hiciera lo mismo?
+2. La propiedad `ex:cromosoma` pertenece a un espacio de nombres inventado
+   (`example.org`). ¿Qué problema plantea eso para la interoperabilidad? Buscad
+   si schema.org o Bioschemas ofrecen una propiedad más adecuada.
+3. En el nivel 1 obtuvisteis una tabla *tidy* con `tidyjson`, y en el nivel 3
+   otra con SPARQL. ¿En qué situaciones preferiríais cada camino?
+
+## Ejercicios
+
+1. **Nuevo paciente.** Añadid al documento un paciente `ex:P13` de Valverde del
+   Camino (Huelva), heterocigoto para V30M y homocigoto de referencia para el
+   resto. Volved a ejecutar el cuaderno y comprobad cómo cambian las
+   frecuencias.
+2. **Nueva variante.** Incorporad la variante PI\*Z de *SERPINA1*
+   (`dbsnp:rs28929474`, p.Glu366Lys), asociada a la forma más grave del déficit
+   de alfa-1 antitripsina. Inventad los genotipos de los doce pacientes.
+3. **Consulta SPARQL.** Escribid una consulta que devuelva solo los pacientes
+   portadores de al menos una variante en el cromosoma 14. Pista: necesitáis
+   `FILTER(?copias > 0)`.
+4. **Metadatos (opcional).** Añadid al `@graph` un nodo de tipo `dcat:Dataset`
+   (`http://www.w3.org/ns/dcat#Dataset`) que describa vuestro conjunto de datos,
+   con título (`dcterms:title`), editor (`dcterms:publisher`) y licencia
+   (`dcterms:license`). Es el mismo vocabulario que exigen el portal
+   datos.gob.es (perfil DCAT-AP-ES) y el futuro Espacio Europeo de Datos de
+   Salud (perfil HealthDCAT-AP).
+
+## Para saber más
+
+- W3C (2020). *JSON-LD 1.1*. <https://www.w3.org/TR/json-ld11/>
+- JSON-LD Playground, para experimentar sin instalar nada:
+  <https://json-ld.org/playground/>
+- JSON Crack, para visualizar cualquier JSON como diagrama en el navegador:
+  <https://jsoncrack.com/>
+- Pedersen, T. L. *ggraph: An Implementation of Grammar of Graphics for Graphs
+  and Networks*. <https://ggraph.data-imaginist.com/>
+- Los datos reales de frecuencias de variantes en población española pueden
+  consultarse en el *Collaborative Spanish Variant Server* (CSVS), mantenido en
+  el marco del CIBERER.

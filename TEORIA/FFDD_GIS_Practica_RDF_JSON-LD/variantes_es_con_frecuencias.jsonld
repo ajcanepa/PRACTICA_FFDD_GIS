@@ -1,0 +1,792 @@
+{
+  "@graph": [
+    {
+      "@id": "_:b0",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b1",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b10",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b11",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b12",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b13",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b14",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b15",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b16",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b17",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b18",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b19",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b2",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b20",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b21",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b22",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b23",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b24",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b25",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b26",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b27",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b28",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b29",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b3",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b30",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "2"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b31",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b32",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b33",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b34",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b35",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b36",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b37",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b38",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b39",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b4",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b40",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b41",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b42",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b43",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b44",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b45",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b46",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b47",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b5",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "1"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "_:b6",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs17580"
+      }
+    },
+    {
+      "@id": "_:b7",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs28933979"
+      }
+    },
+    {
+      "@id": "_:b8",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs113993960"
+      }
+    },
+    {
+      "@id": "_:b9",
+      "http://example.org/fdbws#copiasAlt": {
+        "@type": "http://www.w3.org/2001/XMLSchema#integer",
+        "@value": "0"
+      },
+      "http://example.org/fdbws#variante": {
+        "@id": "https://identifiers.org/dbsnp:rs1800562"
+      }
+    },
+    {
+      "@id": "http://example.org/fdbws#P01",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b3"
+        },
+        {
+          "@id": "_:b2"
+        },
+        {
+          "@id": "_:b1"
+        },
+        {
+          "@id": "_:b0"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Burgos"
+    },
+    {
+      "@id": "http://example.org/fdbws#P02",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b7"
+        },
+        {
+          "@id": "_:b6"
+        },
+        {
+          "@id": "_:b5"
+        },
+        {
+          "@id": "_:b4"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Burgos"
+    },
+    {
+      "@id": "http://example.org/fdbws#P03",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b9"
+        },
+        {
+          "@id": "_:b8"
+        },
+        {
+          "@id": "_:b11"
+        },
+        {
+          "@id": "_:b10"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Burgos"
+    },
+    {
+      "@id": "http://example.org/fdbws#P04",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b15"
+        },
+        {
+          "@id": "_:b14"
+        },
+        {
+          "@id": "_:b13"
+        },
+        {
+          "@id": "_:b12"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Huelva"
+    },
+    {
+      "@id": "http://example.org/fdbws#P05",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b19"
+        },
+        {
+          "@id": "_:b18"
+        },
+        {
+          "@id": "_:b17"
+        },
+        {
+          "@id": "_:b16"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Huelva"
+    },
+    {
+      "@id": "http://example.org/fdbws#P06",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b23"
+        },
+        {
+          "@id": "_:b22"
+        },
+        {
+          "@id": "_:b21"
+        },
+        {
+          "@id": "_:b20"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Illes Balears"
+    },
+    {
+      "@id": "http://example.org/fdbws#P07",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b27"
+        },
+        {
+          "@id": "_:b26"
+        },
+        {
+          "@id": "_:b25"
+        },
+        {
+          "@id": "_:b24"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Illes Balears"
+    },
+    {
+      "@id": "http://example.org/fdbws#P08",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b31"
+        },
+        {
+          "@id": "_:b30"
+        },
+        {
+          "@id": "_:b29"
+        },
+        {
+          "@id": "_:b28"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Madrid"
+    },
+    {
+      "@id": "http://example.org/fdbws#P09",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b35"
+        },
+        {
+          "@id": "_:b34"
+        },
+        {
+          "@id": "_:b33"
+        },
+        {
+          "@id": "_:b32"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Madrid"
+    },
+    {
+      "@id": "http://example.org/fdbws#P10",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b39"
+        },
+        {
+          "@id": "_:b38"
+        },
+        {
+          "@id": "_:b37"
+        },
+        {
+          "@id": "_:b36"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Asturias"
+    },
+    {
+      "@id": "http://example.org/fdbws#P11",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b43"
+        },
+        {
+          "@id": "_:b42"
+        },
+        {
+          "@id": "_:b41"
+        },
+        {
+          "@id": "_:b40"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "Sevilla"
+    },
+    {
+      "@id": "http://example.org/fdbws#P12",
+      "@type": "https://schema.org/Patient",
+      "http://example.org/fdbws#genotipo": [
+        {
+          "@id": "_:b47"
+        },
+        {
+          "@id": "_:b46"
+        },
+        {
+          "@id": "_:b45"
+        },
+        {
+          "@id": "_:b44"
+        }
+      ],
+      "http://example.org/fdbws#provincia": "León"
+    },
+    {
+      "@id": "https://identifiers.org/dbsnp:rs113993960",
+      "@type": "http://example.org/fdbws#Variante",
+      "http://example.org/fdbws#cambioProteina": "p.Phe508del",
+      "http://example.org/fdbws#enGen": {
+        "@id": "https://identifiers.org/hgnc:1884"
+      },
+      "http://example.org/fdbws#enfermedadAsociada": "Fibrosis quística",
+      "http://example.org/fdbws#frecuenciaAlelica": {
+        "@type": "http://www.w3.org/2001/XMLSchema#decimal",
+        "@value": "0.0417"
+      },
+      "https://schema.org/name": "F508del"
+    },
+    {
+      "@id": "https://identifiers.org/dbsnp:rs17580",
+      "@type": "http://example.org/fdbws#Variante",
+      "http://example.org/fdbws#cambioProteina": "p.Glu288Val",
+      "http://example.org/fdbws#enGen": {
+        "@id": "https://identifiers.org/hgnc:8941"
+      },
+      "http://example.org/fdbws#enfermedadAsociada": "Déficit de alfa-1 antitripsina",
+      "http://example.org/fdbws#frecuenciaAlelica": {
+        "@type": "http://www.w3.org/2001/XMLSchema#decimal",
+        "@value": "0.2917"
+      },
+      "https://schema.org/name": "PI*S"
+    },
+    {
+      "@id": "https://identifiers.org/dbsnp:rs1800562",
+      "@type": "http://example.org/fdbws#Variante",
+      "http://example.org/fdbws#cambioProteina": "p.Cys282Tyr",
+      "http://example.org/fdbws#enGen": {
+        "@id": "https://identifiers.org/hgnc:4886"
+      },
+      "http://example.org/fdbws#enfermedadAsociada": "Hemocromatosis hereditaria",
+      "http://example.org/fdbws#frecuenciaAlelica": {
+        "@type": "http://www.w3.org/2001/XMLSchema#decimal",
+        "@value": "0.0833"
+      },
+      "https://schema.org/name": "C282Y"
+    },
+    {
+      "@id": "https://identifiers.org/dbsnp:rs28933979",
+      "@type": "http://example.org/fdbws#Variante",
+      "http://example.org/fdbws#cambioProteina": "p.Val50Met",
+      "http://example.org/fdbws#enGen": {
+        "@id": "https://identifiers.org/hgnc:12405"
+      },
+      "http://example.org/fdbws#enfermedadAsociada": "Amiloidosis hereditaria por transtiretina",
+      "http://example.org/fdbws#frecuenciaAlelica": {
+        "@type": "http://www.w3.org/2001/XMLSchema#decimal",
+        "@value": "0.125"
+      },
+      "https://schema.org/name": "V30M"
+    },
+    {
+      "@id": "https://identifiers.org/hgnc:12405",
+      "@type": "https://schema.org/Gene",
+      "http://example.org/fdbws#cromosoma": "18",
+      "https://schema.org/name": "TTR"
+    },
+    {
+      "@id": "https://identifiers.org/hgnc:1884",
+      "@type": "https://schema.org/Gene",
+      "http://example.org/fdbws#cromosoma": "7",
+      "https://schema.org/name": "CFTR"
+    },
+    {
+      "@id": "https://identifiers.org/hgnc:4886",
+      "@type": "https://schema.org/Gene",
+      "http://example.org/fdbws#cromosoma": "6",
+      "https://schema.org/name": "HFE"
+    },
+    {
+      "@id": "https://identifiers.org/hgnc:8941",
+      "@type": "https://schema.org/Gene",
+      "http://example.org/fdbws#cromosoma": "14",
+      "https://schema.org/name": "SERPINA1"
+    }
+  ]
+}
