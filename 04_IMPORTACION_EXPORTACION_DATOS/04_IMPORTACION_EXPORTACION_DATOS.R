@@ -278,6 +278,7 @@ Tibble_xml <-
 Tibble_xml
 
 # Graficamos
+x11()
 Tibble_xml %>% 
   ggplot(data = ., mapping = aes(x = reorder(name, -price_dollars), y = price_dollars)) +
   geom_bar(stat = "identity", aes(fill = calories)) +
@@ -345,6 +346,7 @@ Def_tbl <-
 
 Def_tbl
 
+Def_tbl$causa_de_muerte
 
 # ** Análisis datos PC-Axis -----------------------------------------------
 # Defunciones anuales por capítulo de causa, ambos sexos
@@ -402,6 +404,7 @@ Def_anual %>%
 ?saveRDS
 
 # Carga de datos
+library(tidyjson)
 data("worldbank")
 
 # Tabulación sin crear objeto (a modo de prueba)
