@@ -364,11 +364,11 @@ Long_Starwars %>%
 # Long_Starwars %>%
 #   pivot_wider(data = ., names_from = Variable, values_from = Valores)
 
-# ** Verbos de dos tablas -------------------------------------------------
+# * Verbos de dos tablas -------------------------------------------------
 #library(readr)
 
 
-# *** Carga de datos ------------------------------------------------------
+# ** Carga de datos ------------------------------------------------------
 # Loading the "Galapagos_summary.csv" file
 library(readr)
 Mean_Galapagos <- read_csv(file = "INPUT/DATA/Galapagos_summary.csv", 
@@ -422,7 +422,7 @@ levels(Mean_Galapagos$distance)
 levels(Species$distance)
 
 
-# *** Left_Join -----------------------------------------------------------
+# ** Left_Join -----------------------------------------------------------
 
 # Sin indicar las columnas que hacen de "pivot" --> natural Join
 left_join(x = Mean_Galapagos, y = Species)
@@ -434,7 +434,7 @@ left_join(x = Mean_Galapagos, y = Species, by = c("Island", "Station", "distance
 left_join(x = Mean_Galapagos, y = Species, by = c("Island"))
 
 
-# *** full_join -----------------------------------------------------------
+# ** full_join -----------------------------------------------------------
 # Accidentalidad por Carreteras
 # https://analisis.datosabiertos.jcyl.es/explore/dataset/accidentalidad-por-carreteras/export/?sort=ano
 # Detalle en: https://datosabiertos.jcyl.es/web/jcyl/binarios/582/267/%C3%8Dndices_de_accidentalidad.pdf?blobheader=application%2Fpdf%3Bcharset%3DUTF-8&blobnocache=true
