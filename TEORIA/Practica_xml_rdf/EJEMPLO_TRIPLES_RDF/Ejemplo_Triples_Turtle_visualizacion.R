@@ -43,7 +43,7 @@ for(i in 1:nrow(medicos)) {
 #4. EXPORTAR (AQUÍ es donde definimos los prefijos)
 # Pasamos un vector con nombre: c(PREFIJO = "URI")
 rdf_serialize(grafo_rdf, 
-              doc = "Practica_xml_rdf/EJEMPLO_TRIPLES_RDF/OUTPUT/mis_datos.ttl", 
+              doc = "TEORIA/Practica_xml_rdf/EJEMPLO_TRIPLES_RDF/OUTPUT/mis_datos.ttl", 
               format = "turtle",
               namespace = c(ex = "http://hospital.ejemplo.org/", 
                             schema = "http://schema.org/"))
