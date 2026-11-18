@@ -3,7 +3,7 @@
 library(rdflib)
 library(tidyverse)
 library(visNetwork)
-
+library(igraph)
 
 ## Tabla de datos original -----------------------------------------------
 # 1. TUS DATOS
@@ -53,7 +53,7 @@ rdf_serialize(grafo_rdf,
 # Usamos una consulta SPARQL simple para sacar todo a un dataframe
 df_grafico <- rdf_query(grafo_rdf, "SELECT ?sujeto ?predicado ?objeto WHERE { ?sujeto ?predicado ?objeto }")
 
-
+df_grafico
 # Renombramos para que las librerías gráficas lo entiendan mejor, según:
 
 # ----------------------------------------------------------------------
@@ -72,7 +72,7 @@ df_grafico
 
 
 # Visualización con igraph ------------------------------------------------
-library(igraph)
+# library(igraph)
 
 # 1. Convertir dataframe a objeto igraph
 g <- graph_from_data_frame(df_grafico, directed = TRUE)
@@ -87,7 +87,7 @@ plot(g,
 
 # Visualización con visNetwork --------------------------------------------
 # install.packages("visNetwork")
-library(visNetwork)
+# library(visNetwork)
 
 # 1. Crear lista de nodos (deben ser únicos)
 nodos <- data.frame(id = unique(c(df_grafico$from, df_grafico$to)))
