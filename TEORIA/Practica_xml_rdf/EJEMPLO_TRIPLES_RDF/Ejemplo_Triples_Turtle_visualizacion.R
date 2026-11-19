@@ -51,7 +51,8 @@ rdf_serialize(grafo_rdf,
 
 ## Consultando el RDF con SPARQL -----------------------------------------
 # Usamos una consulta SPARQL simple para sacar todo a un dataframe
-df_grafico <- rdf_query(grafo_rdf, "SELECT ?sujeto ?predicado ?objeto WHERE { ?sujeto ?predicado ?objeto }")
+df_grafico <- rdf_query(grafo_rdf, 
+                        "SELECT ?sujeto ?predicado ?objeto WHERE { ?sujeto ?predicado ?objeto }")
 
 df_grafico
 # Renombramos para que las librerías gráficas lo entiendan mejor, según:
@@ -173,7 +174,7 @@ for(i in 1:nrow(medicos)) {
 }
 
 # (Opcional) Aquí guardarías el archivo .ttl con los namespaces definidos
-rdf_serialize(grafo_rdf, doc = "Practica_xml_rdf/EJEMPLO_TRIPLES_RDF/OUTPUT/medicos_v2.ttl", format = "turtle",
+rdf_serialize(grafo_rdf, doc = "TEORIA/Practica_xml_rdf/EJEMPLO_TRIPLES_RDF/OUTPUT/medicos_v2.ttl", format = "turtle",
               namespace = c(data = base_data, 
                             voc  = base_voc, 
                             schema = "http://schema.org/"))
